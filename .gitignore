@@ -118,3 +118,6 @@ myApp.log
 !.idea
 /bin/
 /.idea/
+
+# Local Netlify folder
+.netlify

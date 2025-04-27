@@ -5,8 +5,15 @@ class HtmlCreator {
         ...classNames: string[]
     ): HTMLElementTagNameMap[K] {
         const element = document.createElement(tagName);
-        if (id) element.id = id;
-        if (classNames) element.classList.add(...classNames);
+
+        if (id) {
+            element.id = id;
+        }
+
+        if (classNames?.length > 0) {
+            element.classList.add(...classNames);
+        }
+
         return element;
     }
 }
