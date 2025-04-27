@@ -35,3 +35,14 @@ This online bookstore provides users with a modern and user-friendly interface t
 **Mentor** - @Denis-Gusar
 **Team Lead** - @nakurienota
 **Frontend Developers** - @IvanK9, @Olga-Ter
+
+## 🔧 Installation  
+1. Clone the repository:  
+   git clone https://github.com/nakurienota/ecommerce-app.git
+
+2. Install dependencies:
+`npm install`
+
+3. Running the Project
+###### For development:  ```npm run start```
+###### Build: ```npm run build```
