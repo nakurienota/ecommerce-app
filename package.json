@@ -9,11 +9,10 @@
     "build": "webpack",
     "lint": "eslint .",
     "stylelint": "stylelint src/*.css",
-    "stylelint:fix": "stylelint src/*.css --fix",
-    "deploy": "gh-pages -d dist"
+    "stylelint:fix": "stylelint src/*.css --fix"
   },
   "type": "module",
-  "author": "SteniukovS",
+  "author": "404",
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -28,7 +27,6 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-unicorn": "^57.0.0",
     "file-loader": "^6.2.0",
-    "gh-pages": "^6.3.0",
     "html-webpack-plugin": "^5.6.3",
     "prettier": "^3.5.3",
     "style-loader": "^4.0.0",
