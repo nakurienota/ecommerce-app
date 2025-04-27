@@ -18,7 +18,7 @@ This online bookstore provides users with a modern and user-friendly interface t
 [x] **Personalization** – User Profile.  
 [x] **Adaptability** – Comfortable use on smartphones, tablets and computers.  
 
-## ⚡ Functions
+## ⚡ Features
 * Viewing the book catalog
 * Searching for books by title and author
 *  Filtering by genre
@@ -46,3 +46,15 @@ This online bookstore provides users with a modern and user-friendly interface t
 3. Running the Project
 ###### For development:  ```npm run start```
 ###### Build: ```npm run build```
+
+## ⚙️ Скрипты package.json
+|Script| Purpose
+|-|--------|
+|```format```|runs Prettier to format the code by automatically applying consistent styling|
+|```format:check```|verifies whether the code is formatted according to Prettier rules|
+|```start```|launches Webpack's development server|
+|```build```|compiles the project using Webpack to generate the final production-ready files|
+|```lint```|runs ESLint to analyze the code and enforce best practices by checking for errors and style issues|
+|```stylelint```|executes Stylelint to verify CSS files for common formatting issues or errors|
+|```stylelint:fix```|runs Stylelint with the --fix flag, automatically correcting styling mistakes in CSS files|
+|```deploy```|builds the project using Webpack and deploys it to Netlify as a production-ready site|
