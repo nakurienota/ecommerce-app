@@ -45,8 +45,9 @@ export default {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
         alias: {
-            "@core": path.resolve(__dirname, "src/core"),
-            "@utils": path.resolve(__dirname, "src/utils")
+            '@core': path.resolve(__dirname, 'src/core'),
+            '@utils': path.resolve(__dirname, 'src/utils'),
+            '@': path.resolve(__dirname, 'src')
         }
     },
     plugins: [
