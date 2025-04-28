@@ -40,6 +40,6 @@ jobs:
                 owner: repoOwner,
                 repo: repoName,
                 issue_number: issueNumber,
-                body: `This issue was automatically closed by PR #${prNumber}. `
+                body: `This issue was automatically closed by PR #${prNumber}.`
               });
             }
