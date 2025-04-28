@@ -27,7 +27,6 @@ jobs:
             
             while ((match = issueRegex.exec(prBody)) !== null) {
               const issueNumber = match[1];
-              console.log(`Closing issue #${issueNumber}`);
 
               await github.rest.issues.update({
                 owner: repoOwner,
