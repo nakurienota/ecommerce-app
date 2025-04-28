@@ -20,7 +20,7 @@ jobs:
             const prBody = pr.body || "";
             const prNumber = pr.number;
             const repoOwner = context.repo.owner;
-            const repoName = context.repo.name;
+            const repoName = context.repo.repo;
 
             const issueRegex = /(?:resolves|fixes|closes)\s+#(\d+)/gi;
             let match;
