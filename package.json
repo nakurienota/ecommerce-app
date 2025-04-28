@@ -11,8 +11,8 @@
     "lint": "eslint --fix src/",
     "stylelint": "stylelint \"./src/**/*.css\"",
     "stylelint:fix": "stylelint \"./src/**/*.css\" --fix",
-    "prepare": "husky install",
-    "deploy": "npm run build:prod && netlify deploy --prod --dir=dist"
+    "deploy": "npm run build:prod && netlify deploy --prod --dir=dist",
+    "prepare": "husky install"
   },
   "type": "module",
   "author": "404",
@@ -41,7 +41,7 @@
     "file-loader": "^6.2.0",
     "globals": "^15.14.0",
     "html-webpack-plugin": "^5.6.3",
-    "husky": "^9.1.7",
+    "husky": "^8.0.0",
     "lint-staged": "^15.5.1",
     "mini-css-extract-plugin": "^2.9.2",
     "netlify-cli": "^20.1.1",
