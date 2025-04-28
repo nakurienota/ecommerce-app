@@ -15,16 +15,7 @@ export default {
     filename: 'bundle.js',
     path: path.resolve(__dirname, './dist'),
   },
-  mode: 'development',
-  devServer: {
-    static: {
-      directory: path.join(__dirname, './dist'),
-    },
-    compress: true,
-    port: 8080,
-    hot: true,
-    open: true,
-  },
+  mode: 'production',
   module: {
     rules: [
       {
@@ -37,7 +28,7 @@ export default {
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
-        test: /\.(png|jpe?g|gif|svg|ico)$/i,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         type: 'asset/resource',
         generator: {
           filename: 'assets/[name][ext]',
@@ -76,5 +67,4 @@ export default {
       extensions: 'ts',
     }),
   ],
-  devtool: 'inline-source-map',
 };
