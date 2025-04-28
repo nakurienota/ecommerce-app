@@ -1,0 +1,16 @@
+name: Close Issues on PR Merge
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  close-issues:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close related issues
+        uses: peter-evans/close-issue@v3
+        with:
+          issue-pattern: '(?:resolves|fixes|closes) #(\d+)'
