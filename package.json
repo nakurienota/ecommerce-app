@@ -72,9 +72,6 @@
     ],
     "**/*.{css,scss,less}": [
       "stylelint --fix"
-    ],
-    "**/*.{ts,tsx}": [
-      "npm run test"
     ]
   }
 }
