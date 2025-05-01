@@ -86,6 +86,22 @@ export default [
       noInlineConfig: true,
       reportUnusedDisableDirectives: true,
     },
-    ignores: ['eslint.config.js', 'webpack.config.js', 'dist/*', 'commitlint.config.cjs'],
+    ignores: [
+      'eslint.config.js',
+      'webpack.config.js',
+      'dist/*',
+      'commitlint.config.cjs',
+      'jest.config.ts',
+      ' tests/**/*',
+    ],
+  },
+  {
+    files: ['src/tests/**/*.ts'],
+    plugins: {
+      '@typescript-eslint': eslintPluginTypescript,
+    },
+    rules: {
+      'no-undef': 'off',
+    },
   },
 ];
