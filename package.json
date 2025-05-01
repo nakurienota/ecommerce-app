@@ -21,9 +21,6 @@
   "author": "404",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "uikit": "^3.23.6"
-  },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
@@ -53,9 +50,13 @@
     "mini-css-extract-plugin": "^2.9.2",
     "netlify-cli": "^20.1.1",
     "prettier": "^3.5.3",
+    "sass": "^1.87.0",
+    "sass-loader": "^16.0.5",
     "stylelint": "^16.17.0",
     "stylelint-config-clean-order": "^7.0.0",
     "stylelint-config-standard": "^38.0.0",
+    "stylelint-config-standard-scss": "^14.0.0",
+    "stylelint-scss": "^6.11.1",
     "ts-jest": "^29.3.2",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
