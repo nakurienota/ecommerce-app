@@ -6,7 +6,6 @@ import eslintPluginTypescript from '@typescript-eslint/eslint-plugin';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import typescriptParser from '@typescript-eslint/parser';
 import prettierConfig from 'eslint-config-prettier';
-
 export default [
   {
     files: ['src/**/*.{js,mjs,cjs,ts,tsx}'],
@@ -36,6 +35,7 @@ export default [
       ...eslintPluginUnicorn.configs.recommended.rules,
       ...prettierConfig.rules,
       'prettier/prettier': 'error',
+      // 'eol-last': ['error', 'always'],
       'linebreak-style': ['error', 'unix'],
       quotes: ['error', 'single'],
       semi: ['error', 'always'],

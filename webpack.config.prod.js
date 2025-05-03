@@ -52,7 +52,7 @@ export default {
       inject: 'body',
     }),
     new MiniCssExtractPlugin({
-      filename: 'global.css',
+      filename: 'main.css',
     }),
     new CopyWebpackPlugin({
       patterns: [
