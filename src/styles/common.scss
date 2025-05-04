@@ -1,5 +1,5 @@
-@use 'helpers/variables' as v;
+@use 'helpers/variables' as *;
 
 body {
-  background-color: v.$blue;
+  background-color: $blue;
 }
