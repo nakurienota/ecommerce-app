@@ -80,6 +80,5 @@ This online bookstore provides users with a modern and user-friendly interface t
 
 ## 🐕 Git hooks:
 
-`commit-msg`: is triggered when a commit message is created;\  
-`pre-commit`: runs before the commit is finalized. Automatically format code with Prettier or run linting to catch issues before committing;\
+`commit-msg`: is triggered when a commit message is created;\ `pre-commit`: runs before the commit is finalized. Automatically format code with Prettier or run linting to catch issues before committing;\
 `pre-push`: executes before pushing to a remote repository, run tests before allowing a push.
