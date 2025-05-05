@@ -33,8 +33,19 @@ export default {
         include: [path.resolve(__dirname, './src')],
       },
       {
-        test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        test: /\.(s[ac]ss|css)$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                silenceDeprecations: ['import', 'global-builtin'],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpe?g|gif|svg|ico)$/i,
@@ -61,7 +72,7 @@ export default {
       inject: 'body',
     }),
     new MiniCssExtractPlugin({
-      filename: 'global.css',
+      filename: 'main.css',
     }),
     new CopyWebpackPlugin({
       patterns: [

@@ -6,7 +6,6 @@ import eslintPluginTypescript from '@typescript-eslint/eslint-plugin';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import typescriptParser from '@typescript-eslint/parser';
 import prettierConfig from 'eslint-config-prettier';
-
 export default [
   {
     files: ['src/**/*.{js,mjs,cjs,ts,tsx}'],

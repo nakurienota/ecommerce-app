@@ -1,6 +1,8 @@
 {
-  "extends": ["stylelint-config-standard", "stylelint-config-clean-order"], 
+  "extends": ["stylelint-config-standard", "stylelint-config-clean-order", "stylelint-config-standard-scss"],
+  "plugins": ["stylelint-scss"],
   "rules": {
-    "block-no-empty": true
-  } 
+    "block-no-empty": true,
+    "at-rule-no-unknown": null
+  }
 }
