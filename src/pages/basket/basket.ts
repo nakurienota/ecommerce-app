@@ -1,6 +1,6 @@
 import HtmlCreator from '@utils/html';
 
-export default class MainPage {
+export default class BasketPage {
   public container: HTMLElement;
 
   constructor() {
@@ -8,10 +8,10 @@ export default class MainPage {
   }
 
   public getHTML(): HTMLElement {
-    const mainWrapper = HtmlCreator.create('div', undefined, 'main__wrapper');
-    const TEXT = HtmlCreator.create('p', undefined, 'main__txt');
-    TEXT.textContent = 'ТУТ БУДЕТ ГЛАВНАЯ СТРАНИЦА';
-    const link = HtmlCreator.create('a', undefined, 'main__link');
+    const mainWrapper = HtmlCreator.create('div', undefined, 'basket__wrapper');
+    const TEXT = HtmlCreator.create('p', undefined, 'basket__txt');
+    TEXT.textContent = 'ТУТ БУДЕТ КОРЗИНА';
+    const link = HtmlCreator.create('a', undefined, 'basket__link');
     link.setAttribute('href', '/login');
     link.textContent = 'НАЗАД';
 

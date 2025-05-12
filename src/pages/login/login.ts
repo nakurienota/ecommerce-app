@@ -1,8 +1,6 @@
 import HtmlCreator from '@utils/html';
-import { router } from '@utils/router';
-// import './main-page';
 
-export default class LoginPage {
+export default class LogingPage {
   public container: HTMLElement;
 
   constructor() {
@@ -11,20 +9,22 @@ export default class LoginPage {
 
   public getHTML(): HTMLElement {
     const mainWrapper = HtmlCreator.create('div', undefined, 'login__wrapper');
+    const TEXT = HtmlCreator.create('p', undefined, 'login__txt');
+    TEXT.textContent = 'ТУТ БУДЕТ СТРАНИЦА ВХОДА';
     const link = HtmlCreator.create('a', undefined, 'login__link');
-    link.setAttribute('href', '/main');
-    link.textContent = 'MAIN';
+    link.setAttribute('href', '/login');
+    link.textContent = 'НАЗАД';
 
     link.addEventListener('click', (event) => {
       const target = event.target;
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
-        router.navigate(target.href);
+        globalThis.history.back();
       }
     });
 
     this.container.append(mainWrapper);
-    mainWrapper.append(link);
+    mainWrapper.append(TEXT, link);
 
     return this.container;
   }

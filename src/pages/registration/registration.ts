@@ -1,6 +1,6 @@
 import HtmlCreator from '@utils/html';
 
-export default class MainPage {
+export default class RegistrationPage {
   public container: HTMLElement;
 
   constructor() {
@@ -8,10 +8,10 @@ export default class MainPage {
   }
 
   public getHTML(): HTMLElement {
-    const mainWrapper = HtmlCreator.create('div', undefined, 'main__wrapper');
-    const TEXT = HtmlCreator.create('p', undefined, 'main__txt');
-    TEXT.textContent = 'ТУТ БУДЕТ ГЛАВНАЯ СТРАНИЦА';
-    const link = HtmlCreator.create('a', undefined, 'main__link');
+    const mainWrapper = HtmlCreator.create('div', undefined, 'registration__wrapper');
+    const TEXT = HtmlCreator.create('p', undefined, 'registration__txt');
+    TEXT.textContent = 'ТУТ БУДЕТ РЕГИСТРАЦИЯ';
+    const link = HtmlCreator.create('a', undefined, 'registration__link');
     link.setAttribute('href', '/login');
     link.textContent = 'НАЗАД';
 

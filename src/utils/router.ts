@@ -18,7 +18,7 @@ export default class Router {
   public container: HTMLElement;
 
   constructor(routes: RoutesType) {
-    this.container = HtmlCreator.create('main', 'main');
+    this.container = HtmlCreator.create('main', undefined, 'main');
     this.routes = routes;
 
     globalThis.addEventListener('popstate', () => {
