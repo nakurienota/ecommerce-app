@@ -1,6 +1,5 @@
-
 .footer {
-  padding: 35px 0;
+  padding: 15px 0;
   background-color: $black;
 }
 
@@ -10,15 +9,36 @@
   justify-content: space-between;
 }
 
+.footer__dscr {
+  max-width: 300px;
+}
+
 .footer__title {
   margin: 0;
-  font-size: 36px;
+  margin-bottom: 10px;
+  font-size: 16px;
   line-height: 1.3;
   color: $white;
-  transition: color .3s ease-in-out;
+}
+
+.footer__txt {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
+  color: $light-gray;
+}
+
+.footer__list-social {
+  display: flex;
+  column-gap: 15px;
+}
+
+.footer__item-image {
+  padding: 5px;
+  transition: opacity .3s ease-in-out;
 
   &:hover {
-    color: $blue;
+    opacity: 0.5;
   }
 }
 
