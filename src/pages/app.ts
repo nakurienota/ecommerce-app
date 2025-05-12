@@ -8,8 +8,6 @@ export default class App {
   }
 
   public render(): HTMLElement {
-    console.log('RENDER APP');
-
     this.container.append(new Header().getHTML(), router.render());
     return this.container;
   }

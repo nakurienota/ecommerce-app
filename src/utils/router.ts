@@ -1,3 +1,4 @@
+import ErrorPage from '../pages/404/404';
 import AboutPage from '../pages/about/about';
 import BasketPage from '../pages/basket/basket';
 import CatalogPage from '../pages/catalog/catalog';
@@ -23,6 +24,7 @@ export const routes: RoutesType = {
   '/main': new MainPage().getHTML(),
   '/registration': new RegistrationPage().getHTML(),
   '/sales': new SalesPage().getHTML(),
+  '/404': new ErrorPage().getHTML(),
 };
 
 export default class Router {
@@ -42,8 +44,7 @@ export default class Router {
     this.container.replaceChildren();
 
     const path = globalThis.location.pathname;
-    const route = routes[path];
-    console.log(route);
+    const route = routes[path] || routes['/404'];
 
     this.container.append(route);
 

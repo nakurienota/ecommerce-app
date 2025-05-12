@@ -1,18 +1,18 @@
-.sales__wrapper {
+.error__wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.sales__txt {
+.error__txt {
   margin: 0;
   margin-bottom: 30px;
   font-size: 48px;
 }
 
-.sales__link {
+.error__link {
   display: block;
-  max-width: 120px;
+  max-width: 180px;
   padding: 10px 20px;
   border: 1px solid #49d0ff;
   border-radius: 10px;
