@@ -1,5 +1,11 @@
+import AboutPage from '../pages/about/about';
+import BasketPage from '../pages/basket/basket';
+import CatalogPage from '../pages/catalog/catalog';
+import ContactsPage from '../pages/contaсts/contacts';
 import LoginPage from '../pages/login/login';
 import MainPage from '../pages/main/main';
+import RegistrationPage from '../pages/registration/registration';
+import SalesPage from '../pages/sales/sales';
 
 import HtmlCreator from './html';
 
@@ -9,8 +15,14 @@ type RoutesType = {
 
 export const routes: RoutesType = {
   '/': new MainPage().getHTML(),
+  '/about': new AboutPage().getHTML(),
+  '/basket': new BasketPage().getHTML(),
+  '/catalog': new CatalogPage().getHTML(),
+  '/contacts': new ContactsPage().getHTML(),
   '/login': new LoginPage().getHTML(),
   '/main': new MainPage().getHTML(),
+  '/registration': new RegistrationPage().getHTML(),
+  '/sales': new SalesPage().getHTML(),
 };
 
 export default class Router {
