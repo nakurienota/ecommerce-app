@@ -11,6 +11,7 @@ export default class App {
 
   public render(): HTMLElement {
     this.container.append(new Header().getHTML(), router.render(), new Footer().getHTML());
+
     return this.container;
   }
 }

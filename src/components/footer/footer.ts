@@ -29,6 +29,7 @@ export default class Footer {
     footerItemCatalogLink.setAttribute('href', '/catalog');
     footerItemCatalogLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -40,6 +41,7 @@ export default class Footer {
     footerItemAboutLink.setAttribute('href', '/about');
     footerItemAboutLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -51,6 +53,7 @@ export default class Footer {
     footerItemSaleLink.setAttribute('href', '/sales');
     footerItemSaleLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -62,6 +65,7 @@ export default class Footer {
     footerItemContactsLink.setAttribute('href', '/contacts');
     footerItemContactsLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);

@@ -16,6 +16,7 @@ export default class Header {
 
     headerTitleLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -34,6 +35,7 @@ export default class Header {
     headerItemCatalogLink.setAttribute('href', '/catalog');
     headerItemCatalogLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -45,6 +47,7 @@ export default class Header {
     headerItemAboutLink.setAttribute('href', '/about');
     headerItemAboutLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -56,6 +59,7 @@ export default class Header {
     headerItemSaleLink.setAttribute('href', '/sales');
     headerItemSaleLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -67,6 +71,7 @@ export default class Header {
     headerItemContactsLink.setAttribute('href', '/contacts');
     headerItemContactsLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -79,6 +84,7 @@ export default class Header {
     headerButtonLogin.setAttribute('href', '/login');
     headerButtonLogin.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -90,6 +96,7 @@ export default class Header {
     headerButtonReg.setAttribute('href', '/registration');
     headerButtonReg.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -101,6 +108,7 @@ export default class Header {
     headerButtonBasket.setAttribute('href', '/basket');
     headerButtonBasket.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
