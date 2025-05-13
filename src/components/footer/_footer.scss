@@ -1,6 +1,6 @@
 .footer {
   padding: 15px 0;
-  background-color: $black;
+  background-color: $footer-bg-color;
 }
 
 .footer__wrapper {
@@ -18,14 +18,14 @@
   margin-bottom: 10px;
   font-size: 16px;
   line-height: 1.3;
-  color: $white;
+  color: $title-color;
 }
 
 .footer__txt {
   margin: 0;
   font-size: 14px;
   line-height: 1.3;
-  color: $light-gray;
+  color: $discription-color;
 }
 
 .footer__list-social {
@@ -50,10 +50,10 @@
 .footer__item-link {
   font-size: 20px;
   line-height: 1.3;
-  color: $white;
+  color: $link-text-color;
   transition: color .3s ease-in-out;
 
   &:hover {
-    color: $blue;
+    color: $link-text-color-hover;
   }
 }

@@ -15,6 +15,7 @@ export default class ButtonBackCreator {
 
     this.button.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         globalThis.history.back();
