@@ -1,6 +1,8 @@
 import HtmlCreator from '@utils/html';
 
-export default class ErrorPage {
+import ButtonBackCreator from '../../components/button/button-back';
+
+export default class NotFoundPage {
   public container: HTMLElement;
 
   constructor() {
@@ -8,23 +10,14 @@ export default class ErrorPage {
   }
 
   public getHTML(): HTMLElement {
-    const mainWrapper = HtmlCreator.create('div', undefined, 'error__wrapper');
-    const TEXT = HtmlCreator.create('p', undefined, 'error__txt');
-    TEXT.textContent = 'Извините, по Вашему запросу ничего не найдено...';
-    const link = HtmlCreator.create('a', undefined, 'error__link');
-    link.setAttribute('href', '/main');
-    link.textContent = 'НА ГЛАВНУЮ';
+    const notFoundWrapper = HtmlCreator.create('div', undefined, 'not-found', 'not-found__wrapper');
+    const notFoundText = HtmlCreator.create('p', undefined, 'not-found__txt');
+    notFoundText.textContent = 'Извините, по Вашему запросу ничего не найдено...';
 
-    link.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        globalThis.history.back();
-      }
-    });
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['not-found__btn', 'button-back'], undefined, '/main').render();
 
-    this.container.append(mainWrapper);
-    mainWrapper.append(TEXT, link);
+    this.container.append(notFoundWrapper);
+    notFoundWrapper.append(notFoundText, buttonBack);
 
     return this.container;
   }

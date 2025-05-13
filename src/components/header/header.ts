@@ -1,5 +1,5 @@
-import HtmlCreator from './html';
-import { router } from './router';
+import HtmlCreator from '@utils/html';
+import { router } from '@utils/router';
 
 export default class Header {
   public header: HTMLElement;

@@ -1,5 +1,7 @@
 import HtmlCreator from '@utils/html';
 
+import ButtonBackCreator from '../../components/button/button-back';
+
 export default class SalesPage {
   public container: HTMLElement;
 
@@ -8,23 +10,14 @@ export default class SalesPage {
   }
 
   public getHTML(): HTMLElement {
-    const mainWrapper = HtmlCreator.create('div', undefined, 'sales__wrapper');
-    const TEXT = HtmlCreator.create('p', undefined, 'sales__txt');
-    TEXT.textContent = 'ТУТ БУДЕТ СТРАНИЦА СО СКИДКАМИ';
-    const link = HtmlCreator.create('a', undefined, 'sales__link');
-    link.setAttribute('href', '/login');
-    link.textContent = 'НАЗАД';
+    const salesWrapper = HtmlCreator.create('div', undefined, 'sales', 'sales__wrapper');
+    const salesText = HtmlCreator.create('p', undefined, 'sales__txt');
+    salesText.textContent = 'ТУТ БУДЕТ СТРАНИЦА СО СКИДКАМИ';
 
-    link.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        globalThis.history.back();
-      }
-    });
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['sales__btn', 'button-back'], undefined, '/main').render();
 
-    this.container.append(mainWrapper);
-    mainWrapper.append(TEXT, link);
+    this.container.append(salesWrapper);
+    salesWrapper.append(salesText, buttonBack);
 
     return this.container;
   }

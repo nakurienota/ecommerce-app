@@ -1,6 +1,7 @@
-import Footer from '@utils/footer';
-import Header from '@utils/header';
 import { router } from '@utils/router';
+
+import Footer from '../components/footer/footer';
+import Header from '../components/header/header';
 
 export default class App {
   public container: HTMLElement;

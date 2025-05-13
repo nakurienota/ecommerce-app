@@ -1,5 +1,7 @@
 import HtmlCreator from '@utils/html';
 
+import ButtonBackCreator from '../../components/button/button-back';
+
 export default class RegistrationPage {
   public container: HTMLElement;
 
@@ -8,23 +10,19 @@ export default class RegistrationPage {
   }
 
   public getHTML(): HTMLElement {
-    const mainWrapper = HtmlCreator.create('div', undefined, 'registration__wrapper');
-    const TEXT = HtmlCreator.create('p', undefined, 'registration__txt');
-    TEXT.textContent = 'ТУТ БУДЕТ РЕГИСТРАЦИЯ';
-    const link = HtmlCreator.create('a', undefined, 'registration__link');
-    link.setAttribute('href', '/login');
-    link.textContent = 'НАЗАД';
+    const registrationWrapper = HtmlCreator.create('div', undefined, 'registration', 'registration__wrapper');
+    const registrationText = HtmlCreator.create('p', undefined, 'registration__txt');
+    registrationText.textContent = 'ТУТ БУДЕТ РЕГИСТРАЦИЯ';
 
-    link.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        globalThis.history.back();
-      }
-    });
+    const buttonBack = new ButtonBackCreator(
+      'НАЗАД',
+      ['registration__btn', 'button-back'],
+      undefined,
+      '/main'
+    ).render();
 
-    this.container.append(mainWrapper);
-    mainWrapper.append(TEXT, link);
+    this.container.append(registrationWrapper);
+    registrationWrapper.append(registrationText, buttonBack);
 
     return this.container;
   }
