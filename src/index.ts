@@ -1,7 +1,7 @@
 import App from './pages/app';
 import './styles/main.scss';
+import { Resthandler } from './service/rest/resthandler';
 
-console.log('Hello, 404');
-
-const app = new App();
+const restHandler = new Resthandler();
+const app = new App(restHandler);
 app.render();
