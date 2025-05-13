@@ -1,5 +1,7 @@
 import HtmlCreator from '@utils/html';
 
+import ButtonBackCreator from '../../components/button/button-back';
+
 export default class LogingPage {
   public container: HTMLElement;
 
@@ -8,23 +10,14 @@ export default class LogingPage {
   }
 
   public getHTML(): HTMLElement {
-    const mainWrapper = HtmlCreator.create('div', undefined, 'login__wrapper');
-    const TEXT = HtmlCreator.create('p', undefined, 'login__txt');
-    TEXT.textContent = 'ТУТ БУДЕТ СТРАНИЦА ВХОДА';
-    const link = HtmlCreator.create('a', undefined, 'login__link');
-    link.setAttribute('href', '/login');
-    link.textContent = 'НАЗАД';
+    const loginWrapper = HtmlCreator.create('div', undefined, 'login', 'login__wrapper');
+    const loginText = HtmlCreator.create('p', undefined, 'login__txt');
+    loginText.textContent = 'ТУТ БУДЕТ СТРАНИЦА ВХОДА';
 
-    link.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        globalThis.history.back();
-      }
-    });
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['login__btn', 'button-back'], undefined, '/main').render();
 
-    this.container.append(mainWrapper);
-    mainWrapper.append(TEXT, link);
+    this.container.append(loginWrapper);
+    loginWrapper.append(loginText, buttonBack);
 
     return this.container;
   }

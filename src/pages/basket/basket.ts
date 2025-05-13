@@ -1,5 +1,7 @@
 import HtmlCreator from '@utils/html';
 
+import ButtonBackCreator from '../../components/button/button-back';
+
 export default class BasketPage {
   public container: HTMLElement;
 
@@ -8,23 +10,14 @@ export default class BasketPage {
   }
 
   public getHTML(): HTMLElement {
-    const mainWrapper = HtmlCreator.create('div', undefined, 'basket__wrapper');
-    const TEXT = HtmlCreator.create('p', undefined, 'basket__txt');
-    TEXT.textContent = 'ТУТ БУДЕТ КОРЗИНА';
-    const link = HtmlCreator.create('a', undefined, 'basket__link');
-    link.setAttribute('href', '/login');
-    link.textContent = 'НАЗАД';
+    const basketWrapper = HtmlCreator.create('div', undefined, 'basket', 'basket__wrapper');
+    const basketText = HtmlCreator.create('p', undefined, 'basket__txt');
+    basketText.textContent = 'ТУТ БУДЕТ КОРЗИНА';
 
-    link.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        globalThis.history.back();
-      }
-    });
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['basket__btn', 'button-back'], undefined, '/main').render();
 
-    this.container.append(mainWrapper);
-    mainWrapper.append(TEXT, link);
+    this.container.append(basketWrapper);
+    basketWrapper.append(basketText, buttonBack);
 
     return this.container;
   }
