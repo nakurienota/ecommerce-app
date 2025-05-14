@@ -4,6 +4,7 @@ export default class ButtonBackCreator {
     this.button = document.createElement('a');
     this.button.textContent = text;
     this.button.classList.add(...classNames);
+    this.button.classList.add('button-back');
 
     if (id) {
       this.button.id = id;

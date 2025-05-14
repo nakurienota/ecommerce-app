@@ -1,4 +1,5 @@
 import HtmlCreator from '@utils/html';
+import { AppRoutes } from '@utils/router';
 
 import ButtonBackCreator from '../../components/button/button-back';
 
@@ -14,7 +15,7 @@ export default class LogingPage {
     const loginText = HtmlCreator.create('p', undefined, 'login__txt');
     loginText.textContent = 'ТУТ БУДЕТ СТРАНИЦА ВХОДА';
 
-    const buttonBack = new ButtonBackCreator('НАЗАД', ['login__btn', 'button-back'], undefined, '/main').render();
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['login__btn'], undefined, AppRoutes.MAIN).render();
 
     this.container.append(loginWrapper);
     loginWrapper.append(loginText, buttonBack);

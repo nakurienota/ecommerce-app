@@ -1,4 +1,5 @@
 import HtmlCreator from '@utils/html';
+import { AppRoutes } from '@utils/router';
 
 import ButtonBackCreator from '../../components/button/button-back';
 
@@ -14,12 +15,7 @@ export default class RegistrationPage {
     const registrationText = HtmlCreator.create('p', undefined, 'registration__txt');
     registrationText.textContent = 'ТУТ БУДЕТ РЕГИСТРАЦИЯ';
 
-    const buttonBack = new ButtonBackCreator(
-      'НАЗАД',
-      ['registration__btn', 'button-back'],
-      undefined,
-      '/main'
-    ).render();
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['registration__btn'], undefined, AppRoutes.MAIN).render();
 
     this.container.append(registrationWrapper);
     registrationWrapper.append(registrationText, buttonBack);
