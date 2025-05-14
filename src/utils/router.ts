@@ -14,17 +14,30 @@ type RoutesType = {
   [path: string]: HTMLElement;
 };
 
+export enum AppRoutes {
+  ROOT = '/',
+  ABOUT = '/about',
+  BASKET = '/basket',
+  CATALOG = '/catalog',
+  CONTACTS = '/contacts',
+  LOGIN = '/login',
+  MAIN = '/main',
+  REGISTRATION = '/registration',
+  SALES = '/sales',
+  NOT_FOUND = '/404',
+}
+
 export const routes: RoutesType = {
-  '/': new MainPage().getHTML(),
-  '/about': new AboutPage().getHTML(),
-  '/basket': new BasketPage().getHTML(),
-  '/catalog': new CatalogPage().getHTML(),
-  '/contacts': new ContactsPage().getHTML(),
-  '/login': new LoginPage().getHTML(),
-  '/main': new MainPage().getHTML(),
-  '/registration': new RegistrationPage().getHTML(),
-  '/sales': new SalesPage().getHTML(),
-  '/404': new ErrorPage().getHTML(),
+  [AppRoutes.ROOT]: new MainPage().getHTML(),
+  [AppRoutes.ABOUT]: new AboutPage().getHTML(),
+  [AppRoutes.BASKET]: new BasketPage().getHTML(),
+  [AppRoutes.CATALOG]: new CatalogPage().getHTML(),
+  [AppRoutes.CONTACTS]: new ContactsPage().getHTML(),
+  [AppRoutes.LOGIN]: new LoginPage().getHTML(),
+  [AppRoutes.MAIN]: new MainPage().getHTML(),
+  [AppRoutes.REGISTRATION]: new RegistrationPage().getHTML(),
+  [AppRoutes.SALES]: new SalesPage().getHTML(),
+  [AppRoutes.NOT_FOUND]: new ErrorPage().getHTML(),
 };
 
 export default class Router {
@@ -44,7 +57,7 @@ export default class Router {
     this.container.replaceChildren();
 
     const path = globalThis.location.pathname;
-    const route = routes[path] || routes['/404'];
+    const route = routes[path] || routes[AppRoutes.NOT_FOUND];
 
     this.container.append(route);
 

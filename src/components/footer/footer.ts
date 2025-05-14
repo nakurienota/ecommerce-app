@@ -1,5 +1,5 @@
 import HtmlCreator from '@utils/html';
-import { router } from '@utils/router';
+import { AppRoutes, router } from '@utils/router';
 
 export default class Footer {
   public footer: HTMLElement;
@@ -20,10 +20,10 @@ export default class Footer {
     const footerNav = HtmlCreator.create('nav', undefined, 'footer__nav');
     const footerList = HtmlCreator.create('ul', undefined, 'footer__list', 'list-reset');
     const footerNavigation = [
-      { textLink: 'Каталог', href: '/catalog' },
-      { textLink: 'О нас', href: '/about' },
-      { textLink: 'Скидки', href: '/sales' },
-      { textLink: 'Контакты', href: '/contacts' },
+      { textLink: 'Каталог', href: AppRoutes.CATALOG },
+      { textLink: 'О нас', href: AppRoutes.ABOUT },
+      { textLink: 'Скидки', href: AppRoutes.SALES },
+      { textLink: 'Контакты', href: AppRoutes.CONTACTS },
     ];
 
     footerNavigation.forEach(({ textLink, href }) => {

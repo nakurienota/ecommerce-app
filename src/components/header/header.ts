@@ -1,5 +1,5 @@
 import HtmlCreator from '@utils/html';
-import { router } from '@utils/router';
+import { AppRoutes, router } from '@utils/router';
 
 export default class Header {
   public header: HTMLElement;
@@ -11,7 +11,7 @@ export default class Header {
     const container = HtmlCreator.create('div', undefined, 'container');
     const headerWrapper = HtmlCreator.create('div', undefined, 'header__wrapper');
     const headerTitleLink = HtmlCreator.create('a', undefined, 'header__title');
-    headerTitleLink.setAttribute('href', '/main');
+    headerTitleLink.setAttribute('href', AppRoutes.MAIN);
     headerTitleLink.textContent = 'MyBOOK';
 
     headerTitleLink.addEventListener('click', (event) => {
@@ -27,10 +27,10 @@ export default class Header {
     const headerList = HtmlCreator.create('ul', undefined, 'header__list', 'list-reset');
 
     const headerNavigation = [
-      { textLink: 'Каталог', href: '/catalog' },
-      { textLink: 'О нас', href: '/about' },
-      { textLink: 'Скидки', href: '/sales' },
-      { textLink: 'Контакты', href: '/contacts' },
+      { textLink: 'Каталог', href: AppRoutes.CATALOG },
+      { textLink: 'О нас', href: AppRoutes.ABOUT },
+      { textLink: 'Скидки', href: AppRoutes.SALES },
+      { textLink: 'Контакты', href: AppRoutes.CONTACTS },
     ];
 
     headerNavigation.forEach(({ textLink, href }) => {
@@ -55,9 +55,9 @@ export default class Header {
     const headerButtonWrapper = HtmlCreator.create('div', undefined, 'header__btn-wrapper');
 
     const headerButtons = [
-      { textLink: 'Вход', href: '/login' },
-      { textLink: 'Регистрация', href: '/registration' },
-      { textLink: 'Корзина', href: '/basket' },
+      { textLink: 'Вход', href: AppRoutes.LOGIN },
+      { textLink: 'Регистрация', href: AppRoutes.REGISTRATION },
+      { textLink: 'Корзина', href: AppRoutes.BASKET },
     ];
 
     headerButtons.forEach(({ textLink, href }) => {
