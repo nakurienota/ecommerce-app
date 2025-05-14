@@ -78,6 +78,10 @@
     ]
   },
   "dependencies": {
+    "@commercetools/importapi-sdk": "^6.1.1",
+    "@commercetools/platform-sdk": "^8.9.0",
+    "@commercetools/ts-client": "^3.3.0",
+    "@types/node-fetch": "^2.6.12",
     "modern-normalize": "^3.0.1"
   }
 }
