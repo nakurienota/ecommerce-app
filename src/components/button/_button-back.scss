@@ -8,8 +8,9 @@
   line-height: 1.3;
   color: $link-text-color-hover;
   text-align: center;
-  transition: background-color .3s ease-in-out,
-  color .3s ease-in-out;
+  transition:
+    background-color 0.3s ease-in-out,
+    color 0.3s ease-in-out;
 
   &:hover {
     color: $link-text-color;

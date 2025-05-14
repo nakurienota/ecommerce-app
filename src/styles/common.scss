@@ -1,7 +1,7 @@
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
@@ -13,7 +13,6 @@ body {
   .main {
     flex: 1;
   }
-
 }
 
 .container {
@@ -22,16 +21,12 @@ body {
   padding: 0 15px;
 }
 
-.list-reset {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-a, a:link, a:visited  {
+a,
+a:link,
+a:visited {
   text-decoration: none;
 }
 
-a:hover  {
+a:hover {
   text-decoration: none;
 }
