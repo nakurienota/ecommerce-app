@@ -1,3 +1,16 @@
 body {
-  background-color: $blue;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $link-text-color;
+
+  .main {
+    flex: 1;
+  }
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 15px;
 }

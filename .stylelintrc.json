@@ -1,8 +1,15 @@
 {
-  "extends": ["stylelint-config-standard", "stylelint-config-clean-order", "stylelint-config-standard-scss"],
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-clean-order",
+    "stylelint-config-standard-scss",
+    "stylelint-config-two-dash-bem"
+  ],
   "plugins": ["stylelint-scss"],
   "rules": {
     "block-no-empty": true,
-    "at-rule-no-unknown": null
+    "at-rule-no-unknown": null,
+    "declaration-property-value-no-unknown": null,
+    "scss/declaration-property-value-no-unknown": true
   }
 }
