@@ -2,18 +2,18 @@
   display: block;
   max-width: 120px;
   padding: 10px 20px;
-  border: 1px solid $link-border-color-hover;
+  border: 1px solid $btn-back-border-color;
   border-radius: 10px;
   font-size: 20px;
   line-height: 1.3;
-  color: $link-text-color-hover;
+  color: $btn-back-text-color;
   text-align: center;
   transition:
     background-color 0.3s ease-in-out,
     color 0.3s ease-in-out;
 
   &:hover {
-    color: $link-text-color;
-    background-color: $link-text-color-hover;
+    color: $btn-back-text-color-hover;
+    background-color: $btn-back-bg-color-hover;
   }
 }

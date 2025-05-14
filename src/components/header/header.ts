@@ -24,7 +24,7 @@ export default class Header {
     });
 
     const headerNav = HtmlCreator.create('nav', undefined, 'header__nav');
-    const headerList = HtmlCreator.create('ul', undefined, 'header__list', 'list-reset');
+    const headerList = HtmlCreator.create('ul', undefined, 'header__list');
 
     const headerNavigation = [
       { textLink: 'Каталог', href: AppRoutes.CATALOG },

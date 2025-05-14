@@ -18,7 +18,7 @@ export default class Footer {
       'MyBOOK - это крупный интернет-магазин книг. В нём вы можете заказывать книги в любое время 24 часа в сутки.';
 
     const footerNav = HtmlCreator.create('nav', undefined, 'footer__nav');
-    const footerList = HtmlCreator.create('ul', undefined, 'footer__list', 'list-reset');
+    const footerList = HtmlCreator.create('ul', undefined, 'footer__list');
     const footerNavigation = [
       { textLink: 'Каталог', href: AppRoutes.CATALOG },
       { textLink: 'О нас', href: AppRoutes.ABOUT },
@@ -46,7 +46,7 @@ export default class Footer {
     });
 
     const footerNavSocial = HtmlCreator.create('nav', undefined, 'footer__nav-social');
-    const footerListSocial = HtmlCreator.create('ul', undefined, 'footer__list-social', 'list-reset');
+    const footerListSocial = HtmlCreator.create('ul', undefined, 'footer__list-social');
     const socialLinks = [
       { href: 'https://vk.com/', imgSrc: '../assets/icons/vk.svg', alt: 'Вконтакте' },
       { href: 'https://ok.ru/', imgSrc: '../assets/icons/ok.svg', alt: 'Одноклассники' },
