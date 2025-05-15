@@ -8,4 +8,43 @@
     margin-bottom: 30px;
     font-size: 48px;
   }
+
+  .login__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login__submit-btn {
+    display: block;
+    width: 160px;
+    height: 46px;
+    border-radius: 5px;
+    font-size: 12px;
+    line-height: 1.3;
+    color: $btn-back-text-color-hover;
+    text-align: center;
+    background-color: $header-bg-color;
+    transition:
+      background-color 0.3s ease-in-out,
+      color 0.3s ease-in-out;
+
+    &:hover {
+      color: $header-bg-color;
+      background-color: $btn-back-text-color-hover;
+    }
+  }
+
+  label {
+    width: 381px;
+    font-size: 13px;
+  }
+
+  input {
+    width: 381px;
+    height: 35px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+  }
 }
