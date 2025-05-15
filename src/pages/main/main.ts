@@ -1,7 +1,5 @@
 import HtmlCreator from '@utils/html';
 
-import ButtonBackCreator from '../../components/button/button-back';
-
 export default class MainPage {
   public container: HTMLElement;
 
@@ -14,10 +12,8 @@ export default class MainPage {
     const mainText = HtmlCreator.create('p', undefined, 'main-page__txt');
     mainText.textContent = 'ТУТ БУДЕТ ГЛАВНАЯ СТРАНИЦА';
 
-    const buttonBack = new ButtonBackCreator('НАЗАД', ['main-page__btn', 'button-back'], undefined, '/main').render();
-
     this.container.append(mainWrapper);
-    mainWrapper.append(mainText, buttonBack);
+    mainWrapper.append(mainText);
 
     return this.container;
   }

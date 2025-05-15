@@ -1,5 +1,5 @@
 import HtmlCreator from '@utils/html';
-import { router } from '@utils/router';
+import { AppRoutes, router } from '@utils/router';
 
 export default class Header {
   public header: HTMLElement;
@@ -11,11 +11,12 @@ export default class Header {
     const container = HtmlCreator.create('div', undefined, 'container');
     const headerWrapper = HtmlCreator.create('div', undefined, 'header__wrapper');
     const headerTitleLink = HtmlCreator.create('a', undefined, 'header__title');
-    headerTitleLink.setAttribute('href', '/main');
+    headerTitleLink.setAttribute('href', AppRoutes.MAIN);
     headerTitleLink.textContent = 'MyBOOK';
 
     headerTitleLink.addEventListener('click', (event) => {
       const target = event.target;
+
       if (target instanceof HTMLAnchorElement) {
         event.preventDefault();
         router.navigate(target.href);
@@ -23,104 +24,64 @@ export default class Header {
     });
 
     const headerNav = HtmlCreator.create('nav', undefined, 'header__nav');
-    const headerList = HtmlCreator.create('ul', undefined, 'header__list', 'list-reset');
-    const headerItemCatalog = HtmlCreator.create('li', undefined, 'header__item');
-    const headerItemAbout = HtmlCreator.create('li', undefined, 'header__item');
-    const headerItemSale = HtmlCreator.create('li', undefined, 'header__item');
-    const headerItemContacts = HtmlCreator.create('li', undefined, 'header__item');
+    const headerList = HtmlCreator.create('ul', undefined, 'header__list');
 
-    const headerItemCatalogLink = HtmlCreator.create('a', undefined, 'header__item-link');
-    headerItemCatalogLink.textContent = 'Каталог';
-    headerItemCatalogLink.setAttribute('href', '/catalog');
-    headerItemCatalogLink.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        router.navigate(target.href);
-      }
-    });
+    const headerNavigation = [
+      { textLink: 'Каталог', href: AppRoutes.CATALOG },
+      { textLink: 'О нас', href: AppRoutes.ABOUT },
+      { textLink: 'Скидки', href: AppRoutes.SALES },
+      { textLink: 'Контакты', href: AppRoutes.CONTACTS },
+    ];
 
-    const headerItemAboutLink = HtmlCreator.create('a', undefined, 'header__item-link');
-    headerItemAboutLink.textContent = 'О нас';
-    headerItemAboutLink.setAttribute('href', '/about');
-    headerItemAboutLink.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        router.navigate(target.href);
-      }
-    });
+    headerNavigation.forEach(({ textLink, href }) => {
+      const listItem = HtmlCreator.create('li', undefined, 'header__item');
+      const linkItem = HtmlCreator.create('a', undefined, 'header__item-link');
+      linkItem.textContent = textLink;
+      linkItem.setAttribute('href', href);
 
-    const headerItemSaleLink = HtmlCreator.create('a', undefined, 'header__item-link');
-    headerItemSaleLink.textContent = 'Скидки';
-    headerItemSaleLink.setAttribute('href', '/sales');
-    headerItemSaleLink.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        router.navigate(target.href);
-      }
-    });
+      linkItem.addEventListener('click', (event) => {
+        const target = event.target;
 
-    const headerItemContactsLink = HtmlCreator.create('a', undefined, 'header__item-link');
-    headerItemContactsLink.textContent = 'Контакты';
-    headerItemContactsLink.setAttribute('href', '/contacts');
-    headerItemContactsLink.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        router.navigate(target.href);
-      }
+        if (target instanceof HTMLAnchorElement) {
+          event.preventDefault();
+          router.navigate(target.href);
+        }
+      });
+
+      listItem.append(linkItem);
+      headerList.append(listItem);
     });
 
     const headerButtonWrapper = HtmlCreator.create('div', undefined, 'header__btn-wrapper');
-    const headerButtonLogin = HtmlCreator.create('a', undefined, 'header__btn', 'header__btn-login');
-    headerButtonLogin.textContent = 'Вход';
-    headerButtonLogin.setAttribute('href', '/login');
-    headerButtonLogin.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        router.navigate(target.href);
-      }
-    });
 
-    const headerButtonReg = HtmlCreator.create('a', undefined, 'header__btn', 'header__btn-registration');
-    headerButtonReg.textContent = 'Регистрация';
-    headerButtonReg.setAttribute('href', '/registration');
-    headerButtonReg.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        router.navigate(target.href);
-      }
-    });
+    const headerButtons = [
+      { textLink: 'Вход', href: AppRoutes.LOGIN },
+      { textLink: 'Регистрация', href: AppRoutes.REGISTRATION },
+      { textLink: 'Корзина', href: AppRoutes.BASKET },
+    ];
 
-    const headerButtonBasket = HtmlCreator.create('a', undefined, 'header__btn', 'header__btn-basket');
-    headerButtonBasket.textContent = 'Корзина';
-    headerButtonBasket.setAttribute('href', '/basket');
-    headerButtonBasket.addEventListener('click', (event) => {
-      const target = event.target;
-      if (target instanceof HTMLAnchorElement) {
-        event.preventDefault();
-        router.navigate(target.href);
-      }
+    headerButtons.forEach(({ textLink, href }) => {
+      const listItem = HtmlCreator.create('a', undefined, 'header__btn', 'header__btn-login');
+      listItem.textContent = textLink;
+      listItem.setAttribute('href', href);
+
+      listItem.addEventListener('click', (event) => {
+        const target = event.target;
+
+        if (target instanceof HTMLAnchorElement) {
+          event.preventDefault();
+          router.navigate(target.href);
+        }
+      });
+
+      headerButtonWrapper.append(listItem);
     });
 
     this.header.append(container);
     container.append(headerWrapper);
     headerWrapper.append(headerTitleLink);
     headerWrapper.append(headerTitleLink, headerNav, headerButtonWrapper);
-
     headerNav.append(headerList);
-    headerList.append(headerItemCatalog, headerItemAbout, headerItemSale, headerItemContacts);
-
-    headerItemCatalog.append(headerItemCatalogLink);
-    headerItemAbout.append(headerItemAboutLink);
-    headerItemSale.append(headerItemSaleLink);
-    headerItemContacts.append(headerItemContactsLink);
-
-    headerButtonWrapper.append(headerButtonLogin, headerButtonReg, headerButtonBasket);
 
     return this.header;
   }

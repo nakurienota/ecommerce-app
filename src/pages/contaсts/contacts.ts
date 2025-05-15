@@ -1,4 +1,5 @@
 import HtmlCreator from '@utils/html';
+import { AppRoutes } from '@utils/router';
 
 import ButtonBackCreator from '../../components/button/button-back';
 
@@ -14,7 +15,7 @@ export default class ContactsPage {
     const contactsText = HtmlCreator.create('p', undefined, 'contacts__txt');
     contactsText.textContent = 'ТУТ БУДУТ КОНТАКТЫ';
 
-    const buttonBack = new ButtonBackCreator('НАЗАД', ['contacts__btn', 'button-back'], undefined, '/main').render();
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['contacts__btn'], undefined, AppRoutes.MAIN).render();
 
     this.container.append(contactsWrapper);
     contactsWrapper.append(contactsText, buttonBack);

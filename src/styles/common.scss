@@ -1,46 +1,16 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-
-  // justify-content: center;
-  background-color: $white;
+  background-color: $link-text-color;
 
   .main {
     flex: 1;
   }
-
-  // .footer {
-  //   margin-top: auto;
-  // }
 }
 
 .container {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 15px;
-}
-
-.list-reset {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-a,
-a:link,
-a:visited {
-  text-decoration: none;
-
-  // color: inherit;
-}
-
-a:hover {
-  text-decoration: none;
 }

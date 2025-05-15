@@ -1,4 +1,5 @@
 import HtmlCreator from '@utils/html';
+import { AppRoutes } from '@utils/router';
 
 import ButtonBackCreator from '../../components/button/button-back';
 
@@ -14,7 +15,7 @@ export default class BasketPage {
     const basketText = HtmlCreator.create('p', undefined, 'basket__txt');
     basketText.textContent = 'ТУТ БУДЕТ КОРЗИНА';
 
-    const buttonBack = new ButtonBackCreator('НАЗАД', ['basket__btn', 'button-back'], undefined, '/main').render();
+    const buttonBack = new ButtonBackCreator('НАЗАД', ['basket__btn'], undefined, AppRoutes.MAIN).render();
 
     this.container.append(basketWrapper);
     basketWrapper.append(basketText, buttonBack);
