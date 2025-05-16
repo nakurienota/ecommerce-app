@@ -13,16 +13,22 @@ export default class LoginPage {
   public getHTML(): HTMLElement {
     const loginWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login', 'login__wrapper');
     const form: HTMLFormElement = HtmlCreator.create('form', undefined, 'login__form');
+    form.noValidate = true;
     const title: HTMLHeadingElement = HtmlCreator.create('h1', undefined, 'login__title');
     title.textContent = 'Войти';
 
     const emailWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login__input-wrapper');
     const emailLabel: HTMLLabelElement = HtmlCreator.create('label', undefined, 'login__label');
     emailLabel.textContent = 'Email адрес';
-    const emailInput: HTMLInputElement = HtmlCreator.create('input', undefined, 'login__input-field');
+    const emailInput: HTMLInputElement = HtmlCreator.create(
+      'input',
+      undefined,
+      'login__input-field',
+      'login__input-email'
+    );
     emailInput.type = 'email';
     emailInput.autocomplete = 'off';
-    const emailError: HTMLSpanElement = HtmlCreator.create('span', undefined, 'login__error', 'login__error-email');
+    const emailError: HTMLSpanElement = HtmlCreator.create('span', undefined, 'login__error-email');
 
     emailInput.addEventListener('input', () => {
       const loginValue = emailInput.value;
@@ -41,15 +47,15 @@ export default class LoginPage {
     const passwordLabel: HTMLLabelElement = HtmlCreator.create('label', undefined, 'login__label');
     passwordLabel.textContent = 'Пароль';
     passwordLabel.htmlFor = 'password';
-    const passwordInput: HTMLInputElement = HtmlCreator.create('input', undefined, 'login__input-field');
+    const passwordInput: HTMLInputElement = HtmlCreator.create(
+      'input',
+      undefined,
+      'login__input-field',
+      'login__input-password'
+    );
     passwordInput.type = 'password';
     passwordInput.autocomplete = 'off';
-    const passwordError: HTMLSpanElement = HtmlCreator.create(
-      'span',
-      undefined,
-      'login__error',
-      'login__error-password'
-    );
+    const passwordError: HTMLSpanElement = HtmlCreator.create('span', undefined, 'login__error-password');
     const buttonShowPassword: HTMLButtonElement = HtmlCreator.create('button', undefined, 'login__btn-show');
     const buttonShowPasswordImage = HtmlCreator.create('img', undefined, 'login__btn-img');
     buttonShowPasswordImage.src = '../../assets/icons/show_password.svg';
@@ -110,7 +116,9 @@ export default class LoginPage {
       router.navigate(AppRoutes.MAIN);
     } catch {
       const errorMessage: Element | null = document.querySelector('.login__error');
-      if (errorMessage) errorMessage.textContent = 'Failed to login. Please check your credentials.';
+
+      if (errorMessage)
+        errorMessage.textContent = 'Не удалось войти в систему. Пожалуйста, проверьте свои учетные данные';
     }
   }
 }
@@ -143,15 +151,15 @@ function passwordValidate(password: string): string | null {
   }
 
   if (!/[A-Z]/.test(passwordTrim)) {
-    return 'Пароль должен содержать хотя бы одну заглавную букву (A-Z).';
+    return 'Пароль должен содержать хотя бы одну заглавную букву A-Z';
   }
 
   if (!/[a-z]/.test(passwordTrim)) {
-    return 'Пароль должен содержать хотя бы одну строчную букву (a-z).';
+    return 'Пароль должен содержать хотя бы одну строчную букву a-z';
   }
 
   if (!/[0-9]/.test(passwordTrim)) {
-    return 'Пароль должен содержать хотя бы одну цифру (0-9).';
+    return 'Пароль должен содержать хотя бы одну цифру 0-9';
   }
 
   return null;
