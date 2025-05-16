@@ -3,9 +3,89 @@
   flex-direction: column;
   align-items: center;
 
-  &__txt {
+  &__form {
+    width: 665px;
+  }
+
+  &__form-fieldset {
+    width: 100%;
     margin: 0;
+    padding: 35px 40px;
+    border: 1px solid $form-border-color;
+    border-radius: 5px;
+  }
+
+  &__form-title {
+    margin: 0;
+    margin-bottom: 26px;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 30px;
+    color: $title-color;
+  }
+
+  &__form-wrapper {
+    position: relative;
     margin-bottom: 30px;
-    font-size: 48px;
+  }
+
+  &__form-input {
+    cursor: pointer;
+    width: 100%;
+    height: 71px;
+    padding: 14px 22px;
+    border-color: transparent;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: $input-text-color;
+    background-color: $input-bg-color;
+    outline: none;
+    transition: top 0.2s ease-in-out;
+
+    &:valid + label,
+    &:focus + label {
+      top: 5px;
+      font-size: 14px;
+    }
+  }
+
+  &__form-label {
+    pointer-events: none;
+    position: absolute;
+    top: 24px;
+    left: 22px;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 22px;
+    color: $input-text-label-color;
+    transition:
+      top 0.2s ease-in-out,
+      font-size 0.2s ease-in-out;
+  }
+
+  &__form-btn {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    padding: 23px 71.5px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 20px;
+    color: $form-btn-text-color;
+    text-align: center;
+    text-transform: uppercase;
+    background-color: $form-btn-bg-color;
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+      background-color: $form-btn-bg-color-hover;
+    }
   }
 }
