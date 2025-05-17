@@ -96,17 +96,19 @@
     color: $input-error-text-color;
   }
 
-  &__btn-show {
-    cursor: pointer;
-    position: absolute;
-    top: 35px;
-    right: 22px;
-    width: 30px;
-    height: 30px;
-    margin: 0;
-    padding: 0;
+  &__select {
+        position: relative;
+    width: 585px;
+    margin-bottom: 30px;
+    padding: 14px 22px;
     border: none;
-    background-color: transparent;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: $input-text-color;
+    background-color: $input-bg-color;
+    outline: none;
   }
 }
 

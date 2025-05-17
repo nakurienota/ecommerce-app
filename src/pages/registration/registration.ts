@@ -1,5 +1,7 @@
 import HtmlCreator from '@utils/html';
 
+import { loginValidate, passwordValidate } from '../login/login';
+
 export default class RegistrationPage {
   public container: HTMLElement;
 
@@ -15,18 +17,17 @@ export default class RegistrationPage {
     title.textContent = 'Регистрация';
 
     const registrationInputs = [
-      { textLabel: 'Email адресс', subClass: 'email', typeInput: 'email' },
-      { textLabel: 'Пароль', subClass: 'password', typeInput: 'password' },
-      { textLabel: 'Имя', subClass: 'firstname', typeInput: 'text' },
-      { textLabel: 'Фамилия', subClass: 'lastname', typeInput: 'text' },
-      { textLabel: 'Дата рождения', subClass: 'date', typeInput: 'date' },
-      { textLabel: 'Улица', subClass: 'street', typeInput: 'text' },
-      { textLabel: 'Город', subClass: 'city', typeInput: 'text' },
-      { textLabel: 'Почтовый индекс', subClass: 'postal', typeInput: 'text' },
-      { textLabel: 'Страна', subClass: 'country', typeInput: 'text' },
+      { textLabel: 'Email адресс', subClass: 'email', typeInput: 'email', validate: loginValidate },
+      { textLabel: 'Пароль', subClass: 'password', typeInput: 'text', validate: passwordValidate },
+      { textLabel: 'Имя', subClass: 'firstname', typeInput: 'text', validate: firsnameValidate },
+      { textLabel: 'Фамилия', subClass: 'lastname', typeInput: 'text', validate: lastnameValidate },
+      { textLabel: 'Дата рождения', subClass: 'date', typeInput: 'date', validate: birthDateValidate },
+      { textLabel: 'Улица', subClass: 'street', typeInput: 'text', validate: adressValidate },
+      { textLabel: 'Город', subClass: 'city', typeInput: 'text', validate: adressValidate },
+      { textLabel: 'Почтовый индекс', subClass: 'postal', typeInput: 'text', validate: postalValidate },
     ];
 
-    registrationInputs.forEach(({ textLabel, subClass, typeInput }) => {
+    registrationInputs.forEach(({ textLabel, subClass, typeInput, validate }) => {
       const inputWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'registration__input-wrapper');
       const inputLabel: HTMLLabelElement = HtmlCreator.create('label', undefined, 'registration__label');
       inputLabel.textContent = textLabel;
@@ -39,19 +40,140 @@ export default class RegistrationPage {
       input.type = typeInput;
       input.autocomplete = 'off';
       const inputError: HTMLSpanElement = HtmlCreator.create('span', undefined, 'registration__error-email');
-      inputError.textContent = 'Error';
+      inputError.textContent = '';
+
+      input.addEventListener('input', () => {
+        const inputValue = input.value;
+
+        if (validate) {
+          const textError = validate(inputValue);
+          inputError.textContent = textError ?? '';
+        }
+
+        if (inputValue.length === 0) inputError.textContent = '';
+      });
+
+      input.addEventListener('blur', () => {
+        if (input.value.length === 0) inputError.textContent = '';
+      });
 
       form.append(inputWrapper);
       inputWrapper.append(inputLabel, input, inputError);
     });
+
+    const countrySelect: HTMLSelectElement = HtmlCreator.create('select', undefined, 'registration__select');
+
+    const optionSelect = [
+      { textOption: 'Россия', valueOption: 'RU' },
+      { textOption: 'США', valueOption: 'US' },
+      { textOption: 'Германия', valueOption: 'DE' },
+    ];
+
+    optionSelect.forEach(({ textOption, valueOption }) => {
+      const optionSelect: HTMLOptionElement = HtmlCreator.create('option', undefined, 'registration__option');
+      optionSelect.textContent = textOption;
+      optionSelect.value = valueOption;
+
+      countrySelect.append(optionSelect);
+    });
+
+    // countrySelect.addEventListener('input', () => {
+    //   console.log(countrySelect.value);
+    // });
 
     const buttonSend: HTMLButtonElement = HtmlCreator.create('button', 'submit', 'registration__submit-btn');
     buttonSend.textContent = 'Зарегистрировать';
 
     this.container.append(registrationWrapper);
     registrationWrapper.append(title, form);
-    form.append(buttonSend);
+    form.append(countrySelect, buttonSend);
 
     return this.container;
   }
+}
+
+export function firsnameValidate(firstname: string): string | null {
+  const firstnameTrim = firstname.trim();
+
+  if (firstnameTrim.length < 4) {
+    return 'Имя должно содержать не менее 4 символов';
+  }
+
+  if (!/^[a-zA-Zа-яА-я]+$/.test(firstnameTrim)) {
+    return 'Имя должно содержать только буквы';
+  }
+
+  return null;
+}
+
+export function lastnameValidate(lastname: string): string | null {
+  const lastnameTrim = lastname.trim();
+
+  if (lastnameTrim.length < 4) {
+    return 'Фамилия должна содержать не менее 4 символов';
+  }
+
+  if (!/^[a-zA-Zа-яА-я]+$/.test(lastnameTrim)) {
+    return 'Фамилия должна содержать только буквы';
+  }
+
+  return null;
+}
+
+export function birthDateValidate(birthDateValue: string): string | null {
+  const birthDate = new Date(birthDateValue);
+  const today = new Date();
+
+  const age = today.getFullYear() - birthDate.getFullYear();
+
+  if (age < 19) {
+    return 'Минимальный возраст для регистрации должен быть 18 лет';
+  }
+
+  return null;
+}
+
+export function adressValidate(address: string): string | null {
+  const addressTrim = address.trim();
+
+  if (addressTrim.length < 4) {
+    return 'Адрес должен содержать не менее 4 символов';
+  }
+
+  if (!/^[a-zA-Zа-яА-я]+$/.test(addressTrim)) {
+    return 'Адрес должна содержать только буквы';
+  }
+
+  return null;
+}
+
+export function postalValidate(postal: string): string | null {
+  const postalTrim = postal.trim();
+  const countrySelect = document.querySelector('.registration__select');
+
+  if (countrySelect instanceof HTMLSelectElement) {
+    const countryCode = countrySelect.value;
+    let postalRegex;
+
+    switch (countryCode) {
+      case 'RU': {
+        postalRegex = /^\d{6}$/;
+        break;
+      }
+      case 'US': {
+        postalRegex = /^\d{5}(?:[-\s]\d{4})?$/;
+        break;
+      }
+      case 'DE': {
+        postalRegex = /^\d{5}$/;
+        break;
+      }
+    }
+
+    if (!postalRegex?.test(postalTrim)) {
+      return 'Неверный формат почтового индекса для выбранной страны';
+    }
+  }
+
+  return null;
 }
