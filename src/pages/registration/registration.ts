@@ -95,7 +95,7 @@ export function firsnameValidate(firstname: string): string | null {
   const firstnameTrim = firstname.trim();
 
   if (firstnameTrim.length < MIN_LENGHT_INPUT) {
-    return 'Имя должно содержать не менее 4 символов';
+    return `Имя должно содержать не менее ${MIN_LENGHT_INPUT} символов`;
   }
 
   if (!/^[a-zA-Zа-яА-я]+$/.test(firstnameTrim)) {
@@ -109,7 +109,7 @@ export function lastnameValidate(lastname: string): string | null {
   const lastnameTrim = lastname.trim();
 
   if (lastnameTrim.length < MIN_LENGHT_INPUT) {
-    return 'Фамилия должна содержать не менее 4 символов';
+    return `Фамилия должна содержать не менее ${MIN_LENGHT_INPUT} символов`;
   }
 
   if (!/^[a-zA-Zа-яА-я]+$/.test(lastnameTrim)) {
@@ -126,7 +126,7 @@ export function birthDateValidate(birthDateValue: string): string | null {
   const age = today.getFullYear() - birthDate.getFullYear();
 
   if (age <= MIN_AGE_REGISTRATION) {
-    return 'Минимальный возраст для регистрации должен быть 18 лет';
+    return `Минимальный возраст для регистрации должен быть ${MIN_AGE_REGISTRATION} лет`;
   }
 
   return null;
@@ -136,7 +136,7 @@ export function adressValidate(address: string): string | null {
   const addressTrim = address.trim();
 
   if (addressTrim.length < MIN_LENGHT_INPUT) {
-    return 'Адрес должен содержать не менее 4 символов';
+    return `Адрес должен содержать не менее ${MIN_LENGHT_INPUT} символов`;
   }
 
   if (!/^[a-zA-Zа-яА-я]+$/.test(addressTrim)) {
