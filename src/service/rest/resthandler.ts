@@ -1,6 +1,6 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { TokenResponse } from '@core/model/dto';
-import { validTokeExists } from '@utils/token';
+import { validTokeExists } from '@utils/security';
 
 export class Resthandler {
   private static instance: Resthandler;

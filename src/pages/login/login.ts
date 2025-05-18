@@ -1,7 +1,7 @@
 import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
-import { validTokeExists } from '@utils/token';
+import { validTokeExists } from '@utils/security';
 
 export default class LoginPage {
   private readonly restHandler: Resthandler = Resthandler.getInstance();
