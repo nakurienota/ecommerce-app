@@ -111,9 +111,8 @@ export default class LoginPage {
     event.preventDefault();
 
     try {
-      const token: string = await this.restHandler.getToken(login, password);
-      localStorage.setItem('auth_token', token);
-      router.navigate(AppRoutes.MAIN);
+      const result: boolean = await this.restHandler.login(login, password);
+      if (result) router.navigate(AppRoutes.MAIN);
     } catch {
       const errorMessage: Element | null = document.querySelector('.login__error');
 
