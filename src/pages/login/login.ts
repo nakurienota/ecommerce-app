@@ -131,7 +131,7 @@ function updateLoginButtonText(): void {
   if (button) button.textContent = validTokeExists() ? 'Выход' : 'Вход';
 }
 
-function loginValidate(login: string): string | null {
+export function loginValidate(login: string): string | null {
   const loginTrim = login.trim();
 
   if (!loginTrim.includes('@')) {
