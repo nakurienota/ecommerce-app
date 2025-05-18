@@ -2,6 +2,9 @@ import HtmlCreator from '@utils/html';
 
 import { loginValidate, passwordValidate } from '../login/login';
 
+const MIN_LENGHT_INPUT = 4;
+const MIN_AGE_REGISTRATION = 18;
+
 export default class RegistrationPage {
   public container: HTMLElement;
 
@@ -17,7 +20,7 @@ export default class RegistrationPage {
     title.textContent = 'Регистрация';
 
     const registrationInputs = [
-      { textLabel: 'Email адресс', subClass: 'email', typeInput: 'email', validate: loginValidate },
+      { textLabel: 'Email адрес', subClass: 'email', typeInput: 'email', validate: loginValidate },
       { textLabel: 'Пароль', subClass: 'password', typeInput: 'text', validate: passwordValidate },
       { textLabel: 'Имя', subClass: 'firstname', typeInput: 'text', validate: firsnameValidate },
       { textLabel: 'Фамилия', subClass: 'lastname', typeInput: 'text', validate: lastnameValidate },
@@ -77,10 +80,6 @@ export default class RegistrationPage {
       countrySelect.append(optionSelect);
     });
 
-    // countrySelect.addEventListener('input', () => {
-    //   console.log(countrySelect.value);
-    // });
-
     const buttonSend: HTMLButtonElement = HtmlCreator.create('button', 'submit', 'registration__submit-btn');
     buttonSend.textContent = 'Зарегистрировать';
 
@@ -95,7 +94,7 @@ export default class RegistrationPage {
 export function firsnameValidate(firstname: string): string | null {
   const firstnameTrim = firstname.trim();
 
-  if (firstnameTrim.length < 4) {
+  if (firstnameTrim.length < MIN_LENGHT_INPUT) {
     return 'Имя должно содержать не менее 4 символов';
   }
 
@@ -109,7 +108,7 @@ export function firsnameValidate(firstname: string): string | null {
 export function lastnameValidate(lastname: string): string | null {
   const lastnameTrim = lastname.trim();
 
-  if (lastnameTrim.length < 4) {
+  if (lastnameTrim.length < MIN_LENGHT_INPUT) {
     return 'Фамилия должна содержать не менее 4 символов';
   }
 
@@ -126,7 +125,7 @@ export function birthDateValidate(birthDateValue: string): string | null {
 
   const age = today.getFullYear() - birthDate.getFullYear();
 
-  if (age < 19) {
+  if (age <= MIN_AGE_REGISTRATION) {
     return 'Минимальный возраст для регистрации должен быть 18 лет';
   }
 
@@ -136,7 +135,7 @@ export function birthDateValidate(birthDateValue: string): string | null {
 export function adressValidate(address: string): string | null {
   const addressTrim = address.trim();
 
-  if (addressTrim.length < 4) {
+  if (addressTrim.length < MIN_LENGHT_INPUT) {
     return 'Адрес должен содержать не менее 4 символов';
   }
 

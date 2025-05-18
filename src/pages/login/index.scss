@@ -38,8 +38,8 @@
     text-transform: uppercase;
     background-color: $form-btn-bg-color;
     transition:
-      background-color 0.3s ease-in-out,
-      color 0.3s ease-in-out;
+      background-color $transition-base,
+      color $transition-base;
 
     &:hover {
       color: $form-btn-text-color;
