@@ -1,4 +1,6 @@
+import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { TokenResponse } from '@core/model/dto';
+import { validTokeExists } from '@utils/token';
 
 export class Resthandler {
   private static instance: Resthandler;
@@ -18,7 +20,7 @@ export class Resthandler {
   }
 
   public async login(username: string, password: string): Promise<boolean> {
-    if (this.isTokenValid()) return true;
+    if (validTokeExists()) return true;
     const parameters = new URLSearchParams();
     parameters.append('grant_type', 'password');
     parameters.append('username', username);
@@ -37,17 +39,11 @@ export class Resthandler {
 
     const result: TokenResponse = await response.json();
     if (result) {
-      this.accessToken = result;
+      localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, result.access_token);
+      const expiresAt: number = Date.now() + result.expires_in * 1000;
+      localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES, expiresAt.toString());
       return true;
     }
     return false;
-  }
-
-  public isTokenValid(): boolean {
-    return (
-      !!this.accessToken?.access_token &&
-      !!this.accessToken.expires_in &&
-      Date.now() < Date.now() + this.accessToken.expires_in * 1000
-    );
   }
 }

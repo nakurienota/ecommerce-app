@@ -1,6 +1,7 @@
 import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
+import { validTokeExists } from '@utils/token';
 
 export default class LoginPage {
   private readonly restHandler: Resthandler = Resthandler.getInstance();
@@ -126,9 +127,8 @@ export default class LoginPage {
 }
 
 function updateLoginButtonText(): void {
-  const isLoggedIn: boolean = Resthandler.getInstance().isTokenValid();
   const button: Element | null = document.querySelector('[data-role="auth"]');
-  if (button) button.textContent = isLoggedIn ? 'Выход' : 'Вход';
+  if (button) button.textContent = validTokeExists() ? 'Выход' : 'Вход';
 }
 
 function loginValidate(login: string): string | null {
