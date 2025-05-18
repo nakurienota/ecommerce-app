@@ -157,7 +157,7 @@ function passwordValidate(password: string): string | null {
   const passwordTrim = password.trim();
 
   if (passwordTrim.length < MIN_LENGTH_PASSWORD) {
-    return 'Пароль должен содержать не менее 8 символов';
+    return `Пароль должен содержать не менее ${MIN_LENGTH_PASSWORD} символов`;
   }
 
   if (!/[A-Z]/.test(passwordTrim)) {
