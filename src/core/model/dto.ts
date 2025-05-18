@@ -13,4 +13,5 @@ export type TokenResponse = {
   token_type: 'Bearer';
   expires_in: number;
   scope: string;
+  refresh_token: string;
 };

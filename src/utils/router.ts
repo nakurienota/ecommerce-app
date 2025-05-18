@@ -1,3 +1,5 @@
+import { authRequestMatcher, validTokeExists } from '@utils/security';
+
 import ErrorPage from '../pages/404/404';
 import AboutPage from '../pages/about/about';
 import BasketPage from '../pages/basket/basket';
@@ -55,10 +57,19 @@ export default class Router {
 
   public render(): HTMLElement {
     this.container.replaceChildren();
+    let path: string = globalThis.location.pathname;
 
-    const path = globalThis.location.pathname;
-    const route = routes[path] || routes[AppRoutes.NOT_FOUND];
+    if (validTokeExists() && path === AppRoutes.LOGIN) {
+      path = AppRoutes.MAIN;
+      globalThis.history.replaceState({}, '', path);
+    }
 
+    if (!validTokeExists() && authRequestMatcher(path)) {
+      path = AppRoutes.LOGIN;
+      globalThis.history.replaceState({}, '', path);
+    }
+
+    const route: HTMLElement = this.routes[path] || this.routes[AppRoutes.NOT_FOUND];
     this.container.append(route);
 
     return this.container;

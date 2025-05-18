@@ -1,6 +1,7 @@
 import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
+import { validTokeExists } from '@utils/security';
 
 export default class LoginPage {
   private readonly restHandler: Resthandler = Resthandler.getInstance();
@@ -111,9 +112,11 @@ export default class LoginPage {
     event.preventDefault();
 
     try {
-      const token: string = await this.restHandler.getToken(login, password);
-      localStorage.setItem('auth_token', token);
-      router.navigate(AppRoutes.MAIN);
+      const result: boolean = await this.restHandler.login(login, password);
+      if (result) {
+        updateLoginButtonText();
+        router.navigate(AppRoutes.MAIN);
+      }
     } catch {
       const errorMessage: Element | null = document.querySelector('.login__error');
 
@@ -123,7 +126,12 @@ export default class LoginPage {
   }
 }
 
-export function loginValidate(login: string): string | null {
+function updateLoginButtonText(): void {
+  const button: Element | null = document.querySelector('[data-role="auth"]');
+  if (button) button.textContent = validTokeExists() ? 'Выход' : 'Вход';
+}
+
+function loginValidate(login: string): string | null {
   const loginTrim = login.trim();
 
   if (!loginTrim.includes('@')) {
