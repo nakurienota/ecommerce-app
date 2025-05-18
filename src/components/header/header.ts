@@ -64,11 +64,13 @@ export default class Header {
       const listItem = HtmlCreator.create('a', undefined, 'header__btn', 'header__btn-login');
       listItem.textContent = textLink;
       listItem.setAttribute('href', href);
+      if (href === AppRoutes.LOGIN) listItem.dataset.role = 'auth';
 
       listItem.addEventListener('click', (event) => {
         const target = event.target;
 
         if (target instanceof HTMLAnchorElement) {
+          if (target.textContent === 'Выход') target.textContent = 'Вход';
           event.preventDefault();
           router.navigate(target.href);
         }

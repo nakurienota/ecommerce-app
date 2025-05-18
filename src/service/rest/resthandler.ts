@@ -43,7 +43,7 @@ export class Resthandler {
     return false;
   }
 
-  private isTokenValid(): boolean {
+  public isTokenValid(): boolean {
     return (
       !!this.accessToken?.access_token &&
       !!this.accessToken.expires_in &&

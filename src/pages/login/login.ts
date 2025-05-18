@@ -112,7 +112,10 @@ export default class LoginPage {
 
     try {
       const result: boolean = await this.restHandler.login(login, password);
-      if (result) router.navigate(AppRoutes.MAIN);
+      if (result) {
+        updateLoginButtonText();
+        router.navigate(AppRoutes.MAIN);
+      }
     } catch {
       const errorMessage: Element | null = document.querySelector('.login__error');
 
@@ -120,6 +123,12 @@ export default class LoginPage {
         errorMessage.textContent = 'Не удалось войти в систему. Пожалуйста, проверьте свои учетные данные';
     }
   }
+}
+
+function updateLoginButtonText(): void {
+  const isLoggedIn: boolean = Resthandler.getInstance().isTokenValid();
+  const button: Element | null = document.querySelector('[data-role="auth"]');
+  if (button) button.textContent = isLoggedIn ? 'Выход' : 'Вход';
 }
 
 function loginValidate(login: string): string | null {
