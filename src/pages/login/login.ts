@@ -3,6 +3,8 @@ import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 import { validTokeExists } from '@utils/security';
 
+const MIN_LENGTH_PASSWORD = 8;
+
 export default class LoginPage {
   private readonly restHandler: Resthandler = Resthandler.getInstance();
   private readonly container: HTMLElement;
@@ -154,7 +156,7 @@ function loginValidate(login: string): string | null {
 function passwordValidate(password: string): string | null {
   const passwordTrim = password.trim();
 
-  if (passwordTrim.length < 8) {
+  if (passwordTrim.length < MIN_LENGTH_PASSWORD) {
     return 'Пароль должен содержать не менее 8 символов';
   }
 
