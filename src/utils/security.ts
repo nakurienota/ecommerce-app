@@ -18,6 +18,6 @@ export function deleteCurrentToken(): void {
 }
 
 export function authRequestMatcher(path: string): boolean {
-  const authorizeRequests = new Set<string>([AppRoutes.MAIN, AppRoutes.BASKET, AppRoutes.CATALOG, AppRoutes.SALES]);
+  const authorizeRequests = new Set<string>([AppRoutes.BASKET]);
   return authorizeRequests.has(path);
 }
