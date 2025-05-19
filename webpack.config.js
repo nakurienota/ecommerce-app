@@ -62,6 +62,7 @@ export default {
     alias: {
       '@core': path.resolve(__dirname, 'src/core'),
       '@utils': path.resolve(__dirname, 'src/utils'),
+      '@service': path.resolve(__dirname, 'src/service'),
       '@': path.resolve(__dirname, 'src'),
     },
   },
