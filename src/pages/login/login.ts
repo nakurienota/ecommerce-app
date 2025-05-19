@@ -133,7 +133,7 @@ function updateLoginButtonText(): void {
   if (button) button.textContent = validTokeExists() ? 'Выход' : 'Вход';
 }
 
-function loginValidate(login: string): string | null {
+export function loginValidate(login: string): string | null {
   const loginTrim = login.trim();
 
   if (!loginTrim.includes('@')) {
@@ -153,7 +153,7 @@ function loginValidate(login: string): string | null {
   return null;
 }
 
-function passwordValidate(password: string): string | null {
+export function passwordValidate(password: string): string | null {
   const passwordTrim = password.trim();
 
   if (passwordTrim.length < MIN_LENGTH_PASSWORD) {

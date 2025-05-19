@@ -9,8 +9,8 @@
   color: $btn-back-text-color;
   text-align: center;
   transition:
-    background-color 0.3s ease-in-out,
-    color 0.3s ease-in-out;
+    background-color $transition-base,
+    color $transition-base;
 
   &:hover {
     color: $btn-back-text-color-hover;

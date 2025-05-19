@@ -14,7 +14,7 @@
     font-size: 36px;
     line-height: 1.3;
     color: $link-text-color;
-    transition: color 0.3s ease-in-out;
+    transition: color $transition-base;
 
     &:hover {
       color: $link-text-color-hover;
@@ -30,7 +30,7 @@
     font-size: 20px;
     line-height: 1.3;
     color: $link-text-color;
-    transition: color 0.3s ease-in-out;
+    transition: color $transition-base;
 
     &:hover {
       color: $link-text-color-hover;
