@@ -4,6 +4,7 @@ import { AppRoutes, router } from '@utils/router';
 export default class MainPage {
   public container: HTMLElement;
   private bannerBtn: HTMLButtonElement;
+  private about: HTMLElement;
 
   constructor() {
     this.container = HtmlCreator.create('div', undefined, 'container');
@@ -12,10 +13,12 @@ export default class MainPage {
       event.preventDefault();
       router.navigate(AppRoutes.CATALOG);
     });
+    this.about = HtmlCreator.create('section', undefined, 'section', 'about');
+    this.createAbout();
   }
 
   public getHTML(): HTMLElement {
-    this.container.append(this.getBanner());
+    this.container.append(this.getBanner(), this.about);
     return this.container;
   }
 
@@ -34,5 +37,40 @@ export default class MainPage {
     bannerWrap.append(h1, bannerText, this.bannerBtn);
     banner.append(bannerWrap, round);
     return banner;
+  }
+
+  private createAbout(): void {
+    const aboutHeading = HtmlCreator.create('h2', undefined, 'about__heading');
+    aboutHeading.textContent = 'Почему выбирают именно наши книги? ';
+    const aboutContent = HtmlCreator.create('div', undefined, 'about__content');
+    const aboutData = [
+      {
+        title: 'Их много',
+        text: 'Огромный выбор различных книг по психологи, развитию, мотивации.',
+        link: 'many_img',
+      },
+      {
+        title: 'Они интересны',
+        text: 'Отзывы о каждой книге, не меньше 4,8 баллов.',
+        link: 'interesting_img',
+      },
+      {
+        title: 'Доступная цена',
+        text: 'Максимальная цена книги - 10000 р.',
+        link: 'available_img',
+      },
+    ];
+    for (const item of aboutData) {
+      const aboutWrap = HtmlCreator.create('div', undefined, 'about__wrapper');
+      const aboutImg = HtmlCreator.create('div', undefined, 'about__img');
+      aboutImg.style.backgroundImage = `url(../../assets/images/${item.link}.png)`;
+      const aboutTitle = HtmlCreator.create('h3', undefined, 'about__title');
+      aboutTitle.textContent = item.title;
+      const aboutText = HtmlCreator.create('p', undefined, 'about__text');
+      aboutText.textContent = item.text;
+      aboutWrap.append(aboutImg, aboutTitle, aboutText);
+      aboutContent.append(aboutWrap);
+    }
+    this.about.append(aboutHeading, aboutContent);
   }
 }

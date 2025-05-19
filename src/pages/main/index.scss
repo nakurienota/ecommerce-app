@@ -6,11 +6,14 @@
   }
 }
 
+.section {
+  width: 100%;
+}
+
 .banner {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  width: 100%;
   height: 500px;
   background-color: $blue;
   background-clip: padding-box;
@@ -60,5 +63,56 @@
     position: absolute;
     right: -55px;
     width: 135%;
+  }
+}
+
+.about {
+  height: auto;
+
+  &__heading {
+    margin: 20px 0;
+    padding: 0 10px;
+    font-size: $font-large;
+    text-align: center;
+  }
+
+  &__content {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+
+    @media (max-width: $laptop) {
+      flex-wrap: wrap;
+    }
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 30%;
+    min-width: 300px;
+  }
+
+  &__img {
+    width: 150px;
+    height: 150px;
+    background: no-repeat center / contain;
+  }
+
+  &__title,
+  &__text {
+    font-size: $font-medium;
+  }
+
+  &__title {
+    color: $blue;
+  }
+
+  &__text {
+    text-align: center;
   }
 }
