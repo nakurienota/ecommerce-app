@@ -26,7 +26,7 @@ export default class MainPage {
     const banner = HtmlCreator.create('section', undefined, 'section', 'banner');
     const bannerWrap = HtmlCreator.create('div', undefined, 'banner__wrapper');
     const h1 = HtmlCreator.create('h1', undefined, 'banner__heading');
-    h1.textContent = 'Книжная вселенная';
+    h1.textContent = 'MyBOOK - книжная вселенная';
     const bannerText = HtmlCreator.create('p', undefined, 'banner__text');
     bannerText.textContent = 'Огромный ассортимент книг. Ваш идеальный экземпляр уже ждет вас!';
     this.bannerBtn.textContent = 'Посмотреть книги';
