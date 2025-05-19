@@ -1,5 +1,5 @@
-import App from './pages/app';
 import './styles/main.scss';
+import App from './pages/app';
 
 console.log('Hello, 404');
 

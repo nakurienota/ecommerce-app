@@ -1,0 +1,23 @@
+@mixin button-style($bg-color, $color, $radius) {
+  cursor: pointer;
+  transform: scale(1);
+  width: 90%;
+  max-width: 300px;
+  padding: 15px;
+  border: 2px solid $color;
+  border-radius: $radius;
+  font-size: $font-medium;
+  font-weight: 700;
+  color: $color;
+  background-color: $bg-color;
+  box-shadow: $box-shadow;
+  transition: 0.3s ease-in-out;
+
+  @media (any-hover: hover) {
+    &:hover {
+      transform: scale(1.05);
+      border-color: $btn-color-hover;
+      color: $btn-color-hover;
+    }
+  }
+}
