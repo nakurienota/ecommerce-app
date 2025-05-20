@@ -71,15 +71,11 @@ export class Resthandler {
       },
       body: JSON.stringify(dataCustomer),
     });
-    console.log(response.body);
 
     if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
 
     const result: CustomersResponse = await response.json();
-    if (result) {
-      return true;
-    }
-    return false;
+    return !!result;
   }
 
   public async registration(email: string, password: string, firstName: string, lastname: string): Promise<boolean> {
@@ -105,9 +101,6 @@ export class Resthandler {
     if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
 
     const result: CustomersResponse = await response.json();
-    if (result) {
-      return true;
-    }
-    return false;
+    return !!result;
   }
 }
