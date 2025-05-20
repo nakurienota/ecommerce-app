@@ -15,3 +15,27 @@ body {
   margin: 0 auto;
   padding: 0 15px;
 }
+
+.default-submit-button {
+  cursor: pointer;
+  display: block;
+  width: 160px;
+  height: 46px;
+  border: none;
+  border-radius: $border-radius-base;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.6;
+  color: $form-btn-text-color;
+  text-align: center;
+  text-transform: uppercase;
+  background-color: $form-btn-bg-color;
+  transition:
+    background-color $transition-base,
+    color $transition-base;
+
+  &:hover {
+    color: $form-btn-text-color;
+    background-color: $form-btn-bg-color-hover;
+  }
+}

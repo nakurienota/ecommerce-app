@@ -2,6 +2,8 @@ import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { CustomersResponse, TokenResponse } from '@core/model/dto';
 import { userLoggedIn } from '@utils/security';
 
+import { showSuccessPopup } from '../../pages/popup/popup';
+
 export class Resthandler {
   private static instance: Resthandler;
 
@@ -19,8 +21,8 @@ export class Resthandler {
   }
 
   public async getToken(): Promise<string> {
-    const token = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
-    const expiresAtString = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES);
+    const token: string | null = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
+    const expiresAtString: string | null = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES);
 
     if (token && expiresAtString) {
       const expiresAt = Number.parseInt(expiresAtString, 10);
@@ -100,6 +102,8 @@ export class Resthandler {
     if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
 
     const result: CustomersResponse = await response.json();
+    showSuccessPopup();
+
     return !!result;
   }
 }

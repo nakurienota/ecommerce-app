@@ -6,6 +6,7 @@
     "format": "prettier --write ./src",
     "format:check": "prettier --check ./src",
     "start": "webpack-dev-server",
+    "local-start": "npm run build && webpack-dev-server",
     "build": "webpack --config webpack.config.js",
     "build:prod": "webpack --config webpack.config.prod.js",
     "lint": "eslint --fix src/",

@@ -95,7 +95,7 @@ export default class LoginPage {
 
     const errorMessage: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'login__error');
 
-    const buttonLogin: HTMLButtonElement = HtmlCreator.create('button', 'submit', 'login__submit-btn');
+    const buttonLogin: HTMLButtonElement = HtmlCreator.create('button', 'submit', 'default-submit-button');
     buttonLogin.textContent = 'Войти';
 
     form.addEventListener(
