@@ -1,5 +1,5 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import type { TokenResponse } from '@core/model/dto';
+import type { CustomersResponse, TokenResponse } from '@core/model/dto';
 import { validTokeExists } from '@utils/security';
 
 export class Resthandler {
@@ -19,14 +19,24 @@ export class Resthandler {
     return Resthandler.instance;
   }
 
-  public async login(username: string, password: string): Promise<boolean> {
-    if (validTokeExists()) return true;
-    const parameters = new URLSearchParams();
-    parameters.append('grant_type', 'password');
-    parameters.append('username', username);
-    parameters.append('password', password);
+  public async getToken(): Promise<string> {
+    const token = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
+    const expiresAtString = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES);
 
-    const response: Response = await fetch(`${this.authUrl}/${this.projectKey}/customers/token`, {
+    if (token && expiresAtString) {
+      const expiresAt = Number.parseInt(expiresAtString, 10);
+      if (!Number.isNaN(expiresAt) && Date.now() < expiresAt) {
+        return token;
+      } else {
+        localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
+        localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES);
+      }
+    }
+
+    const parameters = new URLSearchParams();
+    parameters.append('grant_type', 'client_credentials');
+
+    const response: Response = await fetch(`${this.authUrl}/token`, {
       method: 'POST',
       headers: {
         Authorization: `Basic ${btoa(this.clientId + ':' + this.clientSecret)}`,
@@ -34,14 +44,68 @@ export class Resthandler {
       },
       body: parameters.toString(),
     });
+    if (!response.ok) throw new Error(`Token access failed: ${response.statusText}`);
+
+    const result: TokenResponse = await response.json();
+    localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, result.access_token);
+    const expiresAt: number = Date.now() + result.expires_in * 1000;
+    localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES, expiresAt.toString());
+
+    return result.access_token;
+  }
+
+  public async login(email: string, password: string): Promise<boolean> {
+    if (validTokeExists()) return true;
+
+    const dataCustomer = {
+      email: email,
+      password: password,
+    };
+    const tokenBearer = await this.getToken();
+
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/login`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataCustomer),
+    });
+    console.log(response.body);
 
     if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
 
-    const result: TokenResponse = await response.json();
+    const result: CustomersResponse = await response.json();
     if (result) {
-      localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, result.access_token);
-      const expiresAt: number = Date.now() + result.expires_in * 1000;
-      localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES, expiresAt.toString());
+      return true;
+    }
+    return false;
+  }
+
+  public async registration(email: string, password: string, firstName: string, lastname: string): Promise<boolean> {
+    if (validTokeExists()) return true;
+
+    const dataCustomer = {
+      email: email,
+      firstName: firstName,
+      lastName: lastname,
+      password: password,
+    };
+    const tokenBearer = await this.getToken();
+
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/customers`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataCustomer),
+    });
+
+    if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
+
+    const result: CustomersResponse = await response.json();
+    if (result) {
       return true;
     }
     return false;

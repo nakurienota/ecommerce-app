@@ -1,4 +1,6 @@
+import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
+import { AppRoutes, router } from '@utils/router';
 
 import { loginValidate, passwordValidate } from '../login/login';
 
@@ -7,6 +9,7 @@ const MIN_AGE_REGISTRATION = 18;
 
 export default class RegistrationPage {
   public container: HTMLElement;
+  private readonly restHandler: Resthandler = Resthandler.getInstance();
 
   constructor() {
     this.container = HtmlCreator.create('div', undefined, 'container');
@@ -19,16 +22,51 @@ export default class RegistrationPage {
     const title: HTMLHeadingElement = HtmlCreator.create('h1', undefined, 'registration__title');
     title.textContent = 'Регистрация';
 
-    const registrationInputs = [
-      { textLabel: 'Email адрес', subClass: 'email', typeInput: 'email', validate: loginValidate },
-      { textLabel: 'Пароль', subClass: 'password', typeInput: 'text', validate: passwordValidate },
-      { textLabel: 'Имя', subClass: 'firstname', typeInput: 'text', validate: firsnameValidate },
-      { textLabel: 'Фамилия', subClass: 'lastname', typeInput: 'text', validate: lastnameValidate },
-      { textLabel: 'Дата рождения', subClass: 'date', typeInput: 'date', validate: birthDateValidate },
-      { textLabel: 'Улица', subClass: 'street', typeInput: 'text', validate: adressValidate },
-      { textLabel: 'Город', subClass: 'city', typeInput: 'text', validate: adressValidate },
-      { textLabel: 'Почтовый индекс', subClass: 'postal', typeInput: 'text', validate: postalValidate },
+    enum registrationInputsEnum {
+      EMAIL = 'email',
+      PASSWORD = 'password',
+      FIRSTNAME = 'firstname',
+      LASTNAME = 'lastname',
+      BIRTHDATE = 'date',
+      STREET = 'street',
+      CITY = 'city',
+      POSTAL = 'postal',
+    }
+
+    type RegistrationInput = {
+      textLabel: string;
+      subClass: registrationInputsEnum;
+      typeInput: string;
+      validate?: (value: string) => string | null;
+    };
+
+    const registrationInputs: RegistrationInput[] = [
+      { textLabel: 'Email адрес', subClass: registrationInputsEnum.EMAIL, typeInput: 'email', validate: loginValidate },
+      { textLabel: 'Пароль', subClass: registrationInputsEnum.PASSWORD, typeInput: 'text', validate: passwordValidate },
+      { textLabel: 'Имя', subClass: registrationInputsEnum.FIRSTNAME, typeInput: 'text', validate: firsnameValidate },
+      {
+        textLabel: 'Фамилия',
+        subClass: registrationInputsEnum.LASTNAME,
+        typeInput: 'text',
+        validate: lastnameValidate,
+      },
+      {
+        textLabel: 'Дата рождения',
+        subClass: registrationInputsEnum.BIRTHDATE,
+        typeInput: 'date',
+        validate: birthDateValidate,
+      },
+      { textLabel: 'Улица', subClass: registrationInputsEnum.STREET, typeInput: 'text', validate: adressValidate },
+      { textLabel: 'Город', subClass: registrationInputsEnum.CITY, typeInput: 'text', validate: adressValidate },
+      {
+        textLabel: 'Почтовый индекс',
+        subClass: registrationInputsEnum.POSTAL,
+        typeInput: 'text',
+        validate: postalValidate,
+      },
     ];
+
+    const registrationInputsMap = new Map<registrationInputsEnum, HTMLInputElement>();
 
     registrationInputs.forEach(({ textLabel, subClass, typeInput, validate }) => {
       const inputWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'registration__input-wrapper');
@@ -42,7 +80,12 @@ export default class RegistrationPage {
       );
       input.type = typeInput;
       input.autocomplete = 'off';
-      const inputError: HTMLSpanElement = HtmlCreator.create('span', undefined, 'registration__error-email');
+      const inputError: HTMLSpanElement = HtmlCreator.create(
+        'span',
+        undefined,
+        'registration__error',
+        `registration__error-${subClass}`
+      );
       inputError.textContent = '';
 
       input.addEventListener('input', () => {
@@ -62,6 +105,8 @@ export default class RegistrationPage {
 
       form.append(inputWrapper);
       inputWrapper.append(inputLabel, input, inputError);
+
+      registrationInputsMap.set(subClass, input);
     });
 
     const countrySelect: HTMLSelectElement = HtmlCreator.create('select', undefined, 'registration__select');
@@ -83,11 +128,48 @@ export default class RegistrationPage {
     const buttonSend: HTMLButtonElement = HtmlCreator.create('button', 'submit', 'registration__submit-btn');
     buttonSend.textContent = 'Зарегистрировать';
 
+    form.addEventListener(
+      'submit',
+      (event: SubmitEvent): Promise<void> =>
+        this.handleRegistrtion(
+          event,
+          registrationInputsMap.get(registrationInputsEnum.EMAIL)!.value,
+          registrationInputsMap.get(registrationInputsEnum.PASSWORD)!.value,
+          registrationInputsMap.get(registrationInputsEnum.FIRSTNAME)!.value,
+          registrationInputsMap.get(registrationInputsEnum.LASTNAME)!.value
+        )
+    );
+
+    const errorServerMessage: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'registration__error-server');
+
     this.container.append(registrationWrapper);
-    registrationWrapper.append(title, form);
+    registrationWrapper.append(title, form, errorServerMessage);
     form.append(countrySelect, buttonSend);
 
     return this.container;
+  }
+
+  private async handleRegistrtion(
+    event: Event,
+    email: string,
+    password: string,
+    firstname: string,
+    lastname: string
+  ): Promise<void> {
+    event.preventDefault();
+
+    try {
+      const result: boolean = await this.restHandler.registration(email, password, firstname, lastname);
+      if (result) {
+        // updateLoginButtonText();
+        router.navigate(AppRoutes.MAIN);
+      }
+    } catch {
+      const errorMessage: Element | null = document.querySelector('.registration__error-server');
+
+      if (errorMessage)
+        errorMessage.textContent = 'Не удалось зарегистрировать аккаунт. Пожалуйста, проверьте свои введенные данные';
+    }
   }
 }
 

@@ -15,3 +15,22 @@ export type TokenResponse = {
   scope: string;
   refresh_token: string;
 };
+
+export type CustomersResponse = {
+  customer: Customer;
+};
+
+export type Customer = {
+  addresses: [];
+  email: string;
+  firstName: string;
+  id: string;
+  isEmailVerified: boolean;
+  lastName: string;
+  password: string;
+  version: number;
+  createdAt: string;
+  lastModifiedAt: string;
+  authenticationMode: string;
+  stores: [];
+};

@@ -75,8 +75,7 @@
     color: $input-text-label-color;
   }
 
-  &__error-email,
-  &__error-password {
+  &__error {
     position: absolute;
     bottom: 5px;
     left: 22px;
@@ -88,7 +87,7 @@
     color: $input-error-text-color;
   }
 
-  &__error {
+  &__error-server {
     max-width: 100%;
     font-size: 14px;
     font-weight: 400;
