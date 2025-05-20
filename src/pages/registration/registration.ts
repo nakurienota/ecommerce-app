@@ -1,3 +1,5 @@
+import { registrationInputsEnum } from '@core/enum/registration-inputs';
+import type { RegistrationInput } from '@core/model/dto';
 import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
@@ -7,27 +9,14 @@ import { loginValidate, passwordValidate } from '../login/login';
 const MIN_LENGHT_INPUT = 4;
 const MIN_AGE_REGISTRATION = 18;
 
-enum registrationInputsEnum {
-  EMAIL = 'email',
-  PASSWORD = 'password',
-  FIRSTNAME = 'firstname',
-  LASTNAME = 'lastname',
-  BIRTHDATE = 'date',
-  STREET = 'street',
-  CITY = 'city',
-  POSTAL = 'postal',
-}
-
-type RegistrationInput = {
-  textLabel: string;
-  subClass: registrationInputsEnum;
-  typeInput: string;
-  validate?: (value: string) => string | null;
-};
-
 export default class RegistrationPage {
   public container: HTMLElement;
-  public buttonSend: HTMLButtonElement = HtmlCreator.create('button', 'submit', 'registration__submit-btn');
+  public buttonSend: HTMLButtonElement = HtmlCreator.create(
+    'button',
+    'submit',
+    'registration__submit-btn',
+    'default-submit-button'
+  );
   private readonly restHandler: Resthandler = Resthandler.getInstance();
   private errorServerMessage: HTMLParagraphElement | undefined;
   private registrationInputsMap = new Map<registrationInputsEnum, HTMLInputElement>();
@@ -45,28 +34,61 @@ export default class RegistrationPage {
     form.noValidate = true;
 
     this.registrationInputs = [
-      { textLabel: 'Email адрес', subClass: registrationInputsEnum.EMAIL, typeInput: 'email', validate: loginValidate },
-      { textLabel: 'Пароль', subClass: registrationInputsEnum.PASSWORD, typeInput: 'text', validate: passwordValidate },
-      { textLabel: 'Имя', subClass: registrationInputsEnum.FIRSTNAME, typeInput: 'text', validate: firsnameValidate },
       {
-        textLabel: 'Фамилия',
+        textLabel: 'Email адрес*',
+        subClass: registrationInputsEnum.EMAIL,
+        typeInput: 'email',
+        validate: loginValidate,
+        required: true,
+      },
+      {
+        textLabel: 'Пароль*',
+        subClass: registrationInputsEnum.PASSWORD,
+        typeInput: 'text',
+        validate: passwordValidate,
+        required: true,
+      },
+      {
+        textLabel: 'Имя*',
+        subClass: registrationInputsEnum.FIRSTNAME,
+        typeInput: 'text',
+        validate: firsnameValidate,
+        required: true,
+      },
+      {
+        textLabel: 'Фамилия*',
         subClass: registrationInputsEnum.LASTNAME,
         typeInput: 'text',
         validate: lastnameValidate,
+        required: true,
       },
       {
         textLabel: 'Дата рождения',
         subClass: registrationInputsEnum.BIRTHDATE,
         typeInput: 'date',
         validate: birthDateValidate,
+        required: false,
       },
-      { textLabel: 'Улица', subClass: registrationInputsEnum.STREET, typeInput: 'text', validate: adressValidate },
-      { textLabel: 'Город', subClass: registrationInputsEnum.CITY, typeInput: 'text', validate: adressValidate },
+      {
+        textLabel: 'Улица',
+        subClass: registrationInputsEnum.STREET,
+        typeInput: 'text',
+        validate: adressValidate,
+        required: false,
+      },
+      {
+        textLabel: 'Город',
+        subClass: registrationInputsEnum.CITY,
+        typeInput: 'text',
+        validate: adressValidate,
+        required: false,
+      },
       {
         textLabel: 'Почтовый индекс',
         subClass: registrationInputsEnum.POSTAL,
         typeInput: 'text',
         validate: postalValidate,
+        required: false,
       },
     ];
 
@@ -146,8 +168,11 @@ export default class RegistrationPage {
 
     this.errorServerMessage = HtmlCreator.create('p', undefined, 'registration__error-server');
 
+    const cluerequired: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'registration__clue');
+    cluerequired.textContent = 'Поля, помеченные * - обязательны для регистрации';
+
     this.container.append(registrationWrapper);
-    registrationWrapper.append(title, form, this.errorServerMessage);
+    registrationWrapper.append(title, form, this.errorServerMessage, cluerequired);
     form.append(countrySelect, this.buttonSend);
 
     return this.container;
@@ -179,12 +204,16 @@ export default class RegistrationPage {
     let isValid = true;
 
     for (const [key, input] of this.registrationInputsMap) {
-      const validate = this.registrationInputs!.find((regInput) => regInput.subClass === key)?.validate;
+      const mapInput = this.registrationInputs!.find((regInput) => regInput.subClass === key);
 
-      if (!input.value || (validate && validate(input.value) !== null)) {
-        isValid = false;
+      if (mapInput && mapInput.required) {
+        const validate = mapInput.validate;
 
-        break;
+        if (!input.value || (validate && validate(input.value) !== null)) {
+          isValid = false;
+
+          break;
+        }
       }
     }
 

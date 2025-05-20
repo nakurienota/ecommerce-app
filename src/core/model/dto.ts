@@ -1,3 +1,4 @@
+import type { registrationInputsEnum } from '@core/enum/registration-inputs';
 import type { Product } from '@core/model/product';
 
 export type ProductResponse = {
@@ -33,4 +34,12 @@ export type Customer = {
   lastModifiedAt: string;
   authenticationMode: string;
   stores: [];
+};
+
+export type RegistrationInput = {
+  textLabel: string;
+  subClass: registrationInputsEnum;
+  typeInput: string;
+  validate?: (value: string) => string | null;
+  required: boolean;
 };

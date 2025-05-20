@@ -38,4 +38,10 @@ body {
     color: $form-btn-text-color;
     background-color: $form-btn-bg-color-hover;
   }
+
+  &:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }

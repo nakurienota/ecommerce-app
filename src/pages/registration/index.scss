@@ -23,36 +23,6 @@
     color: $title-color;
   }
 
-  &__submit-btn {
-    cursor: pointer;
-    display: block;
-    width: 160px;
-    height: 46px;
-    border: none;
-    border-radius: $border-radius-base;
-    font-size: 12px;
-    font-weight: 800;
-    line-height: 1.6;
-    color: $form-btn-text-color;
-    text-align: center;
-    text-transform: uppercase;
-    background-color: $form-btn-bg-color;
-    transition:
-      background-color $transition-base,
-      color $transition-base;
-
-    &:hover {
-      color: $form-btn-text-color;
-      background-color: $form-btn-bg-color-hover;
-    }
-
-    &:disabled {
-      pointer-events: none;
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-  }
-
   &__input-wrapper {
     position: relative;
   }
@@ -114,5 +84,13 @@
     color: $input-text-color;
     background-color: $input-bg-color;
     outline: none;
+  }
+
+  &__clue {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: $input-text-label-color;
   }
 }
