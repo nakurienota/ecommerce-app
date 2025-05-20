@@ -1,5 +1,6 @@
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
+import { clearCurrentLoggedInUser, userLoggedIn } from '@utils/security';
 
 export default class Header {
   public header: HTMLElement;
@@ -55,7 +56,7 @@ export default class Header {
     const headerButtonWrapper = HtmlCreator.create('div', undefined, 'header__btn-wrapper');
 
     const headerButtons = [
-      { textLink: 'Вход', href: AppRoutes.LOGIN },
+      userLoggedIn() ? { textLink: 'Выход', href: AppRoutes.LOGIN } : { textLink: 'Вход', href: AppRoutes.LOGIN },
       { textLink: 'Регистрация', href: AppRoutes.REGISTRATION },
       { textLink: 'Корзина', href: AppRoutes.BASKET },
     ];
@@ -64,11 +65,16 @@ export default class Header {
       const listItem = HtmlCreator.create('a', undefined, 'header__btn', 'header__btn-login');
       listItem.textContent = textLink;
       listItem.setAttribute('href', href);
+      if (href === AppRoutes.LOGIN) listItem.dataset.role = 'auth';
 
       listItem.addEventListener('click', (event) => {
         const target = event.target;
 
         if (target instanceof HTMLAnchorElement) {
+          if (target.textContent === 'Выход' && userLoggedIn()) {
+            target.textContent = 'Вход';
+            clearCurrentLoggedInUser();
+          }
           event.preventDefault();
           router.navigate(target.href);
         }
