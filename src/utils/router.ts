@@ -1,4 +1,4 @@
-import { authRequestMatcher, validTokenExists } from '@utils/security';
+import { authRequestMatcher, userLoggedIn } from '@utils/security';
 
 import ErrorPage from '../pages/404/404';
 import AboutPage from '../pages/about/about';
@@ -59,12 +59,12 @@ export default class Router {
     this.container.replaceChildren();
     let path: string = globalThis.location.pathname;
 
-    if (validTokenExists() && path === AppRoutes.LOGIN) {
+    if (userLoggedIn() && path === AppRoutes.LOGIN) {
       path = AppRoutes.MAIN;
       globalThis.history.replaceState({}, '', path);
     }
 
-    if (!validTokenExists() && authRequestMatcher(path)) {
+    if (!userLoggedIn() && authRequestMatcher(path)) {
       path = AppRoutes.LOGIN;
       globalThis.history.replaceState({}, '', path);
     }

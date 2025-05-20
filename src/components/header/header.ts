@@ -1,6 +1,6 @@
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
-import { deleteCurrentToken, validTokenExists } from '@utils/security';
+import { clearCurrentLoggedInUser, userLoggedIn } from '@utils/security';
 
 export default class Header {
   public header: HTMLElement;
@@ -56,7 +56,7 @@ export default class Header {
     const headerButtonWrapper = HtmlCreator.create('div', undefined, 'header__btn-wrapper');
 
     const headerButtons = [
-      validTokenExists() ? { textLink: 'Выход', href: AppRoutes.LOGIN } : { textLink: 'Вход', href: AppRoutes.LOGIN },
+      userLoggedIn() ? { textLink: 'Выход', href: AppRoutes.LOGIN } : { textLink: 'Вход', href: AppRoutes.LOGIN },
       { textLink: 'Регистрация', href: AppRoutes.REGISTRATION },
       { textLink: 'Корзина', href: AppRoutes.BASKET },
     ];
@@ -71,9 +71,9 @@ export default class Header {
         const target = event.target;
 
         if (target instanceof HTMLAnchorElement) {
-          if (target.textContent === 'Выход' && validTokenExists()) {
+          if (target.textContent === 'Выход' && userLoggedIn()) {
             target.textContent = 'Вход';
-            deleteCurrentToken();
+            clearCurrentLoggedInUser();
           }
           event.preventDefault();
           router.navigate(target.href);

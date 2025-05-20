@@ -1,10 +1,9 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { CustomersResponse, TokenResponse } from '@core/model/dto';
-import { validTokenExists } from '@utils/security';
+import { userLoggedIn } from '@utils/security';
 
 export class Resthandler {
   private static instance: Resthandler;
-  private accessToken: TokenResponse | undefined;
 
   constructor(
     private readonly authUrl: string | undefined = process.env.ECOMMERCE_AUTH_URL,
@@ -55,7 +54,7 @@ export class Resthandler {
   }
 
   public async login(email: string, password: string): Promise<boolean> {
-    if (validTokenExists()) return true;
+    if (userLoggedIn()) return true;
 
     const dataCustomer = {
       email: email,
@@ -75,12 +74,12 @@ export class Resthandler {
     if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
 
     const result: CustomersResponse = await response.json();
+    if (result.customer?.id) localStorage.setItem(LocalStorageKeys.USER_ID_LOGGED_IN, result.customer.id);
+
     return !!result;
   }
 
   public async registration(email: string, password: string, firstName: string, lastname: string): Promise<boolean> {
-    if (validTokenExists()) return true;
-
     const dataCustomer = {
       email: email,
       firstName: firstName,

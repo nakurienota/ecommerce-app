@@ -1,7 +1,7 @@
 import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
-import { validTokenExists } from '@utils/security';
+import { userLoggedIn } from '@utils/security';
 
 const MIN_LENGTH_PASSWORD = 8;
 
@@ -130,7 +130,7 @@ export default class LoginPage {
 
 function updateLoginButtonText(): void {
   const button: Element | null = document.querySelector('[data-role="auth"]');
-  if (button) button.textContent = validTokenExists() ? 'Выход' : 'Вход';
+  if (button) button.textContent = userLoggedIn() ? 'Выход' : 'Вход';
 }
 
 export function loginValidate(login: string): string | null {
