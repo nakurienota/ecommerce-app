@@ -1,7 +1,7 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import { AppRoutes } from '@utils/router';
 
-export function validTokeExists(): boolean {
+export function validTokenExists(): boolean {
   const token: string | null = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
   const expiresAtString: string | null = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN_EXPIRES);
   if (!token || !expiresAtString) return false;

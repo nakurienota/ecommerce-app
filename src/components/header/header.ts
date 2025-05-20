@@ -1,6 +1,6 @@
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
-import { deleteCurrentToken, validTokeExists } from '@utils/security';
+import { deleteCurrentToken, validTokenExists } from '@utils/security';
 
 export default class Header {
   public header: HTMLElement;
@@ -56,7 +56,7 @@ export default class Header {
     const headerButtonWrapper = HtmlCreator.create('div', undefined, 'header__btn-wrapper');
 
     const headerButtons = [
-      validTokeExists() ? { textLink: 'Выход', href: AppRoutes.LOGIN } : { textLink: 'Вход', href: AppRoutes.LOGIN },
+      validTokenExists() ? { textLink: 'Выход', href: AppRoutes.LOGIN } : { textLink: 'Вход', href: AppRoutes.LOGIN },
       { textLink: 'Регистрация', href: AppRoutes.REGISTRATION },
       { textLink: 'Корзина', href: AppRoutes.BASKET },
     ];
@@ -71,7 +71,7 @@ export default class Header {
         const target = event.target;
 
         if (target instanceof HTMLAnchorElement) {
-          if (target.textContent === 'Выход' && validTokeExists()) {
+          if (target.textContent === 'Выход' && validTokenExists()) {
             target.textContent = 'Вход';
             deleteCurrentToken();
           }

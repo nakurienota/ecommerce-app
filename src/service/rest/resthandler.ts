@@ -1,6 +1,6 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { CustomersResponse, TokenResponse } from '@core/model/dto';
-import { validTokeExists } from '@utils/security';
+import { validTokenExists } from '@utils/security';
 
 export class Resthandler {
   private static instance: Resthandler;
@@ -55,7 +55,7 @@ export class Resthandler {
   }
 
   public async login(email: string, password: string): Promise<boolean> {
-    if (validTokeExists()) return true;
+    if (validTokenExists()) return true;
 
     const dataCustomer = {
       email: email,
@@ -83,7 +83,7 @@ export class Resthandler {
   }
 
   public async registration(email: string, password: string, firstName: string, lastname: string): Promise<boolean> {
-    if (validTokeExists()) return true;
+    if (validTokenExists()) return true;
 
     const dataCustomer = {
       email: email,
