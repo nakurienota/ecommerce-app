@@ -88,4 +88,11 @@
     border: none;
     background-color: transparent;
   }
+
+  &__buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+  }
 }

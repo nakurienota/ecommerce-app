@@ -15,6 +15,7 @@ export default class LoginPage {
 
   public getHTML(): HTMLElement {
     const loginWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login', 'login__wrapper');
+    const buttonsWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login__buttons-wrapper');
     const form: HTMLFormElement = HtmlCreator.create('form', undefined, 'login__form');
     form.noValidate = true;
     const title: HTMLFieldSetElement = HtmlCreator.create('fieldset', undefined, 'login__title');
@@ -64,6 +65,7 @@ export default class LoginPage {
     const buttonShowPassword: HTMLButtonElement = HtmlCreator.create('button', undefined, 'login__btn-show');
     const buttonShowPasswordImage = HtmlCreator.create('img', undefined, 'login__btn-img');
     buttonShowPasswordImage.src = '../../assets/icons/show_password.svg';
+    buttonShowPasswordImage.setAttribute('alt', 'eye');
 
     passwordInput.addEventListener('input', () => {
       const passwordValue = passwordInput.value;
@@ -90,10 +92,17 @@ export default class LoginPage {
       }
     });
 
+    const buttonRegistration: HTMLButtonElement = HtmlCreator.create('button', undefined, 'default-submit-button');
+    buttonRegistration.textContent = 'Регистрация';
+    buttonRegistration.addEventListener('click', (): void => {
+      router.navigate(AppRoutes.REGISTRATION);
+    });
+
     emailWrapper.append(emailLabel, emailInput, emailError);
     passwordWrapper.append(passwordLabel, passwordInput, passwordError, buttonShowPassword);
     buttonShowPassword.append(buttonShowPasswordImage);
-    title.append(legend, emailWrapper, passwordWrapper);
+
+    title.append(legend, emailWrapper, passwordWrapper, buttonRegistration);
     form.append(title);
 
     const errorMessage: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'login__error');
@@ -108,7 +117,8 @@ export default class LoginPage {
 
     this.container.append(loginWrapper);
     loginWrapper.append(form, errorMessage);
-    form.append(buttonLogin);
+    buttonsWrapper.append(buttonLogin, buttonRegistration);
+    form.append(buttonsWrapper);
 
     return this.container;
   }
@@ -151,6 +161,10 @@ export function loginValidate(login: string): string | null {
 
   if (!domain) {
     return 'Email должен содержать доменное имя';
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginTrim)) {
+    return 'Неправильный формат Email. Пример: user@example.com';
   }
 
   return null;
