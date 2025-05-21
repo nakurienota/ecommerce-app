@@ -33,6 +33,7 @@ export default class MainPage {
     const round = HtmlCreator.create('div', undefined, 'banner__round');
     const bannerImg = HtmlCreator.create('img', undefined, 'banner__img');
     bannerImg.src = '../../assets/images/bunner.png';
+
     round.append(bannerImg);
     bannerWrap.append(h1, bannerText, this.bannerBtn);
     banner.append(bannerWrap, round);
@@ -60,6 +61,7 @@ export default class MainPage {
         link: 'available_img',
       },
     ];
+
     for (const item of aboutData) {
       const aboutWrap = HtmlCreator.create('div', undefined, 'about__wrapper');
       const aboutImg = HtmlCreator.create('div', undefined, 'about__img');

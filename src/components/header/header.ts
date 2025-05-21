@@ -32,7 +32,7 @@ export default class Header {
       }
     });
     globalThis.addEventListener('resize', () => {
-      let winWidth = window.innerWidth;
+      const winWidth = window.innerWidth;
       if (headerList.classList.contains('active') && winWidth > 1024) {
         headerList.classList.remove('active');
       }

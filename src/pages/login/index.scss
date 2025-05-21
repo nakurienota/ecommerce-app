@@ -22,7 +22,7 @@
     padding: 10px;
     border-radius: $border-radius;
     font-size: 23px;
-    font-weight: 700;
+    font-weight: $font-weight-medium;
     line-height: 1.3;
     color: $title-color;
   }
@@ -44,7 +44,7 @@
     border: none;
     border-radius: $border-radius-base;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: $font-weight-base;
     line-height: 1.6;
     color: $input-text-color;
     background-color: $input-bg-color;
@@ -63,7 +63,7 @@
     display: block;
     max-width: 100%;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: $font-weight-base;
     line-height: 1.6;
     color: $input-error-text-color;
   }
@@ -71,7 +71,7 @@
   &__error {
     max-width: 100%;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: $font-weight-base;
     line-height: 1.6;
     color: $input-error-text-color;
   }

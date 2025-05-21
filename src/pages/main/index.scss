@@ -24,10 +24,6 @@
     gap: 15px;
     justify-content: center;
     width: 40%;
-
-    @media (max-width: $tablet) {
-      width: 80%;
-    }
   }
 
   &__heading {
@@ -40,10 +36,6 @@
 
   &__btn {
     @include button-style($btn-background-color, $btn-color, $border-radius);
-
-    @media (max-width: $mobile) {
-      padding: 5px;
-    }
   }
 
   &__round {
@@ -53,10 +45,6 @@
     border-radius: 50%;
     background-color: $blue;
     box-shadow: $box-shadow;
-
-    @media (max-width: $tablet) {
-      display: none;
-    }
   }
 
   &__img {
@@ -82,10 +70,6 @@
     justify-content: center;
     width: 100%;
     padding: 10px;
-
-    @media (max-width: $laptop) {
-      flex-wrap: wrap;
-    }
   }
 
   &__wrapper {
@@ -114,5 +98,29 @@
 
   &__text {
     text-align: center;
+  }
+}
+
+@media (max-width: $laptop) {
+  .about__content {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: $tablet) {
+  .banner {
+    &__wrapper {
+      width: 80%;
+    }
+
+    &__round {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: $mobile) {
+  .banner__btn {
+    padding: 5px;
   }
 }
