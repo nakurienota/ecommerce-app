@@ -15,6 +15,7 @@ export default class LoginPage {
 
   public getHTML(): HTMLElement {
     const loginWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login', 'login__wrapper');
+    const buttonsWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login__buttons-wrapper');
     const form: HTMLFormElement = HtmlCreator.create('form', undefined, 'login__form');
     form.noValidate = true;
     const title: HTMLHeadingElement = HtmlCreator.create('h1', undefined, 'login__title');
@@ -88,10 +89,16 @@ export default class LoginPage {
       }
     });
 
+    const buttonRegistration: HTMLButtonElement = HtmlCreator.create('button', undefined, 'default-submit-button');
+    buttonRegistration.textContent = 'Регистрация';
+    buttonRegistration.addEventListener('click', (): void => {
+      router.navigate(AppRoutes.REGISTRATION);
+    });
+
     emailWrapper.append(emailLabel, emailInput, emailError);
     passwordWrapper.append(passwordLabel, passwordInput, passwordError, buttonShowPassword);
     buttonShowPassword.append(buttonShowPasswordImage);
-    form.append(emailWrapper, passwordWrapper);
+    form.append(emailWrapper, passwordWrapper, buttonRegistration);
 
     const errorMessage: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'login__error');
 
@@ -105,7 +112,8 @@ export default class LoginPage {
 
     this.container.append(loginWrapper);
     loginWrapper.append(title, form, errorMessage);
-    form.append(buttonLogin);
+    buttonsWrapper.append(buttonLogin, buttonRegistration);
+    form.append(buttonsWrapper);
 
     return this.container;
   }

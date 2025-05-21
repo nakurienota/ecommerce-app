@@ -93,4 +93,10 @@
     line-height: 1.6;
     color: $input-text-label-color;
   }
+
+  &__buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 }

@@ -28,6 +28,7 @@ export default class RegistrationPage {
 
   public getHTML(): HTMLElement {
     const registrationWrapper = HtmlCreator.create('div', undefined, 'registration', 'registration__wrapper');
+    const buttonsWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'registration__buttons-wrapper');
     const title: HTMLHeadingElement = HtmlCreator.create('h1', undefined, 'registration__title');
     title.textContent = 'Регистрация';
     const form: HTMLFormElement = HtmlCreator.create('form', undefined, 'registration__form');
@@ -171,9 +172,15 @@ export default class RegistrationPage {
     const cluerequired: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'registration__clue');
     cluerequired.textContent = 'Поля, помеченные * - обязательны для регистрации';
 
+    const buttonLogin: HTMLButtonElement = HtmlCreator.create('button', undefined, 'default-submit-button');
+    buttonLogin.textContent = 'Вход';
+    buttonLogin.addEventListener('click', (): void => {
+      router.navigate(AppRoutes.LOGIN);
+    });
     this.container.append(registrationWrapper);
+    buttonsWrapper.append(this.buttonSend, buttonLogin);
     registrationWrapper.append(title, form, this.errorServerMessage, cluerequired);
-    form.append(countrySelect, this.buttonSend);
+    form.append(countrySelect, buttonsWrapper);
 
     return this.container;
   }

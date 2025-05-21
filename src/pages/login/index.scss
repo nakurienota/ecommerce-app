@@ -84,4 +84,10 @@
     border: none;
     background-color: transparent;
   }
+
+  &__buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 }
