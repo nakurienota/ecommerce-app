@@ -111,6 +111,7 @@ export default class RegistrationPage {
         'registration__error',
         `registration__error-${subClass}`
       );
+
       inputError.textContent = '';
 
       input.addEventListener('input', () => {
@@ -134,6 +135,17 @@ export default class RegistrationPage {
       inputWrapper.append(inputLabel, input, inputError);
 
       this.registrationInputsMap.set(subClass, input);
+
+      const titleAddressShipping: HTMLHeadingElement = HtmlCreator.create(
+        'h3',
+        undefined,
+        'registration__title-address'
+      );
+      titleAddressShipping.textContent = 'Адрес доставки';
+
+      if (textLabel === 'Дата рождения') {
+        inputWrapper.after(titleAddressShipping);
+      }
     });
 
     const countrySelect: HTMLSelectElement = HtmlCreator.create('select', undefined, 'registration__select');
@@ -169,18 +181,145 @@ export default class RegistrationPage {
 
     this.errorServerMessage = HtmlCreator.create('p', undefined, 'registration__error-server');
 
-    const cluerequired: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'registration__clue');
-    cluerequired.textContent = 'Поля, помеченные * - обязательны для регистрации';
+    const clueRequired: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'registration__clue');
+    clueRequired.textContent = 'Поля, помеченные * - обязательны для регистрации';
 
     const buttonLogin: HTMLButtonElement = HtmlCreator.create('button', undefined, 'default-submit-button');
     buttonLogin.textContent = 'Вход';
     buttonLogin.addEventListener('click', (): void => {
       router.navigate(AppRoutes.LOGIN);
     });
+
     this.container.append(registrationWrapper);
     buttonsWrapper.append(this.buttonSend, buttonLogin);
-    registrationWrapper.append(title, form, this.errorServerMessage, cluerequired);
+    registrationWrapper.append(title, form, this.errorServerMessage, clueRequired);
     form.append(countrySelect, buttonsWrapper);
+
+    const checkboxList = [
+      {
+        id: 'shipping',
+        textLabel: 'Использовать адрес доставки как адрес оплаты',
+      },
+      {
+        id: 'shipping-default',
+        textLabel: 'Использовать по умолчанию для доставки',
+      },
+    ];
+
+    checkboxList.forEach(({ id, textLabel }) => {
+      const checkboxWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'registration__checkbox-wrapper');
+
+      const checkboxLabel: HTMLLabelElement = HtmlCreator.create('label', undefined, 'registration__checkbox-label');
+
+      checkboxLabel.textContent = textLabel;
+
+      const checkbox: HTMLInputElement = HtmlCreator.create('input', `${id}`, 'registration__checkbox-input');
+
+      checkbox.type = 'checkbox';
+      checkbox.checked = true;
+      checkboxLabel.setAttribute('for', id);
+
+      checkbox.addEventListener('input', () => {
+        if (id === 'shipping' && !checkbox.checked) {
+          billingWrapper.classList.add('registration__address-wrapper-visible');
+        } else {
+          billingWrapper.classList.remove('registration__address-wrapper-visible');
+        }
+      });
+
+      checkboxWrapper.append(checkbox, checkboxLabel);
+
+      countrySelect.after(checkboxWrapper);
+    });
+
+    const billingWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'registration__address-wrapper');
+    const billingTitle: HTMLHeadingElement = HtmlCreator.create('h3', undefined, 'registration__title-address');
+    billingTitle.textContent = 'Адрес оплаты';
+    this.registrationInputs.forEach(({ textLabel, subClass, typeInput, validate }) => {
+      if (textLabel === 'Город' || textLabel === 'Улица' || textLabel === 'Почтовый индекс') {
+        const inputWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'registration__input-wrapper');
+        const inputLabel: HTMLLabelElement = HtmlCreator.create('label', undefined, 'registration__label');
+        inputLabel.textContent = textLabel;
+        const input: HTMLInputElement = HtmlCreator.create(
+          'input',
+          undefined,
+          'registration__input-field',
+          `registration__input-${subClass}`
+        );
+        input.type = typeInput;
+        input.autocomplete = 'off';
+        const inputError: HTMLSpanElement = HtmlCreator.create(
+          'span',
+          undefined,
+          'registration__error',
+          `registration__error-${subClass}`
+        );
+
+        inputError.textContent = '';
+
+        input.addEventListener('input', () => {
+          const inputValue = input.value;
+
+          if (validate) {
+            const textError = validate(inputValue);
+            inputError.textContent = textError ?? '';
+          }
+
+          if (inputValue.length === 0) inputError.textContent = '';
+
+          this.updateButtonSend();
+        });
+
+        input.addEventListener('blur', () => {
+          if (input.value.length === 0) inputError.textContent = '';
+        });
+
+        billingWrapper.append(inputWrapper);
+        inputWrapper.append(inputLabel, input, inputError);
+      }
+    });
+
+    const countrySelectBilling: HTMLSelectElement = HtmlCreator.create('select', undefined, 'registration__select');
+
+    const optionSelectBilling = [
+      { textOption: 'Россия', valueOption: 'RU' },
+      { textOption: 'США', valueOption: 'US' },
+      { textOption: 'Германия', valueOption: 'DE' },
+    ];
+
+    optionSelectBilling.forEach(({ textOption, valueOption }) => {
+      const optionSelect: HTMLOptionElement = HtmlCreator.create('option', undefined, 'registration__option');
+      optionSelect.textContent = textOption;
+      optionSelect.value = valueOption;
+
+      countrySelectBilling.append(optionSelect);
+    });
+
+    const checkboxWrapperBilling: HTMLDivElement = HtmlCreator.create(
+      'div',
+      undefined,
+      'registration__checkbox-wrapper'
+    );
+
+    const checkboxLabelBilling: HTMLLabelElement = HtmlCreator.create(
+      'label',
+      undefined,
+      'registration__checkbox-label'
+    );
+
+    checkboxLabelBilling.textContent = 'Использовать по умолчанию для оплаты';
+
+    const checkboxBilling: HTMLInputElement = HtmlCreator.create('input', 'billing', 'registration__checkbox-input');
+
+    checkboxBilling.type = 'checkbox';
+    checkboxBilling.checked = true;
+    checkboxLabelBilling.setAttribute('for', 'billing');
+
+    checkboxWrapperBilling.append(checkboxBilling, checkboxLabelBilling);
+
+    billingWrapper.prepend(billingTitle);
+    billingWrapper.append(countrySelectBilling, checkboxWrapperBilling);
+    buttonsWrapper.before(billingWrapper);
 
     return this.container;
   }

@@ -99,4 +99,44 @@
     flex-direction: row;
     justify-content: space-between;
   }
+
+  &__title-address {
+    margin: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: $title-color;
+  }
+
+  &__checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  &__checkbox-input {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+  }
+
+  &__checkbox-label {
+    cursor: pointer;
+    padding-left: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: $input-text-label-color;
+  }
+
+  &__address-wrapper {
+    display: none;
+    margin-bottom: 20px;
+    transition: $transition-base;
+  }
+
+  &__address-wrapper-visible {
+    display: block;
+  }
 }
