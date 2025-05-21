@@ -150,6 +150,10 @@ export function loginValidate(login: string): string | null {
     return 'Email должен содержать доменное имя';
   }
 
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginTrim)) {
+    return 'Неправильный формат Email. Пример: user@example.com';
+  }
+
   return null;
 }
 
