@@ -1,5 +1,6 @@
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
+import { clearCurrentLoggedInUser, userLoggedIn } from '@utils/security';
 
 export default class Header {
   public header: HTMLElement;
@@ -66,7 +67,9 @@ export default class Header {
     const headerButtonWrapper = HtmlCreator.create('div', undefined, 'header__btn-wrapper');
 
     const headerButtons = [
-      { textLink: 'Вход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/sing_in.png)' },
+      userLoggedIn()
+        ? { textLink: 'Выход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/log_out.png)' }
+        : { textLink: 'Вход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/sing_in.png)' },
       { textLink: 'Регистрация', href: AppRoutes.REGISTRATION, img: 'url(../../assets/images/reg_icon.png)' },
       { textLink: 'Корзина', href: AppRoutes.BASKET, img: 'url(../../assets/images/busket.png)' },
     ];
@@ -76,11 +79,17 @@ export default class Header {
       listItem.textContent = textLink;
       listItem.setAttribute('href', href);
       listItem.style.backgroundImage = img;
+      if (href === AppRoutes.LOGIN) listItem.dataset.role = 'auth';
 
       listItem.addEventListener('click', (event) => {
         const target = event.target;
 
         if (target instanceof HTMLAnchorElement) {
+          if (target.textContent === 'Выход' && userLoggedIn()) {
+            target.textContent = 'Вход';
+            target.style.backgroundImage = 'url(../../assets/images/sing_in.png)';
+            clearCurrentLoggedInUser();
+          }
           event.preventDefault();
           router.navigate(target.href);
         }

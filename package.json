@@ -6,11 +6,12 @@
     "format": "prettier --write ./src",
     "format:check": "prettier --check ./src",
     "start": "webpack-dev-server",
+    "local-start": "npm run build && webpack-dev-server",
     "build": "webpack --config webpack.config.js",
     "build:prod": "webpack --config webpack.config.prod.js",
     "lint": "eslint --fix src/",
-    "stylelint": "stylelint \"./src/**/*.scss\"",
-    "stylelint:fix": "stylelint \"./src/**/*.scss\" --fix",
+    "stylelint": "stylelint \"./src/**/*.{css,scss}\"",
+    "stylelint:fix": "stylelint \"./src/**/*.{css,scss}\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -27,7 +28,7 @@
     "@eslint/js": "^9.18.0",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.13.14",
+    "@types/node": "^22.15.17",
     "@typescript-eslint/eslint-plugin": "^8.30.1",
     "@typescript-eslint/parser": "^8.27.0",
     "babel-jest": "^29.7.0",
@@ -78,6 +79,10 @@
     ]
   },
   "dependencies": {
+    "@commercetools/importapi-sdk": "^6.1.1",
+    "@commercetools/platform-sdk": "^8.9.0",
+    "@commercetools/ts-client": "^3.3.0",
+    "@types/node-fetch": "^2.6.12",
     "modern-normalize": "^3.0.1"
   }
 }
