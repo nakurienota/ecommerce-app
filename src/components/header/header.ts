@@ -68,10 +68,10 @@ export default class Header {
 
     const headerButtons = [
       userLoggedIn()
-        ? { textLink: 'Выход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/log_out.png)' }
-        : { textLink: 'Вход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/sing_in.png)' },
-      { textLink: 'Регистрация', href: AppRoutes.REGISTRATION, img: 'url(../../assets/images/reg_icon.png)' },
-      { textLink: 'Корзина', href: AppRoutes.BASKET, img: 'url(../../assets/images/busket.png)' },
+        ? { textLink: 'Выход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/log_out.webp)' }
+        : { textLink: 'Вход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/sing_in.webp)' },
+      { textLink: 'Регистрация', href: AppRoutes.REGISTRATION, img: 'url(../../assets/images/reg_icon.webp)' },
+      { textLink: 'Корзина', href: AppRoutes.BASKET, img: 'url(../../assets/images/busket.webp)' },
     ];
 
     headerButtons.forEach(({ textLink, href, img }) => {
@@ -87,7 +87,7 @@ export default class Header {
         if (target instanceof HTMLAnchorElement) {
           if (target.textContent === 'Выход' && userLoggedIn()) {
             target.textContent = 'Вход';
-            target.style.backgroundImage = 'url(../../assets/images/sing_in.png)';
+            target.style.backgroundImage = 'url(../../assets/images/sing_in.webp)';
             clearCurrentLoggedInUser();
           }
           event.preventDefault();

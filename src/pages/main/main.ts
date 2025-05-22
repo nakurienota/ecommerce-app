@@ -32,7 +32,7 @@ export default class MainPage {
     this.bannerBtn.textContent = 'Посмотреть книги';
     const round = HtmlCreator.create('div', undefined, 'banner__round');
     const bannerImg = HtmlCreator.create('img', undefined, 'banner__img');
-    bannerImg.src = '../../assets/images/bunner.png';
+    bannerImg.src = '../../assets/images/bunner.webp';
 
     round.append(bannerImg);
     bannerWrap.append(h1, bannerText, this.bannerBtn);

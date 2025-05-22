@@ -7,8 +7,9 @@
   max-width: 800px;
   margin: 50px auto;
   padding: 35px 40px;
-  border: 1px solid $blue;
-  border-radius: $border-radius-base;
+
+  // border: 1px solid $blue;
+  // border-radius: $border-radius-base;
 
   &__form {
     display: flex;
@@ -23,6 +24,7 @@
     width: 100%;
     margin-bottom: 25px;
     padding: 5px;
+    border: 3px solid $blue;
     border-radius: $border-radius;
     font-size: 23px;
     font-weight: $font-weight-medium;
@@ -120,6 +122,7 @@
     font-weight: 600;
     line-height: 1.6;
     color: $title-color;
+    text-align: center;
   }
 
   &__checkbox-wrapper {
@@ -152,5 +155,6 @@
 
   &__address-wrapper-visible {
     display: block;
+    width: 100%;
   }
 }
