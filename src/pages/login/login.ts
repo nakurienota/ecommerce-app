@@ -18,20 +18,22 @@ export default class LoginPage {
     const buttonsWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login__buttons-wrapper');
     const form: HTMLFormElement = HtmlCreator.create('form', undefined, 'login__form');
     form.noValidate = true;
-    const title: HTMLHeadingElement = HtmlCreator.create('h1', undefined, 'login__title');
-    title.textContent = 'Войти';
+    const title: HTMLFieldSetElement = HtmlCreator.create('fieldset', undefined, 'login__title');
+    const legend: HTMLLegendElement = HtmlCreator.create('legend', undefined, 'login__title-text');
+    legend.textContent = 'Войти';
 
     const emailWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login__input-wrapper');
     const emailLabel: HTMLLabelElement = HtmlCreator.create('label', undefined, 'login__label');
     emailLabel.textContent = 'Email адрес';
     const emailInput: HTMLInputElement = HtmlCreator.create(
       'input',
-      undefined,
+      'input-email',
       'login__input-field',
       'login__input-email'
     );
     emailInput.type = 'email';
     emailInput.autocomplete = 'off';
+    emailLabel.setAttribute('for', 'input-email');
     const emailError: HTMLSpanElement = HtmlCreator.create('span', undefined, 'login__error-email');
 
     emailInput.addEventListener('input', () => {
@@ -53,7 +55,7 @@ export default class LoginPage {
     passwordLabel.htmlFor = 'password';
     const passwordInput: HTMLInputElement = HtmlCreator.create(
       'input',
-      undefined,
+      'password',
       'login__input-field',
       'login__input-password'
     );
@@ -63,6 +65,7 @@ export default class LoginPage {
     const buttonShowPassword: HTMLButtonElement = HtmlCreator.create('button', undefined, 'login__btn-show');
     const buttonShowPasswordImage = HtmlCreator.create('img', undefined, 'login__btn-img');
     buttonShowPasswordImage.src = '../../assets/icons/show_password.svg';
+    buttonShowPasswordImage.setAttribute('alt', 'eye');
 
     passwordInput.addEventListener('input', () => {
       const passwordValue = passwordInput.value;
@@ -98,7 +101,9 @@ export default class LoginPage {
     emailWrapper.append(emailLabel, emailInput, emailError);
     passwordWrapper.append(passwordLabel, passwordInput, passwordError, buttonShowPassword);
     buttonShowPassword.append(buttonShowPasswordImage);
-    form.append(emailWrapper, passwordWrapper, buttonRegistration);
+
+    title.append(legend, emailWrapper, passwordWrapper, buttonRegistration);
+    form.append(title);
 
     const errorMessage: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'login__error');
 
@@ -111,7 +116,7 @@ export default class LoginPage {
     );
 
     this.container.append(loginWrapper);
-    loginWrapper.append(title, form, errorMessage);
+    loginWrapper.append(form, errorMessage);
     buttonsWrapper.append(buttonLogin, buttonRegistration);
     form.append(buttonsWrapper);
 

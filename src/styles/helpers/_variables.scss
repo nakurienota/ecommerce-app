@@ -1,17 +1,30 @@
+// background
 $header-bg-color: #121214;
 $footer-bg-color: #121214;
+
+// links
 $link-text-color: #fff;
 $link-border-color: #fff;
 $link-text-color-hover: #49d0ff;
 $link-border-color-hover: #49d0ff;
+
+// buttons
 $btn-back-text-color: #49d0ff;
 $btn-back-border-color: #49d0ff;
 $btn-back-text-color-hover: #fff;
 $btn-back-bg-color-hover: #49d0ff;
-$title-color: #fff;
+$btn-background-color: #121214;
+$btn-color: #fff;
+$btn-color-hover: #49d0ff;
+$box-shadow: 0 0 10px #8c8f96;
+
+// colors
 $description-color: #8c8f96;
-$form-border-color: #e9eaee;
 $title-color: #303030;
+$blue: #49d0ff;
+
+// form
+$form-border-color: #e9eaee;
 $input-bg-color: #f9f9f9;
 $input-text-label-color: #3c3d44;
 $input-text-color: #424347;
@@ -19,5 +32,23 @@ $input-error-text-color: #f00;
 $form-btn-bg-color: #121214;
 $form-btn-bg-color-hover: #00bdff;
 $form-btn-text-color: #fff;
-$border-radius-base: 5px;
+
+// general
 $transition-base: 0.3s ease-in-out;
+$border-radius-base: 5px;
+$border-radius: 10px;
+
+// fonts
+$font-label: 13px;
+$font-small: 1em;
+$font-medium: 1.5em;
+$font-large: 2em;
+$font-weight-medium: 700;
+$font-weight-bold: 900;
+$font-weight-light: 600;
+$font-weight-base: 400;
+
+// media queries breakpoints
+$tablet: 768px;
+$mobile: 500px;
+$laptop: 1024px;

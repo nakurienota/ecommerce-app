@@ -29,15 +29,17 @@
 
   &__list-social {
     display: flex;
-    column-gap: 15px;
+    gap: 15px;
   }
 
   &__item-image {
     padding: 5px;
     transition: opacity $transition-base;
 
-    &:hover {
-      opacity: 0.5;
+    @media (any-hover: hover) {
+      &:hover {
+        opacity: 0.5;
+      }
     }
   }
 
@@ -55,5 +57,27 @@
     &:hover {
       color: $link-text-color-hover;
     }
+  }
+}
+
+@media (max-width: $laptop) {
+  .footer {
+    &__wrapper {
+      justify-content: space-evenly;
+    }
+
+    &__list-social {
+      gap: 5px;
+    }
+
+    &__nav {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: $mobile) {
+  .footer__wrapper {
+    flex-direction: column-reverse;
   }
 }
