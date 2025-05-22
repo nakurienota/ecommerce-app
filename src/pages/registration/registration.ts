@@ -29,10 +29,13 @@ export default class RegistrationPage {
   public getHTML(): HTMLElement {
     const registrationWrapper = HtmlCreator.create('div', undefined, 'registration', 'registration__wrapper');
     const buttonsWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'registration__buttons-wrapper');
-    const title: HTMLHeadingElement = HtmlCreator.create('h1', undefined, 'registration__title');
-    title.textContent = 'Регистрация';
+    const title: HTMLFieldSetElement = HtmlCreator.create('fieldset', undefined, 'registration__title');
+    const legend: HTMLLegendElement = HtmlCreator.create('legend', undefined, 'registration__title-text');
+    legend.textContent = 'Регистрация';
     const form: HTMLFormElement = HtmlCreator.create('form', undefined, 'registration__form');
     form.noValidate = true;
+
+    title.append(legend);
 
     this.registrationInputs = [
       {
@@ -131,7 +134,7 @@ export default class RegistrationPage {
         if (input.value.length === 0) inputError.textContent = '';
       });
 
-      form.append(inputWrapper);
+      title.append(inputWrapper);
       inputWrapper.append(inputLabel, input, inputError);
 
       this.registrationInputsMap.set(subClass, input);
@@ -192,8 +195,9 @@ export default class RegistrationPage {
 
     this.container.append(registrationWrapper);
     buttonsWrapper.append(this.buttonSend, buttonLogin);
-    registrationWrapper.append(title, form, this.errorServerMessage, clueRequired);
-    form.append(countrySelect, buttonsWrapper);
+    registrationWrapper.append(form, this.errorServerMessage, clueRequired);
+    title.append(countrySelect, buttonsWrapper);
+    form.append(title);
 
     const checkboxList = [
       {

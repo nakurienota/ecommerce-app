@@ -19,7 +19,7 @@ export default class LoginPage {
     const form: HTMLFormElement = HtmlCreator.create('form', undefined, 'login__form');
     form.noValidate = true;
     const title: HTMLFieldSetElement = HtmlCreator.create('fieldset', undefined, 'login__title');
-    const legend: HTMLHeadingElement = HtmlCreator.create('legend', undefined, 'login__title-text');
+    const legend: HTMLLegendElement = HtmlCreator.create('legend', undefined, 'login__title-text');
     legend.textContent = 'Войти';
 
     const emailWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'login__input-wrapper');
