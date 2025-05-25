@@ -24,6 +24,7 @@ export default {
     port: 8080,
     hot: true,
     open: true,
+    historyApiFallback: true,
   },
   module: {
     rules: [
@@ -61,6 +62,7 @@ export default {
     alias: {
       '@core': path.resolve(__dirname, 'src/core'),
       '@utils': path.resolve(__dirname, 'src/utils'),
+      '@service': path.resolve(__dirname, 'src/service'),
       '@': path.resolve(__dirname, 'src'),
     },
   },

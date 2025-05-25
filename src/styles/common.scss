@@ -1,3 +1,52 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: $blue;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: $font-primary;
+  background-color: $primary-white;
+
+  .main {
+    flex: 1;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.default-submit-button {
+  cursor: pointer;
+  display: block;
+  width: 160px;
+  height: 46px;
+  border: none;
+  border-radius: $border-radius-base;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.6;
+  color: $primary-white;
+  text-align: center;
+  text-transform: uppercase;
+  background-color: $primary-black;
+  transition:
+    background-color $transition-base,
+    color $transition-base;
+
+  &:hover {
+    color: $primary-white;
+    background-color: $form-btn-bg-color-hover;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }

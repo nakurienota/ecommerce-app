@@ -1,0 +1,11 @@
+.sales {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__txt {
+    margin: 0;
+    margin-bottom: 30px;
+    font-size: 48px;
+  }
+}

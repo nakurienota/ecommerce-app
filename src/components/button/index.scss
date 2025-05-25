@@ -1,0 +1,19 @@
+.button-back {
+  display: block;
+  max-width: 120px;
+  padding: 10px 20px;
+  border: 1px solid $primary-blue;
+  border-radius: 10px;
+  font-size: 20px;
+  line-height: 1.3;
+  color: $primary-blue;
+  text-align: center;
+  transition:
+    background-color $transition-base,
+    color $transition-base;
+
+  &:hover {
+    color: $primary-white;
+    background-color: $primary-blue;
+  }
+}
