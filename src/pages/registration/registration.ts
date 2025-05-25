@@ -135,7 +135,8 @@ export default class RegistrationPage {
       });
 
       title.append(inputWrapper);
-      inputWrapper.append(inputLabel, input, inputError);
+      inputLabel.append(input);
+      inputWrapper.append(inputLabel, inputError);
 
       this.registrationInputsMap.set(subClass, input);
 
