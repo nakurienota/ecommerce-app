@@ -1,27 +1,12 @@
-// background
-$header-bg-color: #121214;
-$footer-bg-color: #121214;
-
-// links
-$link-text-color: #fff;
-$link-border-color: #fff;
-$link-text-color-hover: #49d0ff;
-$link-border-color-hover: #49d0ff;
-
-// buttons
-$btn-back-text-color: #49d0ff;
-$btn-back-border-color: #49d0ff;
-$btn-back-text-color-hover: #fff;
-$btn-back-bg-color-hover: #49d0ff;
-$btn-background-color: #121214;
-$btn-color: #fff;
-$btn-color-hover: #49d0ff;
-$box-shadow: 0 0 10px #8c8f96;
-
-// colors
-$description-color: #8c8f96;
+// root
+$primary-black: #121214;
+$primary-blue: #49d0ff;
+$primary-white: #fff;
+$primary-dark-gray: #20282F;
+$primary-light-gray: #8c8f96;
+$unselected: #f4f5f9;
+$box-shadow: 0 0 10px $primary-light-gray;
 $title-color: #303030;
-$blue: #49d0ff;
 
 // form
 $form-border-color: #e9eaee;
@@ -29,9 +14,7 @@ $input-bg-color: #f9f9f9;
 $input-text-label-color: #3c3d44;
 $input-text-color: #424347;
 $input-error-text-color: #f00;
-$form-btn-bg-color: #121214;
 $form-btn-bg-color-hover: #00bdff;
-$form-btn-text-color: #fff;
 
 // general
 $transition-base: 0.3s ease-in-out;

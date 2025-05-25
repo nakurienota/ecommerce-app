@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: space-evenly;
   height: 500px;
-  background-color: $blue;
+  background-color: $primary-blue;
   background-clip: padding-box;
 
   &__wrapper {
@@ -35,7 +35,7 @@
   }
 
   &__btn {
-    @include button-style($btn-background-color, $btn-color, $border-radius);
+    @include button-style($primary-black, $primary-white, $border-radius);
   }
 
   &__round {
@@ -43,7 +43,7 @@
     width: 350px;
     height: 350px;
     border-radius: 50%;
-    background-color: $blue;
+    background-color: $primary-blue;
     box-shadow: $box-shadow;
   }
 
@@ -94,7 +94,7 @@
 
   &__title {
     font-family: $font-primary;
-    color: $blue;
+    color: $primary-blue;
   }
 
   &__text {
