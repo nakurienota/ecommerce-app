@@ -6,7 +6,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: Montserrat, sans-serif;
+  font-family: $font-primary;
   background-color: $link-text-color;
 
   .main {
