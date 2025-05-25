@@ -142,8 +142,14 @@ export default class LoginPage {
 }
 
 function updateLoginButtonText(): void {
-  const button: Element | null = document.querySelector('[data-role="auth"]');
-  if (button) button.textContent = userLoggedIn() ? 'Выход' : 'Вход';
+  const button: HTMLElement | null = document.querySelector('[data-role="auth"]');
+  if (button) {
+    const state = userLoggedIn()
+      ? { text: 'Выход', bgImg: 'url(../../assets/images/log_out.webp)' }
+      : { text: 'Вход', bgImg: 'url(../../assets/images/sing_in.webp)' };
+    button.textContent = state.text;
+    button.style.backgroundImage = state.bgImg;
+  }
 }
 
 export function loginValidate(login: string): string | null {
