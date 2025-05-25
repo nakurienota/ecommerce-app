@@ -1,9 +1,7 @@
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
-import ButtonBackCreator from '../../components/button/button-back';
 import { Resthandler } from '@service/rest/resthandler';
-import { ProductResponse } from '@core/model/dto';
 import { Attribute, Price, Product, ProductData, ProductWrapperData, Variant } from '@core/model/product';
 
 export default class ProductPage {
@@ -136,21 +134,34 @@ export default class ProductPage {
           'product__description-text-wrapper'
         );
         productDescSelector.append(detailsSelector, deliverySelector, paymentSelector, faqSelector);
-        currentProduct.masterVariant.attributes.forEach((a: Attribute) => {
-          const option: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text-variant');
-          const optionKey: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
-          optionKey.textContent = a.name;
-          const optionValue: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
-          optionValue.textContent = a.value?.toString();
-          option.append(optionKey, optionValue);
-          detailsOptionsWrapper.append(option);
-        });
+        this.appendDescDetails(detailsOptionsWrapper, currentProduct.masterVariant.attributes);
 
         const descVariants: HTMLDivElement[] = [detailsSelector, deliverySelector, paymentSelector, faqSelector];
         descVariants.forEach((element: HTMLDivElement): void => {
           element.addEventListener('click', (): void => {
             descVariants.forEach((v: HTMLDivElement): void => v.classList.remove('desc-selected'));
             element.classList.add('desc-selected');
+            if (element.classList.contains('details-selector')) {
+              this.appendDescDetails(detailsOptionsWrapper, currentProduct.masterVariant.attributes);
+            } else if (element.classList.contains('delivery-selector')) {
+              detailsOptionsWrapper.innerHTML = '';
+              detailsOptionsWrapper.textContent =
+                'Доступна доставка через партнерские пункты выдачи, постаматы, курьером, почтой РФ, экспресс-доставкой.';
+            } else if (element.classList.contains('payment-selector')) {
+              detailsOptionsWrapper.innerHTML = '';
+              detailsOptionsWrapper.textContent =
+                'Доступна оплата на сайте. Принимаем карты МИР, Мастер-кард и Виза. \n' +
+                'Также доступна оплата при получении В магазинах сети — наличными или картами МИР, Мастер-кард и Виза.\n' +
+                'При оформлении заказа покажем доступные способы оплаты для выбранной службы. Счета за интернет-заказы юридические лица\n ' +
+                'получают на электронную почту, указанную при оформлении. Счёт придёт после передачи заказа в доставку. Вместе с заказом\n ' +
+                'будут предоставлены документы: счёт, товарная накладная ТОРГ-12, счёт-фактура.';
+            } else if (element.classList.contains('faq-selector')) {
+              detailsOptionsWrapper.innerHTML = '';
+              detailsOptionsWrapper.textContent =
+                'Заказы, сделанные на сайте ecommerce, отправляются с московского склада. Заказы, ' +
+                'оформленные с доставкой в магазины сети, тоже едут со склада. Поэтому сроки доставки напрямую зависят от ' +
+                'расстояния между Москвой и пунктом назначения. ';
+            }
           });
         });
 
@@ -178,6 +189,19 @@ export default class ProductPage {
         router.navigate(AppRoutes.NOT_FOUND);
       });
     return this.container;
+  }
+
+  private appendDescDetails(wrapper: HTMLDivElement, attributes: Attribute[]) {
+    wrapper.innerHTML = '';
+    attributes.forEach((a: Attribute) => {
+      const option: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text-variant');
+      const optionKey: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
+      optionKey.textContent = a.name;
+      const optionValue: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
+      optionValue.textContent = a.value?.toString();
+      option.append(optionKey, optionValue);
+      wrapper.append(option);
+    });
   }
 
   private formatCentAmount(price: Price): string {
