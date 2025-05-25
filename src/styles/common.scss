@@ -7,7 +7,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   font-family: Montserrat, sans-serif;
-  background-color: $link-text-color;
+  background-color: $primary-white;
 
   .main {
     flex: 1;
@@ -31,17 +31,17 @@ body {
   font-size: 12px;
   font-weight: 800;
   line-height: 1.6;
-  color: $form-btn-text-color;
+  color: $primary-white;
   text-align: center;
   text-transform: uppercase;
-  background-color: $form-btn-bg-color;
+  background-color: $primary-black;
   transition:
     background-color $transition-base,
     color $transition-base;
 
   &:hover {
-    color: $form-btn-text-color;
-    background-color: $form-btn-bg-color-hover;
+    color: $primary-white;
+    background-color: $primary-blue;
   }
 
   &:disabled {
