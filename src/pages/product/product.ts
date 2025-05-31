@@ -22,19 +22,37 @@ export default class ProductPage {
       .getProductById(id)
       .then((response: Product) => {
         productWrapper.textContent = '';
-        console.log(response);
         const currentProduct: ProductData = response.masterData.current;
-        console.log(currentProduct);
 
         const productText: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__txt');
         productText.textContent = `Главная / Каталог товаров / Книги / Фэнтези / ${currentProduct.name[lang]}`;
 
         const productCard: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__card');
 
-        const productImage: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__image-wrapper');
+        const productImageWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__image-wrapper');
         const productMainImg: HTMLImageElement = HtmlCreator.create('img', undefined, 'product__image');
         productMainImg.src = currentProduct.masterVariant.images[0].url;
-        productImage.append(productMainImg);
+
+        const thumbnailsContainer: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__thumbnails');
+        productImageWrapper.append(thumbnailsContainer);
+
+        currentProduct.masterVariant.images.forEach((img, index: number) => {
+          const thumbWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__thumbnail-wrapper');
+          const thumbImg: HTMLImageElement = HtmlCreator.create('img', undefined, 'product__thumbnail');
+          thumbImg.src = img.url;
+          if (index === 0) thumbWrapper.classList.add('active');
+
+          thumbWrapper.addEventListener('click', () => {
+            productMainImg.src = img.url;
+            thumbnailsContainer
+              .querySelectorAll('.product__thumbnail-wrapper')
+              .forEach((element) => element.classList.remove('active'));
+            thumbWrapper.classList.add('active');
+          });
+          thumbWrapper.append(thumbImg);
+          thumbnailsContainer.append(thumbWrapper);
+        });
+        productImageWrapper.append(productMainImg, thumbnailsContainer);
 
         const productVariants: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__variants');
         const productVariantsName: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__variants-name');
@@ -90,7 +108,7 @@ export default class ProductPage {
           productVariantsSelector,
           productVariantsPriceCart
         );
-        productCard.append(productImage, productVariants);
+        productCard.append(productImageWrapper, productVariants);
 
         const productDescription: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description');
         const productDescSelector: HTMLDivElement = HtmlCreator.create(
@@ -185,7 +203,6 @@ export default class ProductPage {
         productWrapper.append(productText, productCard, productDescription);
       })
       .catch((error) => {
-        console.log(error);
         router.navigate(AppRoutes.NOT_FOUND);
       });
     return this.container;

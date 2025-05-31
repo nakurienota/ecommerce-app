@@ -73,7 +73,6 @@ export default class Router {
 
     const dynamicProductPage: HTMLElement | null = this.matchDynamicProductRoute(path);
     if (dynamicProductPage) {
-      console.log(' catch dynamic product');
       this.container.append(dynamicProductPage);
       return this.container;
     }
@@ -93,7 +92,6 @@ export default class Router {
     const match: RegExpMatchArray | null = path.match(/^\/product\/([^\/]+)$/);
     if (match) {
       const key: string = decodeURIComponent(match[1]);
-      console.log('key inside matchDynamicProductRoute ' + key);
       return new ProductPage().getHTML(key);
     }
     return null;

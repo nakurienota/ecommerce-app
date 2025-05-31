@@ -108,10 +108,10 @@ export class Resthandler {
     return !!result;
   }
 
-  public async getProductById(id: string): Promise<Product> {
+  public async getProductById(key: string): Promise<Product> {
     const tokenBearer: string = await this.getToken();
 
-    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/products/key=` + id, {
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/products/` + key, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${tokenBearer}`,
@@ -120,7 +120,6 @@ export class Resthandler {
     });
     if (!response.ok) throw new Error(`Something goes wrong: ${response.statusText}`);
     const result: Product = await response.json();
-    console.log('getProduct ' + JSON.stringify(result));
     return result;
   }
 }
