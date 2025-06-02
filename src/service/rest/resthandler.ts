@@ -1,5 +1,5 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import type { CustomersResponse, TokenResponse } from '@core/model/dto';
+import type { CustomersResponse, ResponseCustomerById, TokenResponse } from '@core/model/dto';
 import { userLoggedIn } from '@utils/security';
 
 import { showSuccessPopup } from '../../pages/popup/popup';
@@ -105,5 +105,21 @@ export class Resthandler {
     showSuccessPopup();
 
     return !!result;
+  }
+
+  public async getCustomer(id: string): Promise<ResponseCustomerById> {
+    const tokenBearer = await this.getToken();
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/customers/${id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+      },
+    });
+
+    if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
+
+    const result = await response.json();
+
+    return result;
   }
 }

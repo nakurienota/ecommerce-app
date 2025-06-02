@@ -1,9 +1,13 @@
+import { LocalStorageKeys } from '@core/enum/local-storage-keys';
+import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 import { clearCurrentLoggedInUser, userLoggedIn } from '@utils/security';
 
 export default class Header {
   public header: HTMLElement;
+  private readonly restHandler: Resthandler = Resthandler.getInstance();
+
   constructor() {
     this.header = HtmlCreator.create('header', undefined, 'header');
   }
@@ -71,6 +75,7 @@ export default class Header {
         ? { textLink: 'Выход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/log_out.webp)' }
         : { textLink: 'Вход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/sing_in.webp)' },
       { textLink: 'Регистрация', href: AppRoutes.REGISTRATION, img: 'url(../../assets/images/reg_icon.webp)' },
+      { textLink: 'Профиль', href: AppRoutes.PROFILE, img: 'url(../../assets/images/reg_icon.webp)' },
       { textLink: 'Корзина', href: AppRoutes.BASKET, img: 'url(../../assets/images/busket.webp)' },
     ];
 
@@ -79,6 +84,7 @@ export default class Header {
       listItem.textContent = textLink;
       listItem.setAttribute('href', href);
       listItem.style.backgroundImage = img;
+
       if (href === AppRoutes.LOGIN) listItem.dataset.role = 'auth';
 
       listItem.addEventListener('click', (event) => {
@@ -90,6 +96,13 @@ export default class Header {
             target.style.backgroundImage = 'url(../../assets/images/sing_in.webp)';
             clearCurrentLoggedInUser();
           }
+
+          if (target.textContent === 'Профиль' && userLoggedIn()) {
+            const customerID = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+
+            if (customerID) this.restHandler.getCustomer(customerID);
+          }
+
           event.preventDefault();
           router.navigate(target.href);
         }
