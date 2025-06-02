@@ -71,7 +71,7 @@ export default class Router {
       globalThis.history.replaceState({}, '', path);
     }
 
-    const dynamicProductPage: HTMLElement | null = this.matchDynamicProductRoute(path);
+    const dynamicProductPage: HTMLElement | null = matchDynamicProductRoute(path);
     if (dynamicProductPage) {
       this.container.append(dynamicProductPage);
       return this.container;
@@ -87,15 +87,15 @@ export default class Router {
     globalThis.history.pushState({}, '', path);
     return this.render();
   }
+}
 
-  private matchDynamicProductRoute(path: string): HTMLElement | null {
-    const match: RegExpMatchArray | null = path.match(/^\/product\/([^\/]+)$/);
-    if (match) {
-      const key: string = decodeURIComponent(match[1]);
-      return new ProductPage().getHTML(key);
-    }
-    return null;
+function matchDynamicProductRoute(path: string): HTMLElement | null {
+  const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
+  if (match) {
+    const key: string = decodeURIComponent(match[1]);
+    return new ProductPage().getHTML(key);
   }
+  return null;
 }
 
 export const router = new Router(routes);

@@ -67,6 +67,7 @@ export default [
       'unicorn/no-null': 'off',
       'unicorn/number-literal-case': 'off',
       'unicorn/numeric-separators-style': 'off',
+      'unicorn/prefer-spread': 'off',
       'unicorn/prevent-abbreviations': [
         'error',
         {

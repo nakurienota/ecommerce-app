@@ -1,13 +1,12 @@
+import type { Attribute, Price, Product, ProductData } from '@core/model/product';
+import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
-import { Resthandler } from '@service/rest/resthandler';
-import { Attribute, Price, Product, ProductData, Image } from '@core/model/product';
-
 export default class ProductPage {
-  private readonly restHandler: Resthandler = Resthandler.getInstance();
   public container: HTMLElement;
   public currentSlide: number = 0;
+  private readonly restHandler: Resthandler = Resthandler.getInstance();
 
   constructor() {
     this.container = HtmlCreator.create('div', undefined, 'container');
@@ -97,7 +96,7 @@ export default class ProductPage {
           const activeIndex = Array.from(thumbnailsContainer.children).findIndex((element) =>
             element.classList.contains('active')
           );
-          this.showSlide(activeIndex >= 0 ? activeIndex : 0, slidesWrapper);
+          this.showSlide(Math.max(activeIndex, 0), slidesWrapper);
         });
 
         closeButton.addEventListener('click', () => {
@@ -146,7 +145,7 @@ export default class ProductPage {
           'product__variants-price-cart'
         );
         const productVariantsPrice: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__price');
-        productVariantsPrice.textContent = this.formatCentAmount(currentProduct.masterVariant.prices[0]);
+        productVariantsPrice.textContent = formatCentAmount(currentProduct.masterVariant.prices[0]);
         const productVariantsCartButton: HTMLButtonElement = HtmlCreator.create(
           'button',
           undefined,
@@ -205,7 +204,7 @@ export default class ProductPage {
           'product__description-text-wrapper'
         );
         productDescSelector.append(detailsSelector, deliverySelector, paymentSelector, faqSelector);
-        this.appendDescDetails(detailsOptionsWrapper, currentProduct.masterVariant.attributes);
+        appendDescDetails(detailsOptionsWrapper, currentProduct.masterVariant.attributes);
 
         const descVariants: HTMLDivElement[] = [detailsSelector, deliverySelector, paymentSelector, faqSelector];
         descVariants.forEach((element: HTMLDivElement): void => {
@@ -213,7 +212,7 @@ export default class ProductPage {
             descVariants.forEach((v: HTMLDivElement): void => v.classList.remove('desc-selected'));
             element.classList.add('desc-selected');
             if (element.classList.contains('details-selector')) {
-              this.appendDescDetails(detailsOptionsWrapper, currentProduct.masterVariant.attributes);
+              appendDescDetails(detailsOptionsWrapper, currentProduct.masterVariant.attributes);
             } else if (element.classList.contains('delivery-selector')) {
               detailsOptionsWrapper.innerHTML = '';
               detailsOptionsWrapper.textContent =
@@ -255,31 +254,31 @@ export default class ProductPage {
         this.container.append(productWrapper);
         productWrapper.append(productText, productCard, productDescription);
       })
-      .catch((error) => {
+      .catch(() => {
         router.navigate(AppRoutes.NOT_FOUND);
       });
     return this.container;
-  }
-
-  private appendDescDetails(wrapper: HTMLDivElement, attributes: Attribute[]) {
-    wrapper.innerHTML = '';
-    attributes.forEach((a: Attribute) => {
-      const option: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text-variant');
-      const optionKey: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
-      optionKey.textContent = a.name;
-      const optionValue: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
-      optionValue.textContent = a.value?.toString();
-      option.append(optionKey, optionValue);
-      wrapper.append(option);
-    });
-  }
-
-  private formatCentAmount(price: Price): string {
-    return (price.value.centAmount / 10 ** price.value.fractionDigits).toFixed(price.value.fractionDigits);
   }
 
   private showSlide(index: number, slider: HTMLDivElement): void {
     this.currentSlide = index;
     slider.style.transform = `translateX(-${index * 100}%)`;
   }
+}
+
+function formatCentAmount(price: Price): string {
+  return (price.value.centAmount / 10 ** price.value.fractionDigits).toFixed(price.value.fractionDigits);
+}
+
+function appendDescDetails(wrapper: HTMLDivElement, attributes: Attribute[]): void {
+  wrapper.innerHTML = '';
+  attributes.forEach((a: Attribute) => {
+    const option: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text-variant');
+    const optionKey: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
+    optionKey.textContent = a.name;
+    const optionValue: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__description-text');
+    optionValue.textContent = a.value?.toString();
+    option.append(optionKey, optionValue);
+    wrapper.append(option);
+  });
 }

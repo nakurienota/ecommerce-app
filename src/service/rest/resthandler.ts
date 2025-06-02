@@ -1,9 +1,9 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import type { CustomersResponse, ProductResponse, TokenResponse } from '@core/model/dto';
+import type { CustomersResponse, TokenResponse } from '@core/model/dto';
+import type { Product } from '@core/model/product';
 import { userLoggedIn } from '@utils/security';
 
 import { showSuccessPopup } from '../../pages/popup/popup';
-import { Product } from '@core/model/product';
 
 export class Resthandler {
   private static instance: Resthandler;
