@@ -2,11 +2,12 @@ import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
 import { Resthandler } from '@service/rest/resthandler';
-import { Attribute, Price, Product, ProductData, ProductWrapperData, Variant } from '@core/model/product';
+import { Attribute, Price, Product, ProductData, Image } from '@core/model/product';
 
 export default class ProductPage {
   private readonly restHandler: Resthandler = Resthandler.getInstance();
   public container: HTMLElement;
+  public currentSlide: number = 0;
 
   constructor() {
     this.container = HtmlCreator.create('div', undefined, 'container');
@@ -53,6 +54,58 @@ export default class ProductPage {
           thumbnailsContainer.append(thumbWrapper);
         });
         productImageWrapper.append(productMainImg, thumbnailsContainer);
+
+        const modalOverlay = HtmlCreator.create('div', undefined, 'product__modal-overlay');
+        const modal = HtmlCreator.create('div', undefined, 'modal');
+        const closeButton = HtmlCreator.create('button', undefined, 'product__modal-close');
+        closeButton.textContent = '×';
+
+        const sliderContainer = HtmlCreator.create('div', undefined, 'product__modal-slider');
+        const slidesWrapper = HtmlCreator.create('div', undefined, 'product__modal-slides');
+        sliderContainer.append(slidesWrapper);
+
+        currentProduct.masterVariant.images.forEach((img) => {
+          const slide = HtmlCreator.create('div', undefined, 'product__modal-slide');
+          const bigImg = HtmlCreator.create('img', undefined, 'product__modal-image');
+          bigImg.src = img.url;
+          slide.append(bigImg);
+          slidesWrapper.append(slide);
+        });
+
+        const previousButton = HtmlCreator.create('button', undefined, 'product__modal-nav', 'product__nav-prev');
+        const nextButton = HtmlCreator.create('button', undefined, 'product__modal-nav', 'product__nav-next');
+        previousButton.textContent = '‹';
+        nextButton.textContent = '›';
+        previousButton.addEventListener('click', () => {
+          if (this.currentSlide > 0) {
+            this.showSlide(this.currentSlide - 1, slidesWrapper);
+          }
+        });
+        nextButton.addEventListener('click', () => {
+          const maxIndex = slidesWrapper.children.length - 1;
+          if (this.currentSlide < maxIndex) {
+            this.showSlide(this.currentSlide + 1, slidesWrapper);
+          }
+        });
+        modal.append(closeButton, sliderContainer, previousButton, nextButton);
+
+        modalOverlay.append(modal);
+        document.body.append(modalOverlay);
+
+        productMainImg.addEventListener('click', () => {
+          modalOverlay.classList.add('open');
+          const activeIndex = Array.from(thumbnailsContainer.children).findIndex((element) =>
+            element.classList.contains('active')
+          );
+          this.showSlide(activeIndex >= 0 ? activeIndex : 0, slidesWrapper);
+        });
+
+        closeButton.addEventListener('click', () => {
+          modalOverlay.classList.remove('open');
+        });
+        modalOverlay.addEventListener('click', (element) => {
+          if (element.target === modalOverlay) modalOverlay.classList.remove('open');
+        });
 
         const productVariants: HTMLDivElement = HtmlCreator.create('div', undefined, 'product__variants');
         const productVariantsName: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__variants-name');
@@ -223,5 +276,10 @@ export default class ProductPage {
 
   private formatCentAmount(price: Price): string {
     return (price.value.centAmount / 10 ** price.value.fractionDigits).toFixed(price.value.fractionDigits);
+  }
+
+  private showSlide(index: number, slider: HTMLDivElement): void {
+    this.currentSlide = index;
+    slider.style.transform = `translateX(-${index * 100}%)`;
   }
 }
