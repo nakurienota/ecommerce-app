@@ -177,6 +177,7 @@
     flex-direction: column;
     width: 475px;
     max-width: 100%;
+    min-height: 217px;
     font-size: 14px;
   }
 
@@ -207,6 +208,91 @@
 
   &__description-selector-line-bottom {
     margin-top: 55px;
+  }
+
+  &__modal-overlay {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0 0 0 / 80%);
+  }
+
+  &__modal-overlay.open {
+    display: flex;
+  }
+
+  &__modal {
+    position: relative;
+    overflow: hidden;
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  &__modal-close {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    border: none;
+    font-size: 2rem;
+    color: $primary-white;
+    background: none;
+  }
+
+  &__modal-slider {
+    position: relative;
+    overflow: hidden;
+    width: 80vw;
+    height: 80vh;
+  }
+
+  &__modal-slides {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+
+  &__modal-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100%;
+  }
+
+  &__modal-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  &__modal-nav {
+    cursor: pointer;
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem 1rem;
+    border: none;
+    font-size: 3rem;
+    color: $primary-white;
+    background: $primary-black;
+  }
+
+  &__nav-prev {
+    left: 10px;
+  }
+
+  &__nav-next {
+    right: 10px;
   }
 
   @media (max-width: $tablet) {
