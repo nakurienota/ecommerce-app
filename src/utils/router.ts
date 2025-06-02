@@ -7,6 +7,7 @@ import CatalogPage from '../pages/catalog/catalog';
 import ContactsPage from '../pages/contaсts/contacts';
 import LoginPage from '../pages/login/login';
 import MainPage from '../pages/main/main';
+import ProductPage from '../pages/product/product';
 import RegistrationPage from '../pages/registration/registration';
 import SalesPage from '../pages/sales/sales';
 
@@ -27,6 +28,7 @@ export enum AppRoutes {
   REGISTRATION = '/registration',
   SALES = '/sales',
   NOT_FOUND = '/404',
+  PRODUCT = '/product/',
 }
 
 export const routes: RoutesType = {
@@ -69,6 +71,12 @@ export default class Router {
       globalThis.history.replaceState({}, '', path);
     }
 
+    const dynamicProductPage: HTMLElement | null = this.matchDynamicProductRoute(path);
+    if (dynamicProductPage) {
+      this.container.append(dynamicProductPage);
+      return this.container;
+    }
+
     const route: HTMLElement = this.routes[path] || this.routes[AppRoutes.NOT_FOUND];
     this.container.append(route);
 
@@ -78,6 +86,15 @@ export default class Router {
   public navigate(path: string): HTMLElement {
     globalThis.history.pushState({}, '', path);
     return this.render();
+  }
+
+  private matchDynamicProductRoute(path: string): HTMLElement | null {
+    const match: RegExpMatchArray | null = path.match(/^\/product\/([^\/]+)$/);
+    if (match) {
+      const key: string = decodeURIComponent(match[1]);
+      return new ProductPage().getHTML(key);
+    }
+    return null;
   }
 }
 
