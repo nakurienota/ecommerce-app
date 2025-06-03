@@ -18,6 +18,7 @@ export default class ProfileAccount {
     if (customerID && userLoggedIn()) {
       this.restHandler.getCustomer(customerID).then((response: ResponseCustomerById) => {
         const items = [
+          { textLabel: 'Email адрес', textValue: response.email ?? 'Не указан', subClass: 'email' },
           { textLabel: 'Имя', textValue: response.firstName ?? 'Не указано', subClass: 'firstname' },
           { textLabel: 'Фамилия', textValue: response.lastName ?? 'Не указана', subClass: 'lastname' },
           { textLabel: 'Дата рождения', textValue: response.dateOfBirth ?? 'Не указана', subClass: 'birthday' },

@@ -126,12 +126,19 @@ export class Resthandler {
     return result;
   }
 
-  public async updateCustomer(firstname: string, lastname: string, date: string, id: string): Promise<boolean> {
+  public async updateCustomer(
+    email: string,
+    firstname: string,
+    lastname: string,
+    date: string,
+    id: string
+  ): Promise<boolean> {
     const version = this.getCurrentVersion();
 
     const dataCustomer: DataCostumer = {
       version: version,
       actions: [
+        { action: 'changeEmail', email: email },
         { action: 'setFirstName', firstName: firstname },
         { action: 'setLastName', lastName: lastname },
         { action: 'setDateOfBirth', dateOfBirth: date },

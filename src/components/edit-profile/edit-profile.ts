@@ -3,6 +3,7 @@ import { registrationInputsEnum } from '@core/enum/registration-inputs';
 import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 
+import { loginValidate } from '../../pages/login/login';
 import { showSuccessPopup } from '../../pages/popup/popup';
 import { birthDateValidate, firsnameValidate, lastnameValidate } from '../../pages/registration/registration';
 
@@ -25,6 +26,14 @@ export default class ProfileAccountEdit {
     if (customerID) {
       this.restHandler.getCustomer(customerID).then((response) => {
         const editInputs = [
+          {
+            textLabel: 'Email адрес',
+            subClass: registrationInputsEnum.EMAIL,
+            typeInput: 'email',
+            validate: loginValidate,
+            required: true,
+            value: response.email ?? 'Не указан',
+          },
           {
             textLabel: 'Имя',
             subClass: registrationInputsEnum.FIRSTNAME,
@@ -111,7 +120,13 @@ export default class ProfileAccountEdit {
 
         buttonSave.addEventListener('click', () => {
           this.restHandler
-            .updateCustomer(this.editValues.firstname, this.editValues.lastname, this.editValues.date, customerID)
+            .updateCustomer(
+              this.editValues.email,
+              this.editValues.firstname,
+              this.editValues.lastname,
+              this.editValues.date,
+              customerID
+            )
             .then(() => {
               showSuccessPopup('Данные успешно обновлены');
             })
