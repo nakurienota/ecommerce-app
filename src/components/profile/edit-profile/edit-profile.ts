@@ -3,9 +3,9 @@ import { registrationInputsEnum } from '@core/enum/registration-inputs';
 import { Resthandler } from '@service/rest/resthandler';
 import HtmlCreator from '@utils/html';
 
-import { loginValidate } from '../../pages/login/login';
-import { showSuccessPopup } from '../../pages/popup/popup';
-import { birthDateValidate, firsnameValidate, lastnameValidate } from '../../pages/registration/registration';
+import { loginValidate } from '../../../pages/login/login';
+import { showSuccessPopup } from '../../../pages/popup/popup';
+import { birthDateValidate, firsnameValidate, lastnameValidate } from '../../../pages/registration/registration';
 
 export type EditInputs = {
   [key: string]: string;

@@ -16,25 +16,25 @@ export type Address = {
   streetNumber: string;
 };
 
-export type ResponceResult = {
+export type ResponseResult = {
   billingAddress: Address[];
   defaultBillingAddress: Address | null;
   defaultShippingAddress: Address | null;
   shippingAddresses: Address[];
 };
 
-function findAddressById(addresses: Address[], id: string | null): Address | null {
+export function findAddressById(addresses: Address[], id: string | null): Address | null {
   if (!id) return null;
 
   return addresses.find((address) => address.id === id) || null;
 }
 
-function findAddressesByIds(addresses: Address[], ids: string[] | null): Address[] {
+export function findAddressesByIds(addresses: Address[], ids: string[] | null): Address[] {
   if (!ids || ids.length === 0) return [];
   return ids.map((id) => findAddressById(addresses, id)).filter((address): address is Address => address !== null);
 }
 
-const baseAddresses = (addressValue: Address, title: string): HTMLDivElement => {
+export const baseAddresses = (addressValue: Address, title: string): HTMLDivElement => {
   const addressItem = HtmlCreator.create('div', undefined, 'profile__address-item');
   const addressItems = [
     { itemLabel: 'Страна', subClass: 'country', itemValue: addressValue.country },
@@ -76,7 +76,7 @@ export default class ProfileAddress {
 
     if (customerID && userLoggedIn()) {
       this.restHandler.getCustomer(customerID).then((response: ResponseCustomerById) => {
-        function mapResponseToResult(response: ResponseCustomerById): ResponceResult {
+        function mapResponseToResult(response: ResponseCustomerById): ResponseResult {
           return {
             billingAddress: findAddressesByIds(response.addresses, response.billingAddressIds),
             defaultBillingAddress: findAddressById(response.addresses, response.defaultBillingAddressId),
@@ -85,7 +85,7 @@ export default class ProfileAddress {
           };
         }
 
-        const result: ResponceResult = mapResponseToResult(response);
+        const result: ResponseResult = mapResponseToResult(response);
 
         Object.entries(result).forEach(([key, value]) => {
           switch (key) {

@@ -1,10 +1,11 @@
 import HtmlCreator from '@utils/html';
 
-import ProfileAccountEdit from '../../components/edit-profile/edit-profile';
-import ProfileAccount from '../../components/profile-account/profile-account';
-import ProfileAddress from '../../components/profile-address/profile-address';
-import ProfileOrders from '../../components/profile-orders/profile-orders';
-import ProfilePassword from '../../components/profile-password.ts/profile-password';
+import ProfileAddressEdit from '../../components/profile/edit-address/edit-address';
+import ProfileAccountEdit from '../../components/profile/edit-profile/edit-profile';
+import ProfileAccount from '../../components/profile/profile-account/profile-account';
+import ProfileAddress from '../../components/profile/profile-address/profile-address';
+import ProfileOrders from '../../components/profile/profile-orders/profile-orders';
+import ProfilePassword from '../../components/profile/profile-password.ts/profile-password';
 
 export default class ProfilePage {
   public container: HTMLElement;
@@ -13,6 +14,7 @@ export default class ProfilePage {
     account: ProfileAccount,
     accountEdit: ProfileAccountEdit,
     addresses: ProfileAddress,
+    addressesEdit: ProfileAddressEdit,
     orders: ProfileOrders,
     password: ProfilePassword,
   };
@@ -33,6 +35,7 @@ export default class ProfilePage {
       { sidebarTitle: 'Мой аккаунт', dataPage: 'account' },
       { sidebarTitle: 'Редактировать аккаунт', dataPage: 'accountEdit' },
       { sidebarTitle: 'Мои адреса', dataPage: 'addresses' },
+      { sidebarTitle: 'Редактировать адреса', dataPage: 'addressesEdit' },
       { sidebarTitle: 'Мои заказы', dataPage: 'orders' },
       { sidebarTitle: 'Смена пароля', dataPage: 'password' },
     ];

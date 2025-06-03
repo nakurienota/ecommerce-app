@@ -7,7 +7,10 @@ import { showSuccessPopup } from '../../pages/popup/popup';
 
 export class Resthandler {
   private static instance: Resthandler;
-  private currentVersion: number | undefined;
+  private currentVersion: number | undefined = Number.parseInt(
+    localStorage.getItem(LocalStorageKeys.USER_VERSION)!,
+    10
+  );
 
   constructor(
     private readonly authUrl: string | undefined = process.env.ECOMMERCE_AUTH_URL,
@@ -79,6 +82,7 @@ export class Resthandler {
 
     const result: CustomersResponse = await response.json();
     if (result.customer?.id) localStorage.setItem(LocalStorageKeys.USER_ID_LOGGED_IN, result.customer.id);
+    if (result.customer.version) localStorage.setItem(LocalStorageKeys.USER_VERSION, `${result.customer.version}`);
     if (result.customer.version) this.currentVersion = result.customer.version;
 
     return !!result;
@@ -133,7 +137,8 @@ export class Resthandler {
     date: string,
     id: string
   ): Promise<boolean> {
-    const version = this.getCurrentVersion();
+    const version =
+      this.getCurrentVersion() ?? Number.parseInt(localStorage.getItem(LocalStorageKeys.USER_VERSION)!, 10);
 
     const dataCustomer: DataCostumer = {
       version: version,
@@ -160,6 +165,7 @@ export class Resthandler {
 
     const result: ResponseCustomerById = await response.json();
     this.currentVersion = result.version;
+    localStorage.setItem(LocalStorageKeys.USER_VERSION, `${result.version}`);
 
     return !!result;
   }
