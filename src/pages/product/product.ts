@@ -249,7 +249,7 @@ export default class ProductPage {
       );
       this.container.append(productWrapper);
       productWrapper.append(productText, productCard, productDescription);
-    } catch (error) {
+    } catch {
       router.navigate(AppRoutes.NOT_FOUND);
     }
     return this.container;
