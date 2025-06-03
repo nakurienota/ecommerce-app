@@ -60,6 +60,7 @@ export default class Router {
   public render(): HTMLElement {
     this.container.replaceChildren();
     let path: string = globalThis.location.pathname;
+    console.log(path);
 
     if (userLoggedIn() && path === AppRoutes.LOGIN) {
       path = AppRoutes.MAIN;
@@ -72,12 +73,14 @@ export default class Router {
     }
 
     const dynamicProductPage: HTMLElement | null = matchDynamicProductRoute(path);
+    console.log('Динамическая страница:', dynamicProductPage);
     if (dynamicProductPage) {
       this.container.append(dynamicProductPage);
       return this.container;
     }
 
     const route: HTMLElement = this.routes[path] || this.routes[AppRoutes.NOT_FOUND];
+    console.log(path);
     this.container.append(route);
 
     return this.container;
@@ -85,14 +88,18 @@ export default class Router {
 
   public navigate(path: string): HTMLElement {
     globalThis.history.pushState({}, '', path);
+    console.log(path);
     return this.render();
   }
 }
 
 function matchDynamicProductRoute(path: string): HTMLElement | null {
+  console.log(path);
   const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
+  console.log(match);
   if (match) {
     const key: string = decodeURIComponent(match[1]);
+    console.log(key);
     return new ProductPage().getHTML(key);
   }
   return null;

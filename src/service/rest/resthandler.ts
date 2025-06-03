@@ -1,5 +1,5 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import type { CustomersResponse, TokenResponse } from '@core/model/dto';
+import type { CustomersResponse, ProductResponse, TokenResponse } from '@core/model/dto';
 import type { Product } from '@core/model/product';
 import { userLoggedIn } from '@utils/security';
 
@@ -111,7 +111,7 @@ export class Resthandler {
   public async getProductById(key: string): Promise<Product> {
     const tokenBearer: string = await this.getToken();
 
-    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/products/` + key, {
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/products/key=` + key, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${tokenBearer}`,
@@ -120,6 +120,26 @@ export class Resthandler {
     });
     if (!response.ok) throw new Error(`Something goes wrong: ${response.statusText}`);
     const result: Product = await response.json();
+    return result;
+  }
+
+  public async getProductsAll(): Promise<Product[]> {
+    const tokenBearer: string = await this.getToken();
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/products`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    const data: ProductResponse = await response.json();
+    const result: Product[] = data.results;
+
     return result;
   }
 }

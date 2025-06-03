@@ -13,6 +13,7 @@ export default class ProductPage {
   }
 
   public getHTML(id: string): HTMLElement {
+    console.log(id);
     const productWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'product');
     productWrapper.textContent = 'Загрузка продукта... ';
     const locale: string = navigator.language || 'ru';
