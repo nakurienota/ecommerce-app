@@ -8,6 +8,7 @@ import ContactsPage from '../pages/contaсts/contacts';
 import LoginPage from '../pages/login/login';
 import MainPage from '../pages/main/main';
 import ProductPage from '../pages/product/product';
+import ProfilePage from '../pages/profile/profile';
 import RegistrationPage from '../pages/registration/registration';
 import SalesPage from '../pages/sales/sales';
 
@@ -29,6 +30,7 @@ export enum AppRoutes {
   SALES = '/sales',
   NOT_FOUND = '/404',
   PRODUCT = '/product/',
+  PROFILE = '/profile',
 }
 
 export const routes: RoutesType = {
@@ -83,6 +85,17 @@ export default class Router {
     const dynamicProductPage: HTMLElement | null = await Router.matchDynamicProductRoute(path);
     if (dynamicProductPage) {
       this.container.append(dynamicProductPage);
+      return this.container;
+    }
+
+    if (!userLoggedIn() && path === AppRoutes.PROFILE) {
+      path = AppRoutes.LOGIN;
+      globalThis.history.replaceState({}, '', path);
+    }
+
+    if (userLoggedIn() && path === AppRoutes.PROFILE) {
+      const dynamicProfilePage: HTMLElement = new ProfilePage().getHTML();
+      this.container.append(dynamicProfilePage);
       return this.container;
     }
 

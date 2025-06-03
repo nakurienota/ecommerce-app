@@ -43,3 +43,55 @@ export type RegistrationInput = {
   validate?: (value: string) => string | null;
   required: boolean;
 };
+
+export type AccountInputs = {
+  textLabel: string;
+  subClass: registrationInputsEnum;
+  typeInput: string;
+  validate?: (value: string) => string | null;
+  required: boolean;
+};
+
+export type ResponseCustomerById = {
+  id: string;
+  version: number;
+  versionModifiedAt: string;
+  lastMessageSequenceNumber: number;
+  createdAt: string;
+  lastModifiedAt: string;
+  lastModifiedBy: {
+    isPlatformClient: boolean;
+    user: {
+      typeId: string;
+      id: string;
+    };
+  };
+  createdBy: {
+    isPlatformClient: boolean;
+    user: {
+      typeId: string;
+      id: string;
+    };
+  };
+  customerNumber: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  title: string;
+  locale: string;
+  salutation: string;
+  dateOfBirth: string;
+  defaultBillingAddressId: string;
+  defaultShippingAddressId: string;
+  password: string;
+  addresses: [];
+  shippingAddressIds: string[];
+  billingAddressIds: string[];
+  isEmailVerified: boolean;
+  customerGroupAssignments: string;
+  externalId: string;
+  key: string;
+  stores: [];
+  authenticationMode: string;
+};
