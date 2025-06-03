@@ -13,7 +13,6 @@ export default class ProductPage {
   }
 
   public async getHTMLAsync(id: string): Promise<HTMLElement> {
-    console.log(id);
     const productWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'product');
     productWrapper.textContent = 'Загрузка продукта... ';
     const locale: string = navigator.language || 'ru';
