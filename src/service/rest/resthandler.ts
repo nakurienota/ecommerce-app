@@ -108,10 +108,10 @@ export class Resthandler {
     return !!result;
   }
 
-  public async getProductById(key: string): Promise<Product> {
+  public async getProductById(id: string): Promise<Product> {
     const tokenBearer: string = await this.getToken();
 
-    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/products/key=` + key, {
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/products/` + id, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${tokenBearer}`,

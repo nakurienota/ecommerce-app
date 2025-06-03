@@ -57,10 +57,9 @@ export default class Router {
     });
   }
 
-  public render(): HTMLElement {
+  public async render(): Promise<HTMLElement> {
     this.container.replaceChildren();
     let path: string = globalThis.location.pathname;
-    console.log(path);
 
     if (userLoggedIn() && path === AppRoutes.LOGIN) {
       path = AppRoutes.MAIN;
@@ -72,37 +71,31 @@ export default class Router {
       globalThis.history.replaceState({}, '', path);
     }
 
-    const dynamicProductPage: HTMLElement | null = matchDynamicProductRoute(path);
-    console.log('Динамическая страница:', dynamicProductPage);
+    const dynamicProductPage: HTMLElement | null = await this.matchDynamicProductRoute(path);
     if (dynamicProductPage) {
       this.container.append(dynamicProductPage);
       return this.container;
     }
 
     const route: HTMLElement = this.routes[path] || this.routes[AppRoutes.NOT_FOUND];
-    console.log(path);
     this.container.append(route);
 
     return this.container;
   }
 
-  public navigate(path: string): HTMLElement {
+  public async navigate(path: string): Promise<HTMLElement> {
     globalThis.history.pushState({}, '', path);
-    console.log(path);
-    return this.render();
+    return await this.render();
   }
-}
 
-function matchDynamicProductRoute(path: string): HTMLElement | null {
-  console.log(path);
-  const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
-  console.log(match);
-  if (match) {
-    const key: string = decodeURIComponent(match[1]);
-    console.log(key);
-    return new ProductPage().getHTML(key);
+  private async matchDynamicProductRoute(path: string): Promise<HTMLElement | null> {
+    const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
+    if (match) {
+      const key: string = decodeURIComponent(match[1]);
+      return await new ProductPage().getHTMLAsync(key);
+    }
+    return null;
   }
-  return null;
 }
 
 export const router = new Router(routes);
