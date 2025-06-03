@@ -57,7 +57,16 @@ export default class Router {
     });
   }
 
-  public render(): HTMLElement {
+  private static async matchDynamicProductRoute(path: string): Promise<HTMLElement | null> {
+    const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
+    if (match) {
+      const key: string = decodeURIComponent(match[1]);
+      return await new ProductPage().getHTMLAsync(key);
+    }
+    return null;
+  }
+
+  public async render(): Promise<HTMLElement> {
     this.container.replaceChildren();
     let path: string = globalThis.location.pathname;
 
@@ -71,7 +80,7 @@ export default class Router {
       globalThis.history.replaceState({}, '', path);
     }
 
-    const dynamicProductPage: HTMLElement | null = matchDynamicProductRoute(path);
+    const dynamicProductPage: HTMLElement | null = await Router.matchDynamicProductRoute(path);
     if (dynamicProductPage) {
       this.container.append(dynamicProductPage);
       return this.container;
@@ -83,19 +92,10 @@ export default class Router {
     return this.container;
   }
 
-  public navigate(path: string): HTMLElement {
+  public async navigate(path: string): Promise<HTMLElement> {
     globalThis.history.pushState({}, '', path);
-    return this.render();
+    return await this.render();
   }
-}
-
-function matchDynamicProductRoute(path: string): HTMLElement | null {
-  const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
-  if (match) {
-    const key: string = decodeURIComponent(match[1]);
-    return new ProductPage().getHTML(key);
-  }
-  return null;
 }
 
 export const router = new Router(routes);

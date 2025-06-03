@@ -9,8 +9,8 @@ export default class App {
     this.container = document.body;
   }
 
-  public render(): HTMLElement {
-    this.container.append(new Header().getHTML(), router.render(), new Footer().getHTML());
+  public async render(): Promise<HTMLElement> {
+    this.container.append(new Header().getHTML(), await router.render(), new Footer().getHTML());
 
     return this.container;
   }
