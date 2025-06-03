@@ -1,5 +1,6 @@
 import HtmlCreator from '@utils/html';
 
+import ProfileAccountEdit from '../../components/edit-profile/edit-profile';
 import ProfileAccount from '../../components/profile-account/profile-account';
 import ProfileAddress from '../../components/profile-address/profile-address';
 import ProfileOrders from '../../components/profile-orders/profile-orders';
@@ -9,10 +10,11 @@ export default class ProfilePage {
   public container: HTMLElement;
   public mainContent: HTMLElement | undefined;
   private contents = {
-    account: new ProfileAccount().getHTML(),
-    addresses: new ProfileAddress().getHTML(),
-    orders: new ProfileOrders().getHTML(),
-    password: new ProfilePassword().getHTML(),
+    account: ProfileAccount,
+    accountEdit: ProfileAccountEdit,
+    addresses: ProfileAddress,
+    orders: ProfileOrders,
+    password: ProfilePassword,
   };
 
   constructor() {
@@ -29,6 +31,7 @@ export default class ProfilePage {
 
     const sidebarItems = [
       { sidebarTitle: 'Мой аккаунт', dataPage: 'account' },
+      { sidebarTitle: 'Редактировать аккаунт', dataPage: 'accountEdit' },
       { sidebarTitle: 'Мои адреса', dataPage: 'addresses' },
       { sidebarTitle: 'Мои заказы', dataPage: 'orders' },
       { sidebarTitle: 'Смена пароля', dataPage: 'password' },
@@ -55,7 +58,8 @@ export default class ProfilePage {
 
         if (page && isContentKey(page) && this.mainContent) {
           this.mainContent.replaceChildren();
-          this.mainContent.append(this.contents[page]);
+          const activePage = this.contents[page];
+          this.mainContent.append(new activePage().getHTML());
 
           sidebarElements.forEach((element) => element.classList.remove('profile__item-active'));
           sidebarItem.classList.add('profile__item-active');
@@ -74,9 +78,11 @@ export default class ProfilePage {
 
     if (sidebarElements.length > 0 && this.mainContent) {
       const firstItem = sidebarElements[0];
+      const firstPage = this.contents.account;
 
       firstItem.classList.add('profile__item-active');
-      this.mainContent.append(this.contents.account);
+
+      this.mainContent.append(new firstPage().getHTML());
     }
 
     return this.container;

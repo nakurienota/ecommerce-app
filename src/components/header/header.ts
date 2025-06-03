@@ -75,7 +75,7 @@ export default class Header {
         ? { textLink: 'Выход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/log_out.webp)' }
         : { textLink: 'Вход', href: AppRoutes.LOGIN, img: 'url(../../assets/images/sing_in.webp)' },
       { textLink: 'Регистрация', href: AppRoutes.REGISTRATION, img: 'url(../../assets/images/reg_icon.webp)' },
-      { textLink: 'Профиль', href: AppRoutes.PROFILE, img: 'url(../../assets/images/reg_icon.webp)' },
+      { textLink: 'Профиль', href: AppRoutes.PROFILE, img: 'url(../../assets/images/profile.webp)' },
       { textLink: 'Корзина', href: AppRoutes.BASKET, img: 'url(../../assets/images/busket.webp)' },
     ];
 

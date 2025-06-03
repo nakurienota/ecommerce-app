@@ -2,10 +2,12 @@ import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { CustomersResponse, ResponseCustomerById, TokenResponse } from '@core/model/dto';
 import { userLoggedIn } from '@utils/security';
 
+// import type { EditInputs } from '../../components/edit-profile/edit-profile';
 import { showSuccessPopup } from '../../pages/popup/popup';
 
 export class Resthandler {
   private static instance: Resthandler;
+  private currentVersion: number | undefined;
 
   constructor(
     private readonly authUrl: string | undefined = process.env.ECOMMERCE_AUTH_URL,
@@ -77,6 +79,7 @@ export class Resthandler {
 
     const result: CustomersResponse = await response.json();
     if (result.customer?.id) localStorage.setItem(LocalStorageKeys.USER_ID_LOGGED_IN, result.customer.id);
+    if (result.customer.version) this.currentVersion = result.customer.version;
 
     return !!result;
   }
@@ -122,4 +125,54 @@ export class Resthandler {
 
     return result;
   }
+
+  public async updateCustomer(firstname: string, lastname: string, date: string, id: string): Promise<boolean> {
+    const version = this.getCurrentVersion();
+
+    const dataCustomer: DataCostumer = {
+      version: version,
+      actions: [
+        { action: 'setFirstName', firstName: firstname },
+        { action: 'setLastName', lastName: lastname },
+        { action: 'setDateOfBirth', dateOfBirth: date },
+      ],
+    };
+
+    const tokenBearer = await this.getToken();
+
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/customers/${id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataCustomer),
+    });
+
+    if (!response.ok) throw new Error(`Login failed: ${response.statusText}`);
+
+    const result: ResponseCustomerById = await response.json();
+    this.currentVersion = result.version;
+
+    return !!result;
+  }
+
+  public getCurrentVersion(): number {
+    return this.currentVersion!;
+  }
 }
+
+export type UpdateCustomerAccount = {
+  date: string;
+  firstname: string;
+  lastname: string;
+};
+
+export type DataCostumer = {
+  version: number;
+  actions: Actions[];
+};
+
+export type Actions = {
+  [key: string]: string;
+};
