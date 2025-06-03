@@ -8,7 +8,7 @@ type Product = {
   createdBy: CreatedBy;
   lastModifiedBy: CreatedBy;
   productType: Reference;
-  wrapperData: ProductWrapperData;
+  masterData: ProductWrapperData;
   key: string;
   taxCategory: Reference;
   priceMode: string;
