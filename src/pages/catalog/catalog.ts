@@ -6,38 +6,61 @@ import { AppRoutes, router } from '@utils/router';
 export default class CatalogPage {
   public container: HTMLElement;
   private readonly restHandler: Resthandler = Resthandler.getInstance();
-  private categoryWrap: HTMLElement;
-  private catalogWrapper: HTMLElement;
+  private readonly catalogWrapper: HTMLElement;
+  private readonly filters: HTMLElement;
+  private readonly catalog: HTMLElement;
 
   constructor() {
     this.container = HtmlCreator.create('div', undefined, 'container');
-    this.categoryWrap = HtmlCreator.create('div', undefined, 'category__wrap');
-    this.catalogWrapper = HtmlCreator.create('section', undefined, 'section', 'catalog');
+    const catalogWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'catalog-wrapper');
+    this.catalogWrapper = catalogWrapper;
+    this.filters = HtmlCreator.create('section', undefined, 'section', 'filters');
+    this.catalog = HtmlCreator.create('section', undefined, 'section', 'catalog');
+    catalogWrapper.append(this.filters, this.catalog);
   }
 
   public getHTML(): HTMLElement {
     this.getCatalog();
-    this.container.append(this.getControls(), this.catalogWrapper);
-
+    this.getFilters();
+    this.container.append(this.catalogWrapper);
     return this.container;
   }
 
-  private getControls(): HTMLElement {
-    const controls = HtmlCreator.create('section', undefined, 'section', 'controls');
-    this.categoryWrap.textContent = 'Категории';
-    controls.append(this.categoryWrap);
+  private getFilters(): void {
+    const filters: HTMLElement = HtmlCreator.create('div', undefined, 'filters__wrapper');
+    filters.textContent = 'Над фильтрацией идет работа';
+    const categoriesFilter: HTMLDivElement = HtmlCreator.create(
+      'div',
+      undefined,
+      'filters__category-filter',
+      'filters__option'
+    );
+    const categoriesFilterName: HTMLDivElement = HtmlCreator.create('div', undefined, 'filters__category-filter-name');
+    categoriesFilterName.textContent = 'Категории';
+    const categoriesMenu: HTMLDivElement = HtmlCreator.create('div', undefined, 'filters__category-menu');
 
-    return controls;
+    ['фентези', 'научпоп', 'роман', 'детские'].forEach((cat) => {
+      const option: HTMLDivElement = HtmlCreator.create('div', undefined, 'filters__category-menu-item');
+      option.textContent = cat;
+      option.addEventListener('click', () => {});
+      categoriesMenu.append(option);
+    });
+
+    categoriesFilterName.addEventListener('click', () => {
+      categoriesMenu.style.display = categoriesMenu.style.display === 'none' ? 'block' : 'none';
+    });
+
+    categoriesFilter.append(categoriesFilterName, categoriesMenu);
+    filters.append(categoriesFilter);
+    this.filters.append(filters);
   }
 
   private getCatalog(): void {
     const locale: string = navigator.language || 'ru';
     const lang: string = locale.split('-')[0];
     this.restHandler.getProductsAll().then((response: Product[]) => {
-      console.log(response);
       for (let product of response) {
         const item: ProductData = product.masterData.current;
-        console.log(product);
         const productCard = HtmlCreator.create('div', product.id, 'product__card-item');
         const productImgWrap = HtmlCreator.create('div', undefined, 'product__img-wrapper');
         const productImg = HtmlCreator.create('img', undefined, 'product__img');
@@ -53,13 +76,13 @@ export default class CatalogPage {
         productPrice.textContent = `${item.masterVariant.prices[0].value.centAmount} ${item.masterVariant.prices[0].value.currencyCode}`;
         productCard.append(productImgWrap, productName, productDesc, productPrice);
         productCard.addEventListener('click', (event) => {
-          const element = event.currentTarget;
+          const element: EventTarget | null = event.currentTarget;
 
-          if (element instanceof Element) {
+          if (element !== null && element instanceof Element) {
             router.navigate(`${AppRoutes.PRODUCT}${element.id}`);
           }
         });
-        this.catalogWrapper.append(productCard);
+        this.catalog.append(productCard);
       }
     });
   }
