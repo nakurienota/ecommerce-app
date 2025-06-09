@@ -225,7 +225,7 @@ export default class RegistrationPage {
       checkboxLabel.setAttribute('for', id);
 
       checkbox.addEventListener('input', () => {
-        if (id === 'shipping' && !checkbox.checked) {
+        if (checkbox.id === 'shipping' && !checkbox.checked) {
           billingWrapper.classList.add('registration__address-wrapper-visible');
         } else {
           billingWrapper.classList.remove('registration__address-wrapper-visible');

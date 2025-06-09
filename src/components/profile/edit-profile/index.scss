@@ -1,0 +1,45 @@
+.profile__account-edit {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+
+  &-input-wrapper {
+    position: relative;
+    gap: 5px;
+    width: 100%;
+    max-width: 600px;
+
+    @include flex-column;
+  }
+
+  &-input-field {
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 15px 20px;
+    border: none;
+    border-radius: $border-radius-base;
+    font-size: 14px;
+    font-weight: $font-weight-base;
+    line-height: 1.6;
+    color: $input-text-color;
+    background-color: $input-bg-color;
+    outline: none;
+  }
+
+  &-label {
+    @include label-style;
+  }
+
+  &-error {
+    position: absolute;
+    bottom: 5px;
+    left: 22px;
+    display: block;
+    max-width: 100%;
+    font-size: 14px;
+    font-weight: $font-weight-base;
+    line-height: 1.6;
+    color: $input-error-text-color;
+  }
+}

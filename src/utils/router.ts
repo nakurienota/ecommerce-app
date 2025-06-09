@@ -7,6 +7,8 @@ import CatalogPage from '../pages/catalog/catalog';
 import ContactsPage from '../pages/contaсts/contacts';
 import LoginPage from '../pages/login/login';
 import MainPage from '../pages/main/main';
+import ProductPage from '../pages/product/product';
+import ProfilePage from '../pages/profile/profile';
 import RegistrationPage from '../pages/registration/registration';
 import SalesPage from '../pages/sales/sales';
 
@@ -27,6 +29,8 @@ export enum AppRoutes {
   REGISTRATION = '/registration',
   SALES = '/sales',
   NOT_FOUND = '/404',
+  PRODUCT = '/product/',
+  PROFILE = '/profile',
 }
 
 export const routes: RoutesType = {
@@ -55,7 +59,16 @@ export default class Router {
     });
   }
 
-  public render(): HTMLElement {
+  private static async matchDynamicProductRoute(path: string): Promise<HTMLElement | null> {
+    const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
+    if (match) {
+      const key: string = decodeURIComponent(match[1]);
+      return await new ProductPage().getHTMLAsync(key);
+    }
+    return null;
+  }
+
+  public async render(): Promise<HTMLElement> {
     this.container.replaceChildren();
     let path: string = globalThis.location.pathname;
 
@@ -69,15 +82,32 @@ export default class Router {
       globalThis.history.replaceState({}, '', path);
     }
 
+    const dynamicProductPage: HTMLElement | null = await Router.matchDynamicProductRoute(path);
+    if (dynamicProductPage) {
+      this.container.append(dynamicProductPage);
+      return this.container;
+    }
+
+    if (!userLoggedIn() && path === AppRoutes.PROFILE) {
+      path = AppRoutes.LOGIN;
+      globalThis.history.replaceState({}, '', path);
+    }
+
+    if (userLoggedIn() && path === AppRoutes.PROFILE) {
+      const dynamicProfilePage: HTMLElement = new ProfilePage().getHTML();
+      this.container.append(dynamicProfilePage);
+      return this.container;
+    }
+
     const route: HTMLElement = this.routes[path] || this.routes[AppRoutes.NOT_FOUND];
     this.container.append(route);
 
     return this.container;
   }
 
-  public navigate(path: string): HTMLElement {
+  public async navigate(path: string): Promise<HTMLElement> {
     globalThis.history.pushState({}, '', path);
-    return this.render();
+    return await this.render();
   }
 }
 
