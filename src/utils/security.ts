@@ -12,7 +12,13 @@ export function validTokenExists(): boolean {
 
 export function clearCurrentLoggedInUser(): void {
   const loggedUser: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
-  if (loggedUser) localStorage.removeItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+  if (loggedUser) {
+    localStorage.removeItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+  }
+  const loggedUserCart: string | null = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+  if (loggedUserCart) {
+    localStorage.removeItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+  }
 }
 
 export function authRequestMatcher(path: string): boolean {
@@ -23,4 +29,9 @@ export function authRequestMatcher(path: string): boolean {
 export function userLoggedIn(): boolean {
   const loggedId: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
   return !!loggedId;
+}
+
+export function userLoggedCart(): string | null {
+  const userLoggedCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+  return userLoggedCartId;
 }

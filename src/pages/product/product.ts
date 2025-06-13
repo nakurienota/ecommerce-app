@@ -1,5 +1,6 @@
-import type { Attribute, Price, Product, ProductData } from '@core/model/product';
+import type { Attribute, Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
+import { formatCentAmount } from '@utils/formatters';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
@@ -258,10 +259,6 @@ export default class ProductPage {
     this.currentSlide = index;
     slider.style.transform = `translateX(-${index * 100}%)`;
   }
-}
-
-function formatCentAmount(price: Price): string {
-  return (price.value.centAmount / 10 ** price.value.fractionDigits).toFixed(price.value.fractionDigits);
 }
 
 function appendDescDetails(wrapper: HTMLDivElement, attributes: Attribute[]): void {

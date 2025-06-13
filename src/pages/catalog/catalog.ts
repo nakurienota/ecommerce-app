@@ -1,7 +1,11 @@
+import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
+import { formatCentAmount, formatDiscount } from '@utils/formatters';
 import HtmlCreator from '@utils/html';
+import { isNotNullable } from '@utils/not-nullable';
 import { AppRoutes, router } from '@utils/router';
+// import { userLoggedCart } from '@utils/security';
 
 export default class CatalogPage {
   public container: HTMLElement;
@@ -59,7 +63,9 @@ export default class CatalogPage {
     const locale: string = navigator.language || 'ru';
     const lang: string = locale.split('-')[0];
     this.restHandler.getProductsAll().then((response: Product[]) => {
+      // console.log(response);
       for (let product of response) {
+        // console.log(product);
         const item: ProductData = product.masterData.current;
         const productCard = HtmlCreator.create('div', product.id, 'product__card-item');
         const productImgWrap = HtmlCreator.create('div', undefined, 'product__img-wrapper');
@@ -72,14 +78,56 @@ export default class CatalogPage {
         const productDesc = HtmlCreator.create('p', undefined, 'product__desc');
         const text = `${item.description[lang]}`;
         productDesc.textContent = text.slice(0, 150) + '...';
-        const productPrice = HtmlCreator.create('p', undefined, 'product__price');
-        productPrice.textContent = `${item.masterVariant.prices[0].value.centAmount} ${item.masterVariant.prices[0].value.currencyCode}`;
-        productCard.append(productImgWrap, productName, productDesc, productPrice);
-        productCard.addEventListener('click', (event) => {
-          const element: EventTarget | null = event.currentTarget;
+        const productPriceWrap = HtmlCreator.create('div', undefined, 'product__price-wrap');
+        const productPrice = HtmlCreator.create('p', undefined, 'product__price-norm');
+        productPrice.textContent = `${formatCentAmount(item.masterVariant.prices[0])} ${item.masterVariant.prices[0].value.currencyCode}`;
+        const productPriceDiscount = HtmlCreator.create('p', undefined, 'product__price-discount');
 
-          if (element !== null && element instanceof Element) {
-            router.navigate(`${AppRoutes.PRODUCT}${element.id}`);
+        if (isNotNullable(item.masterVariant.prices[0].discounted)) {
+          productPriceDiscount.textContent = `${formatDiscount(item.masterVariant.prices[0])} ${item.masterVariant.prices[0].discounted.value.currencyCode}`;
+          productPrice.classList.add('discounted');
+        }
+
+        const productCartButton = HtmlCreator.create('button', undefined, 'product__cart-btn');
+        productCartButton.textContent = 'В корзину';
+
+        productPriceWrap.append(productPriceDiscount, productPrice);
+        productCard.append(productImgWrap, productName, productDesc, productPriceWrap, productCartButton);
+        productCard.addEventListener('click', async (event) => {
+          const element: EventTarget | null = event.currentTarget;
+          const target = event.target;
+
+          if (element !== null && element instanceof Element && target instanceof Element) {
+            if (target.classList.contains('product__cart-btn')) {
+              const customerId = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+              if (isNotNullable(customerId)) {
+                const cartId = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+                if (isNotNullable(cartId)) {
+                  const cart = await this.restHandler.addProductToCart(cartId, element.id);
+                  console.log(cart);
+                } else {
+                  const cartId = await this.restHandler.createCart();
+                  localStorage.setItem(LocalStorageKeys.USER_LOGGED_CART_ID, cartId);
+                  const cart = await this.restHandler.setCustomerIdForCart(cartId, customerId);
+                  console.log(cart);
+                  const data = await this.restHandler.addProductToCart(cartId, element.id);
+                  console.log(data);
+                }
+              } else {
+                const anonymousCartId = localStorage.getItem(LocalStorageKeys.ANONYMOUS_CART_ID);
+                if (isNotNullable(anonymousCartId)) {
+                  const data = await this.restHandler.addProductToCart(anonymousCartId, element.id);
+                  console.log(data);
+                } else {
+                  const newAnonymousCartId = await this.restHandler.createCart();
+                  localStorage.setItem(LocalStorageKeys.ANONYMOUS_CART_ID, newAnonymousCartId);
+                  const data = await this.restHandler.addProductToCart(newAnonymousCartId, element.id);
+                  console.log(data);
+                }
+              }
+            } else {
+              router.navigate(`${AppRoutes.PRODUCT}${element.id}`);
+            }
           }
         });
         this.catalog.append(productCard);

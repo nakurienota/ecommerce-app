@@ -1,9 +1,15 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import type { CustomersResponse, ProductResponse, ResponseCustomerById, TokenResponse } from '@core/model/dto';
+import type { Cart } from '@core/model/cart';
+import type {
+  CustomersResponse,
+  ProductResponse,
+  ResponseCustomerById,
+  TokenResponse,
+  CartResponse,
+} from '@core/model/dto';
 import type { Product } from '@core/model/product';
 import { userLoggedIn } from '@utils/security';
 
-// import type { EditInputs } from '../../components/edit-profile/edit-profile';
 import { showSuccessPopup } from '../../pages/popup/popup';
 
 export class Resthandler {
@@ -208,6 +214,165 @@ export class Resthandler {
 
   public getCurrentVersion(): number {
     return this.currentVersion!;
+  }
+
+  public async createCart(): Promise<string> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response = await fetch(`${this.apiUrl}/${this.projectKey}/carts`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currency: 'RUB',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Не удалось создать корзину: ${response.status} ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      console.log('Создана корзина для пользователя:', data);
+      console.log(data.id);
+      return data.id;
+    } catch (error) {
+      console.error('Ошибка при создании корзины:', error);
+      return '';
+    }
+  }
+
+  public async getCartByCustomerId(customerId: string): Promise<string> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(
+        `${this.apiUrl}/${this.projectKey}/carts?where=customerId="${customerId}"`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${tokenBearer}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.status} ${response.statusText}`);
+      }
+
+      const data: CartResponse = await response.json();
+
+      if (data.results.length > 0) {
+        console.log('Корзина пользователя:', data.results[0]);
+        return data.results[0].id;
+      } else {
+        return '';
+      }
+    } catch (error) {
+      console.error('Ошибка при получении корзины:', error);
+      return '';
+    }
+  }
+
+  public async setCustomerIdForCart(cartId: string, customerId: string): Promise<number> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: 1,
+          actions: [
+            {
+              action: 'setCustomerId',
+              customerId: customerId,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.status} ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      console.log(data);
+
+      return data.version;
+    } catch (error) {
+      console.error('Ошибка при получении корзины:', error);
+      return 0;
+    }
+  }
+
+  public async addProductToCart(cartId: string, productId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const currentVersion = await this.getCartVersion(cartId);
+      console.log(currentVersion);
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'addLineItem',
+              productId: `${productId}`,
+              variantId: 1,
+              quantity: 1,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      console.log(data);
+
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async getCartVersion(cartId: string): Promise<number> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Ошибка при определении версии: ${response.statusText}`);
+      }
+
+      const cartData: Cart = await response.json();
+      const currentVersion = cartData.version;
+      return currentVersion;
+    } catch {
+      return 0;
+    }
   }
 }
 
