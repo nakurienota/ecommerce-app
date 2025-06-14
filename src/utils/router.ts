@@ -36,7 +36,6 @@ export enum AppRoutes {
 export const routes: RoutesType = {
   [AppRoutes.ROOT]: new MainPage().getHTML(),
   [AppRoutes.ABOUT]: new AboutPage().getHTML(),
-  [AppRoutes.BASKET]: new BasketPage().getHTML(),
   [AppRoutes.CATALOG]: new CatalogPage().getHTML(),
   [AppRoutes.CONTACTS]: new ContactsPage().getHTML(),
   [AppRoutes.LOGIN]: new LoginPage().getHTML(),
@@ -59,12 +58,14 @@ export default class Router {
     });
   }
 
-  private static async matchDynamicProductRoute(path: string): Promise<HTMLElement | null> {
-    const match: RegExpMatchArray | null = path.match(/^\/product\/([^/]+)$/);
+  private static async matchPageDynamicData(path: string): Promise<HTMLElement | null> {
+    const match: RegExpMatchArray | null = RegExp(/^\/product\/([^/]+)$/).exec(path);
     if (match) {
       const key: string = decodeURIComponent(match[1]);
       return await new ProductPage().getHTMLAsync(key);
     }
+    const matchBasket: RegExpMatchArray | null = RegExp(/^\/basket\/?$/).exec(path);
+    if (matchBasket) return await new BasketPage().getHTMLAsync();
     return null;
   }
 
@@ -82,9 +83,9 @@ export default class Router {
       globalThis.history.replaceState({}, '', path);
     }
 
-    const dynamicProductPage: HTMLElement | null = await Router.matchDynamicProductRoute(path);
-    if (dynamicProductPage) {
-      this.container.append(dynamicProductPage);
+    const dynamicPage: HTMLElement | null = await Router.matchPageDynamicData(path);
+    if (dynamicPage) {
+      this.container.append(dynamicPage);
       return this.container;
     }
 

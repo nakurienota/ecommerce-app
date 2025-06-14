@@ -306,4 +306,4 @@ type TaxPortion = {
   name?: string;
 };
 
-export { Cart };
+export { Cart, LineItem };

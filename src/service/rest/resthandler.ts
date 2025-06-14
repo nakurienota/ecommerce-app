@@ -1,11 +1,11 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart } from '@core/model/cart';
 import type {
+  CartResponse,
   CustomersResponse,
   ProductResponse,
   ResponseCustomerById,
   TokenResponse,
-  CartResponse,
 } from '@core/model/dto';
 import type { Product } from '@core/model/product';
 import { userLoggedIn } from '@utils/security';
@@ -245,37 +245,17 @@ export class Resthandler {
     }
   }
 
-  public async getCartByCustomerId(customerId: string): Promise<string> {
-    try {
-      const tokenBearer: string = await this.getToken();
-
-      const response: Response = await fetch(
-        `${this.apiUrl}/${this.projectKey}/carts?where=customerId="${customerId}"`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${tokenBearer}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Something goes wrong: ${response.status} ${response.statusText}`);
-      }
-
-      const data: CartResponse = await response.json();
-
-      if (data.results.length > 0) {
-        console.log('Корзина пользователя:', data.results[0]);
-        return data.results[0].id;
-      } else {
-        return '';
-      }
-    } catch (error) {
-      console.error('Ошибка при получении корзины:', error);
-      return '';
-    }
+  public async getCartByCustomerId(customerId: string): Promise<CartResponse> {
+    const tokenBearer: string = await this.getToken();
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts?where=customerId="${customerId}"`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) throw new Error(`Something goes wrong: ${response.statusText}`);
+    return await response.json();
   }
 
   public async setCustomerIdForCart(cartId: string, customerId: string): Promise<number> {
