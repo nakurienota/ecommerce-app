@@ -5,7 +5,8 @@ import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import { Cart, LineItem } from '@core/model/cart';
 import { CartResponse } from '@core/model/dto';
 import { Price, Product, type ProductData } from '@core/model/product';
-import { formatCentAmount } from '@utils/formatters';
+import { formatCentAmount, formatCentAmountLineItem } from '@utils/formatters';
+import { AppRoutes, router } from '@utils/router';
 
 export default class BasketPage {
   public container: HTMLElement;
@@ -31,12 +32,12 @@ export default class BasketPage {
     const currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
       return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
     });
-    const totalCost: Price[] = [];
+    const totalCost: LineItem[] = [];
     for (const item of currentCart.lineItems) {
+      console.log(item);
       const response: Product = await this.restHandler.getProductById(item.productId);
       const currentData: ProductData = response.masterData.current;
-      console.log(currentData);
-      const basketLine: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line');
+      const basketLine: HTMLDivElement = HtmlCreator.create('div', item.productId, 'basket__line');
       const basketImageWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line-image-wrapper');
       const basketLineImage: HTMLImageElement = HtmlCreator.create('img', undefined, 'basket__line-image');
       basketLineImage.src = currentData.masterVariant.images[0].url;
@@ -44,14 +45,38 @@ export default class BasketPage {
       const basketLineName: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line-name');
       basketLineName.textContent = currentData.name[lang];
       const basketLinePrice: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line-price');
-      basketLinePrice.textContent = formatCentAmount(currentData.masterVariant.prices[0]);
-      totalCost.push(currentData.masterVariant.prices[0]);
-      basketLine.append(basketImageWrapper, basketLineName, basketLinePrice);
+      basketLinePrice.textContent = formatCentAmountLineItem(item);
+      totalCost.push(item);
+
+      const basketLineQuantity: HTMLInputElement = HtmlCreator.create('input', undefined, 'basket__line-quantity');
+      basketLineQuantity.type = 'number';
+      basketLineQuantity.value = String(item.quantity);
+
+      basketLine.append(basketImageWrapper, basketLineName, basketLinePrice, basketLineQuantity);
       basketWrapper.append(basketLine);
     }
     const basketTotalCost: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__total-cost');
-    basketTotalCost.textContent = `Всего: ` + formatCentAmount(...totalCost);
+    basketTotalCost.textContent = `Всего: ` + totalCost ? formatCentAmountLineItem(...totalCost) : '0.00';
     basketWrapper.append(basketTotalCost);
+
+    const basketClearAllButton: HTMLButtonElement = HtmlCreator.create(
+      'button',
+      undefined,
+      'basket__clear-all-button',
+      'default-submit-button'
+    );
+    basketClearAllButton.textContent = 'Очистить корзину';
+    const cartId = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+    basketClearAllButton.addEventListener('click', async () => {
+      console.log('cardId ' + cartId);
+      if (cartId) {
+        const lines: HTMLCollectionOf<Element> = document.getElementsByClassName('basket__line');
+        const promises = Array.from(lines).map((line) => this.restHandler.removeProductFromCart(cartId, line.id));
+        await Promise.all(promises);
+        await router.navigate(AppRoutes.BASKET);
+      }
+    });
+    basketWrapper.append(basketClearAllButton);
 
     this.container.append(basketWrapper);
     return this.container;

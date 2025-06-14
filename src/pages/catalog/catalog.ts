@@ -102,6 +102,7 @@ export default class CatalogPage {
               const customerId = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
               if (isNotNullable(customerId)) {
                 const cartId = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+                console.log('cardID ' + cartId);
                 if (isNotNullable(cartId)) {
                   const cart = await this.restHandler.addProductToCart(cartId, element.id);
                   console.log(cart);

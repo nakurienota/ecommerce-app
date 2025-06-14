@@ -332,6 +332,33 @@ export class Resthandler {
     }
   }
 
+  public async removeProductFromCart(cartId: string, productId: string): Promise<boolean> {
+    const tokenBearer: string = await this.getToken();
+    console.log('removing id ' + productId);
+
+    const currentVersion = await this.getCartVersion(cartId);
+    console.log(currentVersion);
+
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/{$cartId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: currentVersion,
+        action: [
+          {
+            action: 'removeLineItem',
+            lineItemId: productId,
+            quantity: 1,
+          },
+        ],
+      }),
+    });
+    return response.ok;
+  }
+
   public async getCartVersion(cartId: string): Promise<number> {
     try {
       const tokenBearer: string = await this.getToken();

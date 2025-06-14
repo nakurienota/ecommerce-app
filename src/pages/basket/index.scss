@@ -58,4 +58,18 @@
     font-weight: bold;
     text-transform: uppercase;
   }
+
+  &__line-quantity {
+    width: 40px;
+    padding: 0.4rem;
+    border-radius: $border-radius;
+    text-align: center;
+    outline: none;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      margin: 0;
+      appearance: none;
+    }
+  }
 }

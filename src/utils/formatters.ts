@@ -1,5 +1,6 @@
 import type { Price } from '@core/model/product';
 import { isNotNullable } from '@utils/not-nullable';
+import { LineItem } from '@core/model/cart';
 
 function formatCentAmount(...prices: Price[]): string {
   if (prices.length === 0) return '0';
@@ -12,6 +13,17 @@ function formatCentAmount(...prices: Price[]): string {
   return (total / 10 ** maxFractionDigits).toFixed(maxFractionDigits);
 }
 
+function formatCentAmountLineItem(...prices: LineItem[]): string {
+  if (prices.length === 0) return '0';
+  let total: number = 0;
+  const maxFractionDigits: number = Math.max(...prices.map((p) => p.totalPrice.fractionDigits));
+  for (const price of prices) {
+    const diff: number = maxFractionDigits - price.totalPrice.fractionDigits;
+    total += price.totalPrice.centAmount * 10 ** diff;
+  }
+  return (total / 10 ** maxFractionDigits).toFixed(maxFractionDigits);
+}
+
 function formatDiscount(price: Price): string {
   if (isNotNullable(price.discounted)) {
     return `${(price.discounted.value.centAmount / 10 ** price.discounted?.value.fractionDigits).toFixed(price.value.fractionDigits)}`;
@@ -19,4 +31,4 @@ function formatDiscount(price: Price): string {
   return '';
 }
 
-export { formatCentAmount, formatDiscount };
+export { formatCentAmount, formatDiscount, formatCentAmountLineItem };
