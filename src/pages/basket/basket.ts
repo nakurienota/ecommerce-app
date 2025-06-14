@@ -4,7 +4,7 @@ import { Resthandler } from '@service/rest/resthandler';
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import { Cart, LineItem } from '@core/model/cart';
 import { CartResponse } from '@core/model/dto';
-import { Product, type ProductData } from '@core/model/product';
+import { Price, Product, type ProductData } from '@core/model/product';
 import { formatCentAmount } from '@utils/formatters';
 
 export default class BasketPage {
@@ -22,10 +22,16 @@ export default class BasketPage {
 
     const customerID: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
     if (!customerID) throw new Error('User not logged in');
+
+    const basketTitle: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__title');
+    basketTitle.textContent = 'Корзина';
+    basketWrapper.append(basketTitle);
+
     const cart: CartResponse = await this.restHandler.getCartByCustomerId(customerID);
     const currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
       return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
     });
+    const totalCost: Price[] = [];
     for (const item of currentCart.lineItems) {
       const response: Product = await this.restHandler.getProductById(item.productId);
       const currentData: ProductData = response.masterData.current;
@@ -39,9 +45,13 @@ export default class BasketPage {
       basketLineName.textContent = currentData.name[lang];
       const basketLinePrice: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line-price');
       basketLinePrice.textContent = formatCentAmount(currentData.masterVariant.prices[0]);
+      totalCost.push(currentData.masterVariant.prices[0]);
       basketLine.append(basketImageWrapper, basketLineName, basketLinePrice);
       basketWrapper.append(basketLine);
     }
+    const basketTotalCost: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__total-cost');
+    basketTotalCost.textContent = `Всего: ` + formatCentAmount(...totalCost);
+    basketWrapper.append(basketTotalCost);
 
     this.container.append(basketWrapper);
     return this.container;
