@@ -1,6 +1,6 @@
 .catalog-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .section {
@@ -119,6 +119,10 @@
     align-self: center;
 
     @include button-style($primary-black, $primary-white, $border-radius);
+  }
+
+  &__cart-btn[disabled] {
+    background-color: #8c8f96;
   }
 }
 

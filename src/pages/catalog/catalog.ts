@@ -1,10 +1,10 @@
+import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount, formatDiscount } from '@utils/formatters';
 import HtmlCreator from '@utils/html';
 import { isNotNullable } from '@utils/not-nullable';
 import { AppRoutes, router } from '@utils/router';
-// import { userLoggedCart } from '@utils/security';
 
 export default class CatalogPage {
   public container: HTMLElement;
@@ -27,6 +27,23 @@ export default class CatalogPage {
     this.getFilters();
     this.container.append(this.catalogWrapper);
     return this.container;
+  }
+
+  public async checkProductInCart(productId: string): Promise<boolean> {
+    try {
+      const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+
+      if (isNotNullable(cartId)) {
+        const cart = await this.restHandler.getCartByCartId(cartId);
+        const productsArray: string[] = cart.lineItems.map((item) => item.productId);
+        return productsArray.includes(productId);
+      } else {
+        return false;
+      }
+    } catch {
+      console.error('Ошибка!');
+      return false;
+    }
   }
 
   private getFilters(): void {
@@ -58,13 +75,11 @@ export default class CatalogPage {
     this.filters.append(filters);
   }
 
-  private getCatalog(): void {
+  private async getCatalog(): Promise<void> {
     const locale: string = navigator.language || 'ru';
     const lang: string = locale.split('-')[0];
     this.restHandler.getProductsAll().then((response: Product[]) => {
-      // console.log(response);
       for (let product of response) {
-        // console.log(product);
         const item: ProductData = product.masterData.current;
         const productCard = HtmlCreator.create('div', product.id, 'product__card-item');
         const productImgWrap = HtmlCreator.create('div', undefined, 'product__img-wrapper');
@@ -88,7 +103,14 @@ export default class CatalogPage {
         }
 
         const productCartButton = HtmlCreator.create('button', undefined, 'product__cart-btn');
-        productCartButton.textContent = 'В корзину';
+        this.checkProductInCart(product.id).then((response: boolean) => {
+          if (response) {
+            productCartButton.textContent = 'В корзинe';
+            productCartButton.setAttribute('disabled', 'true');
+          } else {
+            productCartButton.textContent = 'В корзину';
+          }
+        });
 
         productPriceWrap.append(productPriceDiscount, productPrice);
         productCard.append(productImgWrap, productName, productDesc, productPriceWrap, productCartButton);
@@ -98,11 +120,10 @@ export default class CatalogPage {
 
           if (element !== null && element instanceof Element && target instanceof Element) {
             if (target.classList.contains('product__cart-btn')) {
-              // await this.restHandler.clearCart('5a41b612-e0d2-44c7-bb95-37babfaa3a12');
-              // await this.restHandler.removeProductFromCart('5a41b612-e0d2-44c7-bb95-37babfaa3a12', element.id);
-              // await this.restHandler.getCartByCustomerId('d1edc36a-15fc-4192-874f-5adb63d34efa');
-              // await this.restHandler.getCartByCartId('5a41b612-e0d2-44c7-bb95-37babfaa3a12');
-              return await this.restHandler.addProductToCartButton(element.id);
+              if (await this.restHandler.addProductToCartButton(element.id)) {
+                productCartButton.textContent = 'В корзинe';
+                productCartButton.setAttribute('disabled', 'true');
+              }
             } else {
               router.navigate(`${AppRoutes.PRODUCT}${element.id}`);
             }
