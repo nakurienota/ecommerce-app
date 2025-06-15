@@ -1,7 +1,7 @@
 import type { Attribute, Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount } from '@utils/formatters';
-import HtmlCreator from '@utils/html';
+import HtmlCreator, { showNotification } from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
 export default class ProductPage {
@@ -102,7 +102,7 @@ export default class ProductPage {
       closeButton.addEventListener('click', () => {
         modalOverlay.classList.remove('open');
       });
-      modalOverlay.addEventListener('click', (element) => {
+      modalOverlay.addEventListener('click', (element: MouseEvent) => {
         if (element.target === modalOverlay) modalOverlay.classList.remove('open');
       });
 
@@ -153,6 +153,9 @@ export default class ProductPage {
         'default-submit-button'
       );
       productVariantsCartButton.textContent = 'Добавить в корзину   >';
+      productVariantsCartButton.addEventListener('click', () => {
+        showNotification('Товар добавлен в корзину');
+      });
       productVariantsPriceCart.append(productVariantsPrice, productVariantsCartButton);
       productVariants.append(
         productVariantsName,
