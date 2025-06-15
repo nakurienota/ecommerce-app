@@ -51,7 +51,19 @@ export default class BasketPage {
       basketLineQuantity.type = 'number';
       basketLineQuantity.value = String(item.quantity);
 
-      basketLine.append(basketImageWrapper, basketLineName, basketLinePrice, basketLineQuantity);
+      const basketRemoveButton: HTMLButtonElement = HtmlCreator.create(
+        'button',
+        undefined,
+        'basket__line-remove-button',
+        'default-submit-button'
+      );
+      basketRemoveButton.textContent = 'x';
+      basketRemoveButton.addEventListener('click', () => {
+        this.restHandler.removeProductFromCart(item.productId);
+        basketLine.remove();
+      });
+
+      basketLine.append(basketImageWrapper, basketLineName, basketLinePrice, basketLineQuantity, basketRemoveButton);
       basketWrapper.append(basketLine);
     }
     const basketTotalCost: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__total-cost');

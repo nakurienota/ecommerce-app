@@ -372,10 +372,11 @@ export class Resthandler {
     }
   }
 
-  public async removeProductFromCart(cartId: string, productId: string): Promise<boolean> {
+  public async removeProductFromCart(productId: string): Promise<boolean> {
     try {
       const tokenBearer: string = await this.getToken();
-
+      const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+      if (!cartId) throw new Error('Something goes wrong');
       const currentVersion = await this.getCartVersion(cartId);
       console.log(currentVersion);
 
@@ -404,6 +405,7 @@ export class Resthandler {
 
       const data: Cart = await response.json();
       console.log(data);
+      showNotification('Товар удален из корзины');
       return !!data;
     } catch {
       return false;
@@ -446,11 +448,14 @@ export class Resthandler {
     }
   }
 
-  public async removeProductFromCartByQuantity(cartId: string, productId: string): Promise<boolean> {
+  public async removeProductFromCartByQuantity(productId: string): Promise<boolean> {
     try {
       const tokenBearer: string = await this.getToken();
 
-      const currentVersion = await this.getCartVersion(cartId);
+      const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+      if (!cartId) throw new Error('Something goes wrong');
+
+      const currentVersion: number = await this.getCartVersion(cartId);
       console.log(currentVersion);
 
       const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
