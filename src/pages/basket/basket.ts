@@ -79,6 +79,13 @@ export default class BasketPage {
       basketLine.append(basketImageWrapper, basketLineName, basketLinePrice, basketLineQuantity, basketRemoveButton);
       basketWrapper.append(basketLine);
     }
+
+    if (currentCart.lineItems.length === 0) {
+      const basketLine: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line');
+      basketLine.textContent = 'Корзина пуста';
+      basketWrapper.append(basketLine);
+    }
+
     const basketTotalCost: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__total-cost');
     basketTotalCost.textContent = 'Всего: ' + totalCost ? formatCentAmountLineItem(...totalCost) : '0.00';
     basketWrapper.append(basketTotalCost);
@@ -102,7 +109,18 @@ export default class BasketPage {
         await router.navigate(AppRoutes.BASKET);
       }
     });
-    basketWrapper.append(basketClearAllButton);
+
+    const basketContinueShoppingButton: HTMLButtonElement = HtmlCreator.create(
+      'button',
+      undefined,
+      'default-submit-button'
+    );
+    basketContinueShoppingButton.textContent = 'Продолжить покупки';
+    basketContinueShoppingButton.addEventListener('click', () => {
+      router.navigate(AppRoutes.CATALOG);
+    });
+
+    basketWrapper.append(currentCart.lineItems.length === 0 ? basketContinueShoppingButton : basketClearAllButton);
 
     this.container.append(basketWrapper);
     return this.container;
