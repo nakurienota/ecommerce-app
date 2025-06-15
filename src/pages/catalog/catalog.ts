@@ -100,6 +100,8 @@ export default class CatalogPage {
             if (target.classList.contains('product__cart-btn')) {
               // await this.restHandler.clearCart('5a41b612-e0d2-44c7-bb95-37babfaa3a12');
               // await this.restHandler.removeProductFromCart('5a41b612-e0d2-44c7-bb95-37babfaa3a12', element.id);
+              // await this.restHandler.getCartByCustomerId('d1edc36a-15fc-4192-874f-5adb63d34efa');
+              // await this.restHandler.getCartByCartId('5a41b612-e0d2-44c7-bb95-37babfaa3a12');
               return await this.restHandler.addProductToCartButton(element.id);
             } else {
               router.navigate(`${AppRoutes.PRODUCT}${element.id}`);

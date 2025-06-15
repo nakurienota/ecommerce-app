@@ -1,12 +1,6 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart } from '@core/model/cart';
-import type {
-  CartResponse,
-  CustomersResponse,
-  ProductResponse,
-  ResponseCustomerById,
-  TokenResponse,
-} from '@core/model/dto';
+import type { CustomersResponse, ProductResponse, ResponseCustomerById, TokenResponse } from '@core/model/dto';
 import type { Product } from '@core/model/product';
 import { showNotification } from '@utils/html';
 import { isNotNullable } from '@utils/not-nullable';
@@ -285,17 +279,40 @@ export class Resthandler {
     }
   }
 
-  public async getCartByCustomerId(customerId: string): Promise<CartResponse> {
+  public async getCartByCustomerId(customerId: string): Promise<Cart> {
     const tokenBearer: string = await this.getToken();
-    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts?where=customerId="${customerId}"`, {
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/customer-id=${customerId}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${tokenBearer}`,
         'Content-Type': 'application/json',
       },
     });
-    if (!response.ok) throw new Error(`Something goes wrong: ${response.statusText}`);
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    const data: Cart = await response.json();
+    console.log(data);
+    return data;
+  }
+
+  public async getCartByCartId(cartId: string): Promise<Cart> {
+    const tokenBearer: string = await this.getToken();
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    const data: Cart = await response.json();
+    console.log(data);
+    return data;
   }
 
   public async setCustomerIdForCart(cartId: string, customerId: string): Promise<number> {

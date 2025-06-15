@@ -1,6 +1,6 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart, LineItem } from '@core/model/cart';
-import type { CartResponse } from '@core/model/dto';
+// import type { CartResponse } from '@core/model/dto';
 import type { Attribute, Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount } from '@utils/formatters';
@@ -161,10 +161,10 @@ export default class ProductPage {
       const customerId: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
 
       if (customerId) {
-        let cart: CartResponse = await this.restHandler.getCartByCustomerId(customerId);
-        let currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
-          return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
-        });
+        let currentCart: Cart = await this.restHandler.getCartByCustomerId(customerId);
+        // let currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
+        //   return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
+        // });
         productVariantsCartButton.textContent = currentCart.lineItems.some(
           (item: LineItem) => item.productId === response.id
         )
@@ -174,10 +174,10 @@ export default class ProductPage {
           await (currentCart.lineItems.some((item: LineItem) => item.productId === response.id)
             ? this.restHandler.removeProductFromCart(id)
             : this.restHandler.addProductToCartButton(id));
-          cart = await this.restHandler.getCartByCustomerId(customerId);
-          currentCart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
-            return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
-          });
+          currentCart = await this.restHandler.getCartByCustomerId(customerId);
+          // currentCart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
+          //   return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
+          // });
           productVariantsCartButton.textContent = currentCart.lineItems.some(
             (item: LineItem) => item.productId === response.id
           )

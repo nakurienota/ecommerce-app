@@ -1,6 +1,6 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart, LineItem } from '@core/model/cart';
-import type { CartResponse } from '@core/model/dto';
+// import type { CartResponse } from '@core/model/dto';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmountLineItem } from '@utils/formatters';
@@ -27,10 +27,10 @@ export default class BasketPage {
     basketTitle.textContent = 'Корзина';
     basketWrapper.append(basketTitle);
 
-    const cart: CartResponse = await this.restHandler.getCartByCustomerId(customerID);
-    const currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
-      return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
-    });
+    const currentCart: Cart = await this.restHandler.getCartByCustomerId(customerID);
+    // const currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
+    //   return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
+    // });
     const totalCost: LineItem[] = [];
     for (const item of currentCart.lineItems) {
       console.log(item);
