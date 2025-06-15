@@ -448,7 +448,7 @@ export class Resthandler {
     }
   }
 
-  public async removeProductFromCartByQuantity(productId: string): Promise<boolean> {
+  public async changeLineItemQuantity(productId: string, currentQuantity: number): Promise<boolean> {
     try {
       const tokenBearer: string = await this.getToken();
 
@@ -460,7 +460,7 @@ export class Resthandler {
 
       const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
       console.log(lineItemPropertys);
-      const quantity = +lineItemPropertys[1] - 1;
+      const quantity: number = currentQuantity;
 
       const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
         method: 'POST',

@@ -50,6 +50,17 @@ export default class BasketPage {
       const basketLineQuantity: HTMLInputElement = HtmlCreator.create('input', undefined, 'basket__line-quantity');
       basketLineQuantity.type = 'number';
       basketLineQuantity.value = String(item.quantity);
+      let previousValue: number = item.quantity;
+      basketLineQuantity.addEventListener('input', async (event: Event) => {
+        if (event.target instanceof HTMLInputElement) {
+          const currentValue: number = Number(event.target.value);
+          if (currentValue !== previousValue) {
+            previousValue = currentValue;
+            await this.restHandler.changeLineItemQuantity(item.productId, currentValue);
+            await router.navigate(AppRoutes.BASKET);
+          }
+        }
+      });
 
       const basketRemoveButton: HTMLButtonElement = HtmlCreator.create(
         'button',
