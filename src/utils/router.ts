@@ -59,12 +59,12 @@ export default class Router {
   }
 
   private static async matchPageDynamicData(path: string): Promise<HTMLElement | null> {
-    const match: RegExpMatchArray | null = RegExp(/^\/product\/([^/]+)$/).exec(path);
+    const match: RegExpMatchArray | null = new RegExp(/^\/product\/([^/]+)$/).exec(path);
     if (match) {
       const key: string = decodeURIComponent(match[1]);
       return await new ProductPage().getHTMLAsync(key);
     }
-    const matchBasket: RegExpMatchArray | null = RegExp(/^\/basket\/?$/).exec(path);
+    const matchBasket: RegExpMatchArray | null = new RegExp(/^\/basket\/?$/).exec(path);
     if (matchBasket) return await new BasketPage().getHTMLAsync();
     return null;
   }

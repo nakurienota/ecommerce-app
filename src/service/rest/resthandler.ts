@@ -8,6 +8,7 @@ import type {
   TokenResponse,
 } from '@core/model/dto';
 import type { Product } from '@core/model/product';
+import { isNotNullable } from '@utils/not-nullable';
 import { userLoggedIn } from '@utils/security';
 
 import { showSuccessPopup } from '../../pages/popup/popup';
@@ -172,6 +173,42 @@ export class Resthandler {
     return result;
   }
 
+  public async addProductToCartButton(productId: string): Promise<boolean> {
+    try {
+      const customerId = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+      const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+
+      if (isNotNullable(customerId)) {
+        if (isNotNullable(cartId)) {
+          const cart = await this.addProductToCart(cartId, productId);
+          console.log(cart);
+        } else {
+          const cartId = await this.createCart();
+          localStorage.setItem(LocalStorageKeys.USER_CART_ID, cartId);
+          const cart = await this.setCustomerIdForCart(cartId, customerId);
+          console.log(cart);
+          const data = await this.addProductToCart(cartId, productId);
+          console.log(data);
+        }
+        return true;
+      } else {
+        const anonymousCartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+        if (isNotNullable(anonymousCartId)) {
+          const data = await this.addProductToCart(anonymousCartId, productId);
+          console.log(data);
+        } else {
+          const anonymousCartId = await this.createCart();
+          localStorage.setItem(LocalStorageKeys.USER_CART_ID, anonymousCartId);
+          const data = await this.addProductToCart(anonymousCartId, productId);
+          console.log(data);
+        }
+        return true;
+      }
+    } catch {
+      return false;
+    }
+  }
+
   public async updateCustomer(
     email: string,
     firstname: string,
@@ -333,30 +370,150 @@ export class Resthandler {
   }
 
   public async removeProductFromCart(cartId: string, productId: string): Promise<boolean> {
-    const tokenBearer: string = await this.getToken();
-    console.log('removing id ' + productId);
+    try {
+      const tokenBearer: string = await this.getToken();
 
-    const currentVersion = await this.getCartVersion(cartId);
-    console.log(currentVersion);
+      const currentVersion = await this.getCartVersion(cartId);
+      console.log(currentVersion);
 
-    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/{$cartId}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${tokenBearer}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        version: currentVersion,
-        action: [
-          {
-            action: 'removeLineItem',
-            lineItemId: productId,
-            quantity: 1,
-          },
-        ],
-      }),
-    });
-    return response.ok;
+      const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'removeLineItem',
+              lineItemId: `${lineItemPropertys[0]}`,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      console.log(data);
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async removeProductByLineItem(cartId: string, lineItemId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const currentVersion = await this.getCartVersion(cartId);
+      console.log(currentVersion);
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'removeLineItem',
+              lineItemId: lineItemId,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      console.log(data);
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async removeProductFromCartByQuantity(cartId: string, productId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const currentVersion = await this.getCartVersion(cartId);
+      console.log(currentVersion);
+
+      const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
+      console.log(lineItemPropertys);
+      const quantity = +lineItemPropertys[1] - 1;
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'changeLineItemQuantity',
+              lineItemId: `${lineItemPropertys[0]}`,
+              quantity: quantity,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      console.log(data);
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async clearCart(cartId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const cartData: Cart = await response.json();
+      const lineItems = cartData.lineItems;
+      for (const item of lineItems) {
+        try {
+          await this.removeProductByLineItem(cartId, item.id);
+          console.log(`Товар ${item.productId} удалён`);
+        } catch (error) {
+          console.error(`Ошибка удаления ${item.id}:`, error);
+        }
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   public async getCartVersion(cartId: string): Promise<number> {
@@ -379,6 +536,34 @@ export class Resthandler {
       return currentVersion;
     } catch {
       return 0;
+    }
+  }
+
+  public async getCurrentLineItem(cartId: string, productId: string): Promise<(string | number)[]> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Ошибка при определении количества: ${response.statusText}`);
+      }
+
+      const cartData: Cart = await response.json();
+      const selectedItem = cartData.lineItems.find((item) => item.productId === productId);
+      const lineItemProperties: (string | number)[] = [];
+      if (selectedItem) {
+        lineItemProperties.push(selectedItem.id, selectedItem.quantity);
+        console.log(lineItemProperties);
+      }
+      return lineItemProperties;
+    } catch {
+      return [];
     }
   }
 }

@@ -1,4 +1,3 @@
-import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount, formatDiscount } from '@utils/formatters';
@@ -99,33 +98,9 @@ export default class CatalogPage {
 
           if (element !== null && element instanceof Element && target instanceof Element) {
             if (target.classList.contains('product__cart-btn')) {
-              const customerId = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
-              if (isNotNullable(customerId)) {
-                const cartId = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
-                console.log('cardID ' + cartId);
-                if (isNotNullable(cartId)) {
-                  const cart = await this.restHandler.addProductToCart(cartId, element.id);
-                  console.log(cart);
-                } else {
-                  const cartId = await this.restHandler.createCart();
-                  localStorage.setItem(LocalStorageKeys.USER_LOGGED_CART_ID, cartId);
-                  const cart = await this.restHandler.setCustomerIdForCart(cartId, customerId);
-                  console.log(cart);
-                  const data = await this.restHandler.addProductToCart(cartId, element.id);
-                  console.log(data);
-                }
-              } else {
-                const anonymousCartId = localStorage.getItem(LocalStorageKeys.ANONYMOUS_CART_ID);
-                if (isNotNullable(anonymousCartId)) {
-                  const data = await this.restHandler.addProductToCart(anonymousCartId, element.id);
-                  console.log(data);
-                } else {
-                  const newAnonymousCartId = await this.restHandler.createCart();
-                  localStorage.setItem(LocalStorageKeys.ANONYMOUS_CART_ID, newAnonymousCartId);
-                  const data = await this.restHandler.addProductToCart(newAnonymousCartId, element.id);
-                  console.log(data);
-                }
-              }
+              // await this.restHandler.clearCart('5a41b612-e0d2-44c7-bb95-37babfaa3a12');
+              // await this.restHandler.removeProductFromCart('5a41b612-e0d2-44c7-bb95-37babfaa3a12', element.id);
+              return await this.restHandler.addProductToCartButton(element.id);
             } else {
               router.navigate(`${AppRoutes.PRODUCT}${element.id}`);
             }

@@ -1,6 +1,6 @@
+import type { LineItem } from '@core/model/cart';
 import type { Price } from '@core/model/product';
 import { isNotNullable } from '@utils/not-nullable';
-import { LineItem } from '@core/model/cart';
 
 function formatCentAmount(...prices: Price[]): string {
   if (prices.length === 0) return '0';

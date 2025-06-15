@@ -1,11 +1,10 @@
-import HtmlCreator from '@utils/html';
-
-import { Resthandler } from '@service/rest/resthandler';
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import { Cart, LineItem } from '@core/model/cart';
-import { CartResponse } from '@core/model/dto';
-import { Price, Product, type ProductData } from '@core/model/product';
-import { formatCentAmount, formatCentAmountLineItem } from '@utils/formatters';
+import type { Cart, LineItem } from '@core/model/cart';
+import type { CartResponse } from '@core/model/dto';
+import type { Product, ProductData } from '@core/model/product';
+import { Resthandler } from '@service/rest/resthandler';
+import { formatCentAmountLineItem } from '@utils/formatters';
+import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
 export default class BasketPage {
@@ -56,7 +55,7 @@ export default class BasketPage {
       basketWrapper.append(basketLine);
     }
     const basketTotalCost: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__total-cost');
-    basketTotalCost.textContent = `Всего: ` + totalCost ? formatCentAmountLineItem(...totalCost) : '0.00';
+    basketTotalCost.textContent = 'Всего: ' + totalCost ? formatCentAmountLineItem(...totalCost) : '0.00';
     basketWrapper.append(basketTotalCost);
 
     const basketClearAllButton: HTMLButtonElement = HtmlCreator.create(
@@ -66,13 +65,15 @@ export default class BasketPage {
       'default-submit-button'
     );
     basketClearAllButton.textContent = 'Очистить корзину';
-    const cartId = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+    const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
     basketClearAllButton.addEventListener('click', async () => {
       console.log('cardId ' + cartId);
       if (cartId) {
-        const lines: HTMLCollectionOf<Element> = document.getElementsByClassName('basket__line');
-        const promises = Array.from(lines).map((line) => this.restHandler.removeProductFromCart(cartId, line.id));
-        await Promise.all(promises);
+        console.log('Очищаем корзину...');
+        await this.restHandler.clearCart(cartId);
+        // const lines: NodeListOf<Element> = document.querySelectorAll('basket__line');
+        // const promises = Array.from(lines).map((line) => this.restHandler.removeProductFromCart(cartId, line.id));
+        // await Promise.all(promises);
         await router.navigate(AppRoutes.BASKET);
       }
     });

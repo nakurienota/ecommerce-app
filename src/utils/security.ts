@@ -15,9 +15,9 @@ export function clearCurrentLoggedInUser(): void {
   if (loggedUser) {
     localStorage.removeItem(LocalStorageKeys.USER_ID_LOGGED_IN);
   }
-  const loggedUserCart: string | null = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+  const loggedUserCart: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
   if (loggedUserCart) {
-    localStorage.removeItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+    localStorage.removeItem(LocalStorageKeys.USER_CART_ID);
   }
 }
 
@@ -32,6 +32,6 @@ export function userLoggedIn(): boolean {
 }
 
 export function userLoggedCart(): string | null {
-  const userLoggedCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_LOGGED_CART_ID);
+  const userLoggedCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
   return userLoggedCartId;
 }
