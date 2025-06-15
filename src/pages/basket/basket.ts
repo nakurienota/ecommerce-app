@@ -58,8 +58,10 @@ export default class BasketPage {
         'default-submit-button'
       );
       basketRemoveButton.textContent = 'x';
-      basketRemoveButton.addEventListener('click', () => {
-        this.restHandler.removeProductFromCart(item.productId);
+
+      basketRemoveButton.addEventListener('click', async () => {
+        await this.restHandler.removeProductFromCart(item.productId);
+        await router.navigate(AppRoutes.BASKET);
         basketLine.remove();
       });
 
