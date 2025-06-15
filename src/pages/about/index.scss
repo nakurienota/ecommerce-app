@@ -15,6 +15,10 @@
     text-transform: uppercase;
   }
 
+  &__content {
+    width: 100%;
+  }
+
   &__list {
     display: flex;
     flex-wrap: wrap;
@@ -57,7 +61,7 @@
   &__item-label {
     font-size: 16px;
     font-weight: $font-weight-light;
-        font-style: normal;
+    font-style: normal;
     line-height: 135%;
     color: $primary-black;
     text-transform: uppercase;
@@ -115,5 +119,42 @@
 
   &__footer-img {
     width: 150px;
+  }
+}
+
+@media (max-width: $tablet) {
+  .team {
+    &__item {
+      column-gap: 10px;
+      max-width: 650px;
+      padding: 10px;
+    }
+
+    &__item-img {
+      width: 120px;
+      height: 120px;
+    }
+
+    &__item-box {
+      max-width: 75%;
+    }
+  }
+}
+
+@media (max-width: $mobile) {
+  .team {
+    &__item {
+      flex-direction: column;
+      column-gap: 10px;
+      max-width: 500px;
+    }
+
+    &__item-img {
+      margin-bottom: 10px;
+    }
+
+    &__item-box {
+      max-width: 100%;
+    }
   }
 }
