@@ -1,7 +1,7 @@
 import type { Attribute, Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount } from '@utils/formatters';
-import HtmlCreator, { showNotification } from '@utils/html';
+import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
 export default class ProductPage {
@@ -154,7 +154,7 @@ export default class ProductPage {
       );
       productVariantsCartButton.textContent = 'Добавить в корзину   >';
       productVariantsCartButton.addEventListener('click', () => {
-        showNotification('Товар добавлен в корзину');
+        this.restHandler.addProductToCartButton(id);
       });
       productVariantsPriceCart.append(productVariantsPrice, productVariantsCartButton);
       productVariants.append(

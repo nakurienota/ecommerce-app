@@ -8,6 +8,7 @@ import type {
   TokenResponse,
 } from '@core/model/dto';
 import type { Product } from '@core/model/product';
+import { showNotification } from '@utils/html';
 import { isNotNullable } from '@utils/not-nullable';
 import { userLoggedIn } from '@utils/security';
 
@@ -190,6 +191,7 @@ export class Resthandler {
           const data = await this.addProductToCart(cartId, productId);
           console.log(data);
         }
+        showNotification('Товар добавлен в корзину');
         return true;
       } else {
         const anonymousCartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
@@ -202,6 +204,7 @@ export class Resthandler {
           const data = await this.addProductToCart(anonymousCartId, productId);
           console.log(data);
         }
+        showNotification('Товар добавлен в корзину');
         return true;
       }
     } catch {
