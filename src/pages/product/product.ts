@@ -1,3 +1,6 @@
+import { LocalStorageKeys } from '@core/enum/local-storage-keys';
+import type { Cart, LineItem } from '@core/model/cart';
+import type { CartResponse } from '@core/model/dto';
 import type { Attribute, Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount } from '@utils/formatters';
@@ -23,7 +26,8 @@ export default class ProductPage {
     try {
       productWrapper.textContent = '';
       const currentProduct: ProductData = response.masterData.current;
-
+      console.log('productData');
+      console.log(currentProduct);
       const productText: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__txt');
       productText.textContent = `Главная / Каталог товаров / Книги / Фэнтези / ${currentProduct.name[lang]}`;
 
@@ -146,16 +150,42 @@ export default class ProductPage {
       );
       const productVariantsPrice: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__price');
       productVariantsPrice.textContent = formatCentAmount(currentProduct.masterVariant.prices[0]);
+
       const productVariantsCartButton: HTMLButtonElement = HtmlCreator.create(
         'button',
         undefined,
         'product__cart-button',
         'default-submit-button'
       );
-      productVariantsCartButton.textContent = 'Добавить в корзину   >';
-      productVariantsCartButton.addEventListener('click', () => {
-        this.restHandler.addProductToCartButton(id);
-      });
+
+      const customerId: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+
+      if (customerId) {
+        let cart: CartResponse = await this.restHandler.getCartByCustomerId(customerId);
+        let currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
+          return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
+        });
+        productVariantsCartButton.textContent = currentCart.lineItems.some(
+          (item: LineItem) => item.productId === response.id
+        )
+          ? 'Удалить из корзины >'
+          : 'Добавить в корзину >';
+        productVariantsCartButton.addEventListener('click', async () => {
+          await (currentCart.lineItems.some((item: LineItem) => item.productId === response.id)
+            ? this.restHandler.removeProductFromCart(id)
+            : this.restHandler.addProductToCartButton(id));
+          cart = await this.restHandler.getCartByCustomerId(customerId);
+          currentCart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
+            return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
+          });
+          productVariantsCartButton.textContent = currentCart.lineItems.some(
+            (item: LineItem) => item.productId === response.id
+          )
+            ? 'Удалить из корзины >'
+            : 'Добавить в корзину >';
+        });
+      }
+
       productVariantsPriceCart.append(productVariantsPrice, productVariantsCartButton);
       productVariants.append(
         productVariantsName,

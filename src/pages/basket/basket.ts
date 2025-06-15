@@ -4,7 +4,7 @@ import type { CartResponse } from '@core/model/dto';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmountLineItem } from '@utils/formatters';
-import HtmlCreator from '@utils/html';
+import HtmlCreator, { showNotification } from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
 export default class BasketPage {
@@ -99,14 +99,10 @@ export default class BasketPage {
     basketClearAllButton.textContent = 'Очистить корзину';
     const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
     basketClearAllButton.addEventListener('click', async () => {
-      console.log('cardId ' + cartId);
       if (cartId) {
-        console.log('Очищаем корзину...');
         await this.restHandler.clearCart(cartId);
-        // const lines: NodeListOf<Element> = document.querySelectorAll('basket__line');
-        // const promises = Array.from(lines).map((line) => this.restHandler.removeProductFromCart(cartId, line.id));
-        // await Promise.all(promises);
         await router.navigate(AppRoutes.BASKET);
+        showNotification('Корзина очищена');
       }
     });
 
