@@ -473,7 +473,6 @@ export class Resthandler {
       if (!cartId) throw new Error('Something goes wrong');
 
       const currentVersion: number = await this.getCartVersion(cartId);
-      console.log(currentVersion);
 
       const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
       console.log(lineItemPropertys);
@@ -590,6 +589,40 @@ export class Resthandler {
     } catch {
       return [];
     }
+  }
+
+  public async addPromoCodeToCart(): Promise<Cart> {
+    const tokenBearer: string = await this.getToken();
+
+    const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+
+    if (!cartId) {
+      throw new Error('Something goes wrong');
+    }
+    const currentVersion: number = await this.getCartVersion(cartId);
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: currentVersion,
+        actions: [
+          {
+            action: 'addDiscountCode',
+            code: 'RSSchool',
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    const data: Cart = await response.json();
+    return data;
   }
 }
 
