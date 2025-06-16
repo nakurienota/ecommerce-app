@@ -1,6 +1,5 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart, LineItem } from '@core/model/cart';
-// import type { CartResponse } from '@core/model/dto';
 import type { Attribute, Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount } from '@utils/formatters';
@@ -26,8 +25,6 @@ export default class ProductPage {
     try {
       productWrapper.textContent = '';
       const currentProduct: ProductData = response.masterData.current;
-      console.log('productData');
-      console.log(currentProduct);
       const productText: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__txt');
       productText.textContent = `Главная / Каталог товаров / Книги / Фэнтези / ${currentProduct.name[lang]}`;
 
@@ -158,13 +155,11 @@ export default class ProductPage {
         'default-submit-button'
       );
 
-      const customerId: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+      let currentCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+      if (!currentCartId) currentCartId = await this.restHandler.createCart();
 
-      if (customerId) {
-        let currentCart: Cart = await this.restHandler.getCartByCustomerId(customerId);
-        // let currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
-        //   return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
-        // });
+      if (currentCartId) {
+        let currentCart: Cart = await this.restHandler.getCartByCartId(currentCartId);
         productVariantsCartButton.textContent = currentCart.lineItems.some(
           (item: LineItem) => item.productId === response.id
         )
@@ -174,10 +169,8 @@ export default class ProductPage {
           await (currentCart.lineItems.some((item: LineItem) => item.productId === response.id)
             ? this.restHandler.removeProductFromCart(id)
             : this.restHandler.addProductToCartButton(id));
-          currentCart = await this.restHandler.getCartByCustomerId(customerId);
-          // currentCart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
-          //   return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
-          // });
+          currentCart = await this.restHandler.getCartByCartId(currentCartId);
+
           productVariantsCartButton.textContent = currentCart.lineItems.some(
             (item: LineItem) => item.productId === response.id
           )

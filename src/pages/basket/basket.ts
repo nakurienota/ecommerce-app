@@ -1,6 +1,5 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart, LineItem } from '@core/model/cart';
-// import type { CartResponse } from '@core/model/dto';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmountLineItem } from '@utils/formatters';
@@ -20,17 +19,15 @@ export default class BasketPage {
     const locale: string = navigator.language || 'ru';
     const lang: string = locale.split('-')[0];
 
-    const customerID: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
-    if (!customerID) throw new Error('User not logged in');
-
     const basketTitle: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__title');
     basketTitle.textContent = 'Корзина';
     basketWrapper.append(basketTitle);
 
-    const currentCart: Cart = await this.restHandler.getCartByCustomerId(customerID);
-    // const currentCart: Cart = cart.results.reduce((latest: Cart, current: Cart): Cart => {
-    //   return new Date(current.lastModifiedAt) > new Date(latest.lastModifiedAt) ? current : latest;
-    // });
+    let currentCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+    if (!currentCartId) currentCartId = await this.restHandler.createCart();
+
+    const currentCart: Cart = await this.restHandler.getCartByCartId(currentCartId);
+
     const totalCost: LineItem[] = [];
     for (const item of currentCart.lineItems) {
       console.log(item);
@@ -97,7 +94,7 @@ export default class BasketPage {
       'default-submit-button'
     );
     basketClearAllButton.textContent = 'Очистить корзину';
-    const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+    const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
     basketClearAllButton.addEventListener('click', async () => {
       if (cartId) {
         await this.restHandler.clearCart(cartId);

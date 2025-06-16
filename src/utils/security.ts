@@ -1,5 +1,4 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import { AppRoutes } from '@utils/router';
 
 export function validTokenExists(): boolean {
   const token: string | null = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
@@ -22,7 +21,7 @@ export function clearCurrentLoggedInUser(): void {
 }
 
 export function authRequestMatcher(path: string): boolean {
-  const authorizeRequests = new Set<string>([AppRoutes.BASKET]);
+  const authorizeRequests = new Set<string>();
   return authorizeRequests.has(path);
 }
 
