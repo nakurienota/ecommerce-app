@@ -100,7 +100,7 @@
   }
 
   &__promo-input {
-    max-width: 300px;
+    max-width: 250px;
     padding: 12px;
     border: 2px solid #303030;
     border-radius: 6px;
@@ -119,6 +119,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 30%;
   }
 
   &__promo-new-price {
@@ -132,6 +133,43 @@
   }
 
   &__promo-discount {
+    width: 100%;
     font-size: $font-medium;
+  }
+
+  @media (max-width: $tablet) {
+    min-width: 350px;
+
+    &__line {
+      grid-template-columns: 100px 1fr 1fr;
+      grid-template-rows: repeat(2, auto);
+    }
+
+    &__line-image-wrapper {
+      grid-column: 1;
+      grid-row: 1 / 3;
+    }
+
+    &__line-quantity,
+    &__line-remove-button {
+      justify-self: end;
+    }
+
+    &__promo-content {
+      flex-direction: column;
+      width: 60%;
+    }
+
+    &__promo-input {
+      font-size: $font-medium;
+    }
+
+    &__promo-new-price {
+      font-size: $font-medium;
+    }
+
+    &__promo-discount {
+      font-size: $font-small;
+    }
   }
 }
