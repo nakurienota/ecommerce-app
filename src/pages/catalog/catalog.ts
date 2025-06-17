@@ -1,4 +1,5 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
+import type { Cart, LineItem } from '@core/model/cart';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmount, formatDiscount } from '@utils/formatters';
@@ -23,27 +24,10 @@ export default class CatalogPage {
   }
 
   public async getHTMLAsync(): Promise<HTMLElement> {
-    this.getCatalog();
+    await this.getCatalog();
     this.getFilters();
     this.container.append(this.catalogWrapper);
     return this.container;
-  }
-
-  public async checkProductInCart(productId: string): Promise<boolean> {
-    try {
-      const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
-
-      if (isNotNullable(cartId)) {
-        const cart = await this.restHandler.getCartByCartId(cartId);
-        const productsArray: string[] = cart.lineItems.map((item) => item.productId);
-        return productsArray.includes(productId);
-      } else {
-        return false;
-      }
-    } catch {
-      console.error('Ошибка!');
-      return false;
-    }
   }
 
   private getFilters(): void {
@@ -78,7 +62,15 @@ export default class CatalogPage {
   private async getCatalog(): Promise<void> {
     const locale: string = navigator.language || 'ru';
     const lang: string = locale.split('-')[0];
-    this.restHandler.getProductsAll().then((response: Product[]) => {
+
+    const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+    let currentCartProducts: string[] = [];
+    if (cartId) {
+      const cart: Cart = await this.restHandler.getCartByCartId(cartId);
+      currentCartProducts = cart.lineItems.map((item: LineItem): string => item.productId);
+    }
+
+    this.restHandler.getProductsAll().then(async (response: Product[]) => {
       for (let product of response) {
         const item: ProductData = product.masterData.current;
         const productCard = HtmlCreator.create('div', product.id, 'product__card-item');
@@ -103,14 +95,11 @@ export default class CatalogPage {
         }
 
         const productCartButton = HtmlCreator.create('button', undefined, 'product__cart-btn');
-        this.checkProductInCart(product.id).then((response: boolean) => {
-          if (response) {
-            productCartButton.textContent = 'В корзинe';
-            productCartButton.setAttribute('disabled', 'true');
-          } else {
-            productCartButton.textContent = 'В корзину';
-          }
-        });
+
+        if (currentCartProducts.includes(product.id)) {
+          productCartButton.textContent = 'В корзинe';
+          productCartButton.setAttribute('disabled', 'true');
+        } else productCartButton.textContent = 'В корзину';
 
         productPriceWrap.append(productPriceDiscount, productPrice);
         productCard.append(productImgWrap, productName, productDesc, productPriceWrap, productCartButton);
