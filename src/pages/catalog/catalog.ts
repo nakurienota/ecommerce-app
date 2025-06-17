@@ -22,7 +22,7 @@ export default class CatalogPage {
     catalogWrapper.append(this.filters, this.catalog);
   }
 
-  public getHTML(): HTMLElement {
+  public async getHTMLAsync(): Promise<HTMLElement> {
     this.getCatalog();
     this.getFilters();
     this.container.append(this.catalogWrapper);

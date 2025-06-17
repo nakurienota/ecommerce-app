@@ -36,7 +36,6 @@ export enum AppRoutes {
 export const routes: RoutesType = {
   [AppRoutes.ROOT]: new MainPage().getHTML(),
   [AppRoutes.ABOUT]: new AboutPage().getHTML(),
-  [AppRoutes.CATALOG]: new CatalogPage().getHTML(),
   [AppRoutes.CONTACTS]: new ContactsPage().getHTML(),
   [AppRoutes.LOGIN]: new LoginPage().getHTML(),
   [AppRoutes.MAIN]: new MainPage().getHTML(),
@@ -66,6 +65,9 @@ export default class Router {
     }
     const matchBasket: RegExpMatchArray | null = new RegExp(/^\/basket\/?$/).exec(path);
     if (matchBasket) return await new BasketPage().getHTMLAsync();
+
+    const matchCatalog: RegExpMatchArray | null = new RegExp(/^\/catalog\/?$/).exec(path);
+    if (matchCatalog) return await new CatalogPage().getHTMLAsync();
     return null;
   }
 
