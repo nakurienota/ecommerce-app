@@ -1,7 +1,4 @@
 import HtmlCreator from '@utils/html';
-// import { AppRoutes } from '@utils/router';
-
-// import ButtonBackCreator from '../../components/button/button-back';
 
 export default class AboutPage {
   public container: HTMLElement;
@@ -22,7 +19,7 @@ export default class AboutPage {
       {
         member: 'Сергей',
         role: 'Team Lead',
-        bio: 'Студент RSSchool. Имеет опыт разработки на Java, расширяет свои профессиональные горизонты и изучает Frontend',
+        bio: 'Студент RSSchool. Действующий Java разработчик, расширяет свои профессиональные горизонты и изучает Frontend',
         img: '../../assets/images/team-Sergey.png',
         contribution:
           'В рамках данного задания курировал направление работы команды, помогал в решении сложных технических вопросов. Реализованный функционал: страница логина, карточка товара и все что с ней связано',
@@ -39,7 +36,7 @@ export default class AboutPage {
           'Охотно бралась за задачи и с радостью их выполняла. Реализованный функционал: конфигурации для проекта, каталог товаров, адаптивный дизайн страниц',
         collaboration:
           'Активно применяла инструменты совместной работы — системы контроля версий Git и коммуникационные платформы, например Telegram и Discord, что обеспечивало прозрачность процессов и удобство обмена информацией',
-        git: 'link',
+        git: 'https://github.com/olga-ter',
       },
       {
         member: 'Иван',
@@ -58,7 +55,7 @@ export default class AboutPage {
         contribution: 'Проверял Pull Request и проводил качественное code-review',
         collaboration:
           'Активно участвовал в созвонах и общем чате, давал рекомендации по коду и просто отвечал на все вопросы',
-        git: 'link',
+        git: 'https://github.com/degusar',
       },
     ];
 

@@ -35,6 +35,18 @@
     padding: 15px;
     border: 1px solid $form-border-color;
     border-radius: $border-radius-base;
+
+    @media (max-width: $tablet) {
+      column-gap: 10px;
+      max-width: 650px;
+      padding: 10px;
+    }
+
+    @media (max-width: $mobile) {
+      flex-direction: column;
+      column-gap: 10px;
+      max-width: 500px;
+    }
   }
 
   &__item-img {
@@ -45,10 +57,27 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
+
+    @media (max-width: $tablet) {
+      width: 120px;
+      height: 120px;
+    }
+
+    @media (max-width: $mobile) {
+      margin-bottom: 10px;
+    }
   }
 
   &__item-box {
     max-width: 400px;
+
+    @media (max-width: $tablet) {
+      max-width: 75%;
+    }
+
+    @media (max-width: $mobile) {
+      max-width: 100%;
+    }
   }
 
   &__item-wrapper {
@@ -122,39 +151,3 @@
   }
 }
 
-@media (max-width: $tablet) {
-  .team {
-    &__item {
-      column-gap: 10px;
-      max-width: 650px;
-      padding: 10px;
-    }
-
-    &__item-img {
-      width: 120px;
-      height: 120px;
-    }
-
-    &__item-box {
-      max-width: 75%;
-    }
-  }
-}
-
-@media (max-width: $mobile) {
-  .team {
-    &__item {
-      flex-direction: column;
-      column-gap: 10px;
-      max-width: 500px;
-    }
-
-    &__item-img {
-      margin-bottom: 10px;
-    }
-
-    &__item-box {
-      max-width: 100%;
-    }
-  }
-}
