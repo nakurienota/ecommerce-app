@@ -1,6 +1,10 @@
+import { LocalStorageKeys } from '@core/enum/local-storage-keys';
+import type { Cart, LineItem } from '@core/model/cart';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
+import { formatCentAmount, formatDiscount } from '@utils/formatters';
 import HtmlCreator from '@utils/html';
+import { isNotNullable } from '@utils/not-nullable';
 import { AppRoutes, router } from '@utils/router';
 
 export default class CatalogPage {
@@ -19,8 +23,8 @@ export default class CatalogPage {
     catalogWrapper.append(this.filters, this.catalog);
   }
 
-  public getHTML(): HTMLElement {
-    this.getCatalog();
+  public async getHTMLAsync(): Promise<HTMLElement> {
+    await this.getCatalog();
     this.getFilters();
     this.container.append(this.catalogWrapper);
     return this.container;
@@ -55,10 +59,18 @@ export default class CatalogPage {
     this.filters.append(filters);
   }
 
-  private getCatalog(): void {
+  private async getCatalog(): Promise<void> {
     const locale: string = navigator.language || 'ru';
     const lang: string = locale.split('-')[0];
-    this.restHandler.getProductsAll().then((response: Product[]) => {
+
+    const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+    let currentCartProducts: string[] = [];
+    if (cartId) {
+      const cart: Cart = await this.restHandler.getCartByCartId(cartId);
+      currentCartProducts = cart.lineItems.map((item: LineItem): string => item.productId);
+    }
+
+    this.restHandler.getProductsAll().then(async (response: Product[]) => {
       for (let product of response) {
         const item: ProductData = product.masterData.current;
         const productCard = HtmlCreator.create('div', product.id, 'product__card-item');
@@ -72,14 +84,38 @@ export default class CatalogPage {
         const productDesc = HtmlCreator.create('p', undefined, 'product__desc');
         const text = `${item.description[lang]}`;
         productDesc.textContent = text.slice(0, 150) + '...';
-        const productPrice = HtmlCreator.create('p', undefined, 'product__price');
-        productPrice.textContent = `${item.masterVariant.prices[0].value.centAmount} ${item.masterVariant.prices[0].value.currencyCode}`;
-        productCard.append(productImgWrap, productName, productDesc, productPrice);
-        productCard.addEventListener('click', (event) => {
-          const element: EventTarget | null = event.currentTarget;
+        const productPriceWrap = HtmlCreator.create('div', undefined, 'product__price-wrap');
+        const productPrice = HtmlCreator.create('p', undefined, 'product__price-norm');
+        productPrice.textContent = `${formatCentAmount(item.masterVariant.prices[0])} ${item.masterVariant.prices[0].value.currencyCode}`;
+        const productPriceDiscount = HtmlCreator.create('p', undefined, 'product__price-discount');
 
-          if (element !== null && element instanceof Element) {
-            router.navigate(`${AppRoutes.PRODUCT}${element.id}`);
+        if (isNotNullable(item.masterVariant.prices[0].discounted)) {
+          productPriceDiscount.textContent = `${formatDiscount(item.masterVariant.prices[0])} ${item.masterVariant.prices[0].discounted.value.currencyCode}`;
+          productPrice.classList.add('discounted');
+        }
+
+        const productCartButton = HtmlCreator.create('button', undefined, 'product__cart-btn');
+
+        if (currentCartProducts.includes(product.id)) {
+          productCartButton.textContent = 'В корзинe';
+          productCartButton.setAttribute('disabled', 'true');
+        } else productCartButton.textContent = 'В корзину';
+
+        productPriceWrap.append(productPriceDiscount, productPrice);
+        productCard.append(productImgWrap, productName, productDesc, productPriceWrap, productCartButton);
+        productCard.addEventListener('click', async (event) => {
+          const element: EventTarget | null = event.currentTarget;
+          const target = event.target;
+
+          if (element !== null && element instanceof Element && target instanceof Element) {
+            if (target.classList.contains('product__cart-btn')) {
+              if (await this.restHandler.addProductToCartButton(element.id)) {
+                productCartButton.textContent = 'В корзинe';
+                productCartButton.setAttribute('disabled', 'true');
+              }
+            } else {
+              router.navigate(`${AppRoutes.PRODUCT}${element.id}`);
+            }
           }
         });
         this.catalog.append(productCard);

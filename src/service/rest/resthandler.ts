@@ -1,9 +1,11 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
+import type { Cart, LineItem } from '@core/model/cart';
 import type { CustomersResponse, ProductResponse, ResponseCustomerById, TokenResponse } from '@core/model/dto';
 import type { Product } from '@core/model/product';
+import { showNotification } from '@utils/html';
+import { isNotNullable } from '@utils/not-nullable';
 import { userLoggedIn } from '@utils/security';
 
-// import type { EditInputs } from '../../components/edit-profile/edit-profile';
 import { showSuccessPopup } from '../../pages/popup/popup';
 
 export class Resthandler {
@@ -86,6 +88,12 @@ export class Resthandler {
     if (result.customer.version) localStorage.setItem(LocalStorageKeys.USER_VERSION, `${result.customer.version}`);
     if (result.customer.version) this.currentVersion = result.customer.version;
 
+    const cart = await this.getCartByCustomerId(result.customer.id);
+
+    if (cart) {
+      localStorage.setItem(LocalStorageKeys.USER_CART_ID, cart.id);
+    }
+
     return !!result;
   }
 
@@ -166,6 +174,39 @@ export class Resthandler {
     return result;
   }
 
+  public async addProductToCartButton(productId: string): Promise<boolean> {
+    try {
+      const customerId = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+      const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+
+      if (isNotNullable(customerId)) {
+        if (isNotNullable(cartId)) {
+          await this.addProductToCart(cartId, productId);
+        } else {
+          const cartId = await this.createCart();
+          localStorage.setItem(LocalStorageKeys.USER_CART_ID, cartId);
+          await this.setCustomerIdForCart(cartId, customerId);
+          await this.addProductToCart(cartId, productId);
+        }
+        showNotification('Товар добавлен в корзину');
+        return true;
+      } else {
+        const anonymousCartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+        if (isNotNullable(anonymousCartId)) {
+          await this.addProductToCart(anonymousCartId, productId);
+        } else {
+          const anonymousCartId = await this.createCart();
+          localStorage.setItem(LocalStorageKeys.USER_CART_ID, anonymousCartId);
+          await this.addProductToCart(anonymousCartId, productId);
+        }
+        showNotification('Товар добавлен в корзину');
+        return true;
+      }
+    } catch {
+      return false;
+    }
+  }
+
   public async updateCustomer(
     email: string,
     firstname: string,
@@ -208,6 +249,343 @@ export class Resthandler {
 
   public getCurrentVersion(): number {
     return this.currentVersion!;
+  }
+
+  public async createCart(): Promise<string> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response = await fetch(`${this.apiUrl}/${this.projectKey}/carts`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currency: 'RUB',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Не удалось создать корзину: ${response.status} ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      return data.id;
+    } catch {
+      return '';
+    }
+  }
+
+  public async getCartByCustomerId(customerId: string): Promise<Cart> {
+    const tokenBearer: string = await this.getToken();
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/customer-id=${customerId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    return await response.json();
+  }
+
+  public async getCartByCartId(cartId: string): Promise<Cart> {
+    const tokenBearer: string = await this.getToken();
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    return await response.json();
+  }
+
+  public async setCustomerIdForCart(cartId: string, customerId: string): Promise<number> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: 1,
+          actions: [
+            {
+              action: 'setCustomerId',
+              customerId: customerId,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.status} ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      return data.version;
+    } catch {
+      return 0;
+    }
+  }
+
+  public async addProductToCart(cartId: string, productId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+      const currentVersion = await this.getCartVersion(cartId);
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'addLineItem',
+              productId: `${productId}`,
+              variantId: 1,
+              quantity: 1,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async removeProductFromCart(productId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+      const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+      if (!cartId) throw new Error('Something goes wrong');
+      const currentVersion = await this.getCartVersion(cartId);
+
+      const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'removeLineItem',
+              lineItemId: `${lineItemPropertys[0]}`,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      showNotification('Товар удален из корзины');
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async removeProductByLineItem(cartId: string, lineItemId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+      const currentVersion = await this.getCartVersion(cartId);
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'removeLineItem',
+              lineItemId: lineItemId,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async changeLineItemQuantity(productId: string, currentQuantity: number): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+      if (!cartId) throw new Error('Something goes wrong');
+
+      const currentVersion: number = await this.getCartVersion(cartId);
+
+      const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: currentVersion,
+          actions: [
+            {
+              action: 'changeLineItemQuantity',
+              lineItemId: `${lineItemPropertys[0]}`,
+              quantity: currentQuantity,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const data: Cart = await response.json();
+      return !!data;
+    } catch {
+      return false;
+    }
+  }
+
+  public async clearCart(cartId: string): Promise<boolean> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Something goes wrong: ${response.statusText}`);
+      }
+
+      const cartData: Cart = await response.json();
+      const lineItems: LineItem[] = cartData.lineItems;
+      for (const item of lineItems) await this.removeProductByLineItem(cartId, item.id);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  public async getCartVersion(cartId: string): Promise<number> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Ошибка при определении версии: ${response.statusText}`);
+      }
+
+      const cartData: Cart = await response.json();
+      return cartData.version;
+    } catch {
+      return 0;
+    }
+  }
+
+  public async getCurrentLineItem(cartId: string, productId: string): Promise<(string | number)[]> {
+    try {
+      const tokenBearer: string = await this.getToken();
+
+      const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Ошибка при определении количества: ${response.statusText}`);
+      }
+
+      const cartData: Cart = await response.json();
+      const selectedItem = cartData.lineItems.find((item) => item.productId === productId);
+      const lineItemProperties: (string | number)[] = [];
+      if (selectedItem) lineItemProperties.push(selectedItem.id, selectedItem.quantity);
+      return lineItemProperties;
+    } catch {
+      return [];
+    }
+  }
+
+  public async addPromoCodeToCart(cartId: string): Promise<Cart> {
+    const tokenBearer: string = await this.getToken();
+
+    const currentVersion: number = await this.getCartVersion(cartId);
+    const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${tokenBearer}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: currentVersion,
+        actions: [
+          {
+            action: 'addDiscountCode',
+            code: 'RSSchool',
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    const data: Cart = await response.json();
+    return data;
   }
 }
 

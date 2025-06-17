@@ -21,8 +21,16 @@
       border-color: $primary-blue;
       color: $primary-blue;
     }
+
+    &:disabled {
+      cursor: not-allowed;
+      transform: none;
+      border-color: $color;
+      color: $color;
+    }
   }
-}
+
+  }
 
 @mixin label-style($font-size: $font-label, $color: $input-text-label-color) {
   font-size: $font-size;

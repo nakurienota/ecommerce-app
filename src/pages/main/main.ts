@@ -5,6 +5,7 @@ export default class MainPage {
   public container: HTMLElement;
   private bannerBtn: HTMLButtonElement;
   private about: HTMLElement;
+  private promo: HTMLElement;
 
   constructor() {
     this.container = HtmlCreator.create('div', undefined, 'container');
@@ -15,10 +16,12 @@ export default class MainPage {
     });
     this.about = HtmlCreator.create('section', undefined, 'section', 'about');
     this.createAbout();
+    this.promo = HtmlCreator.create('section', undefined, 'section', 'promo');
+    this.createPromo();
   }
 
   public getHTML(): HTMLElement {
-    this.container.append(this.getBanner(), this.about);
+    this.container.append(this.promo, this.getBanner(), this.about);
     return this.container;
   }
 
@@ -74,5 +77,13 @@ export default class MainPage {
       aboutContent.append(aboutWrap);
     }
     this.about.append(aboutHeading, aboutContent);
+  }
+
+  private createPromo(): void {
+    const promoHeading: HTMLHeadingElement = HtmlCreator.create('h2', undefined, 'promo__heading');
+    promoHeading.textContent = 'EXTRA 90% OFF IN CART';
+    const promoContent: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'promo__content');
+    promoContent.textContent = 'USE CODE: RSSchool';
+    this.promo.append(promoHeading, promoContent);
   }
 }

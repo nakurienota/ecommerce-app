@@ -79,7 +79,7 @@
   }
 }
 
-@media (max-width: $laptop) {
+@media (max-width: $desktop) {
   .header {
     &__burger {
       display: flex;
@@ -103,7 +103,7 @@
   }
 }
 
-@media (max-width: $tablet) {
+@media (max-width: $laptop) {
   .header {
     padding: 15px 0;
 

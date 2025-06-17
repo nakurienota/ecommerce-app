@@ -1,5 +1,8 @@
-import type { Attribute, Price, Product, ProductData } from '@core/model/product';
+import { LocalStorageKeys } from '@core/enum/local-storage-keys';
+import type { Cart, LineItem } from '@core/model/cart';
+import type { Attribute, Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
+import { formatCentAmount } from '@utils/formatters';
 import HtmlCreator from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
@@ -22,7 +25,6 @@ export default class ProductPage {
     try {
       productWrapper.textContent = '';
       const currentProduct: ProductData = response.masterData.current;
-
       const productText: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__txt');
       productText.textContent = `Главная / Каталог товаров / Книги / Фэнтези / ${currentProduct.name[lang]}`;
 
@@ -101,7 +103,7 @@ export default class ProductPage {
       closeButton.addEventListener('click', () => {
         modalOverlay.classList.remove('open');
       });
-      modalOverlay.addEventListener('click', (element) => {
+      modalOverlay.addEventListener('click', (element: MouseEvent) => {
         if (element.target === modalOverlay) modalOverlay.classList.remove('open');
       });
 
@@ -145,13 +147,38 @@ export default class ProductPage {
       );
       const productVariantsPrice: HTMLParagraphElement = HtmlCreator.create('p', undefined, 'product__price');
       productVariantsPrice.textContent = formatCentAmount(currentProduct.masterVariant.prices[0]);
+
       const productVariantsCartButton: HTMLButtonElement = HtmlCreator.create(
         'button',
         undefined,
         'product__cart-button',
         'default-submit-button'
       );
-      productVariantsCartButton.textContent = 'Добавить в корзину   >';
+
+      let currentCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+      if (!currentCartId) currentCartId = await this.restHandler.createCart();
+
+      if (currentCartId) {
+        let currentCart: Cart = await this.restHandler.getCartByCartId(currentCartId);
+        productVariantsCartButton.textContent = currentCart.lineItems.some(
+          (item: LineItem) => item.productId === response.id
+        )
+          ? 'Удалить из корзины >'
+          : 'Добавить в корзину >';
+        productVariantsCartButton.addEventListener('click', async () => {
+          await (currentCart.lineItems.some((item: LineItem) => item.productId === response.id)
+            ? this.restHandler.removeProductFromCart(id)
+            : this.restHandler.addProductToCartButton(id));
+          currentCart = await this.restHandler.getCartByCartId(currentCartId);
+
+          productVariantsCartButton.textContent = currentCart.lineItems.some(
+            (item: LineItem) => item.productId === response.id
+          )
+            ? 'Удалить из корзины >'
+            : 'Добавить в корзину >';
+        });
+      }
+
       productVariantsPriceCart.append(productVariantsPrice, productVariantsCartButton);
       productVariants.append(
         productVariantsName,
@@ -258,10 +285,6 @@ export default class ProductPage {
     this.currentSlide = index;
     slider.style.transform = `translateX(-${index * 100}%)`;
   }
-}
-
-function formatCentAmount(price: Price): string {
-  return (price.value.centAmount / 10 ** price.value.fractionDigits).toFixed(price.value.fractionDigits);
 }
 
 function appendDescDetails(wrapper: HTMLDivElement, attributes: Attribute[]): void {

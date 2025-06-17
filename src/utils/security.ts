@@ -1,5 +1,4 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import { AppRoutes } from '@utils/router';
 
 export function validTokenExists(): boolean {
   const token: string | null = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
@@ -12,15 +11,26 @@ export function validTokenExists(): boolean {
 
 export function clearCurrentLoggedInUser(): void {
   const loggedUser: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
-  if (loggedUser) localStorage.removeItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+  if (loggedUser) {
+    localStorage.removeItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+  }
+  const loggedUserCart: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+  if (loggedUserCart) {
+    localStorage.removeItem(LocalStorageKeys.USER_CART_ID);
+  }
 }
 
 export function authRequestMatcher(path: string): boolean {
-  const authorizeRequests = new Set<string>([AppRoutes.BASKET]);
+  const authorizeRequests = new Set<string>();
   return authorizeRequests.has(path);
 }
 
 export function userLoggedIn(): boolean {
   const loggedId: string | null = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
   return !!loggedId;
+}
+
+export function userLoggedCart(): string | null {
+  const userLoggedCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+  return userLoggedCartId;
 }
