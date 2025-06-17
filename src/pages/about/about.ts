@@ -1,7 +1,4 @@
 import HtmlCreator from '@utils/html';
-// import { AppRoutes } from '@utils/router';
-
-// import ButtonBackCreator from '../../components/button/button-back';
 
 export default class AboutPage {
   public container: HTMLElement;
@@ -22,7 +19,7 @@ export default class AboutPage {
       {
         member: 'Сергей',
         role: 'Team Lead',
-        bio: 'Студент RSSchool. Имеет опыт разработки на Java, расширяет свои профессиональные горизонты и изучает Frontend',
+        bio: 'Студент RSSchool. Действующий Java разработчик, расширяет свои профессиональные горизонты и изучает Frontend',
         img: '../../assets/images/team-Sergey.png',
         contribution:
           'В рамках данного задания курировал направление работы команды, помогал в решении сложных технических вопросов. Реализованный функционал: страница логина, карточка товара и все что с ней связано',
