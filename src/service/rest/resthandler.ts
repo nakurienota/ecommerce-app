@@ -1,5 +1,5 @@
 import { LocalStorageKeys } from '@core/enum/local-storage-keys';
-import type { Cart } from '@core/model/cart';
+import type { Cart, LineItem } from '@core/model/cart';
 import type { CustomersResponse, ProductResponse, ResponseCustomerById, TokenResponse } from '@core/model/dto';
 import type { Product } from '@core/model/product';
 import { showNotification } from '@utils/html';
@@ -181,28 +181,23 @@ export class Resthandler {
 
       if (isNotNullable(customerId)) {
         if (isNotNullable(cartId)) {
-          const cart = await this.addProductToCart(cartId, productId);
-          console.log(cart);
+          await this.addProductToCart(cartId, productId);
         } else {
           const cartId = await this.createCart();
           localStorage.setItem(LocalStorageKeys.USER_CART_ID, cartId);
-          const cart = await this.setCustomerIdForCart(cartId, customerId);
-          console.log(cart);
-          const data = await this.addProductToCart(cartId, productId);
-          console.log(data);
+          await this.setCustomerIdForCart(cartId, customerId);
+          await this.addProductToCart(cartId, productId);
         }
         showNotification('Товар добавлен в корзину');
         return true;
       } else {
         const anonymousCartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
         if (isNotNullable(anonymousCartId)) {
-          const data = await this.addProductToCart(anonymousCartId, productId);
-          console.log(data);
+          await this.addProductToCart(anonymousCartId, productId);
         } else {
           const anonymousCartId = await this.createCart();
           localStorage.setItem(LocalStorageKeys.USER_CART_ID, anonymousCartId);
-          const data = await this.addProductToCart(anonymousCartId, productId);
-          console.log(data);
+          await this.addProductToCart(anonymousCartId, productId);
         }
         showNotification('Товар добавлен в корзину');
         return true;
@@ -276,11 +271,8 @@ export class Resthandler {
       }
 
       const data: Cart = await response.json();
-      console.log('Создана корзина для пользователя:', data);
-      console.log(data.id);
       return data.id;
-    } catch (error) {
-      console.error('Ошибка при создании корзины:', error);
+    } catch {
       return '';
     }
   }
@@ -298,9 +290,7 @@ export class Resthandler {
       throw new Error(`Something goes wrong: ${response.statusText}`);
     }
 
-    const data: Cart = await response.json();
-    console.log(data);
-    return data;
+    return await response.json();
   }
 
   public async getCartByCartId(cartId: string): Promise<Cart> {
@@ -316,9 +306,7 @@ export class Resthandler {
       throw new Error(`Something goes wrong: ${response.statusText}`);
     }
 
-    const data: Cart = await response.json();
-    console.log(data);
-    return data;
+    return await response.json();
   }
 
   public async setCustomerIdForCart(cartId: string, customerId: string): Promise<number> {
@@ -347,11 +335,8 @@ export class Resthandler {
       }
 
       const data: Cart = await response.json();
-      console.log(data);
-
       return data.version;
-    } catch (error) {
-      console.error('Ошибка при получении корзины:', error);
+    } catch {
       return 0;
     }
   }
@@ -359,9 +344,7 @@ export class Resthandler {
   public async addProductToCart(cartId: string, productId: string): Promise<boolean> {
     try {
       const tokenBearer: string = await this.getToken();
-
       const currentVersion = await this.getCartVersion(cartId);
-      console.log(currentVersion);
 
       const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
         method: 'POST',
@@ -387,8 +370,6 @@ export class Resthandler {
       }
 
       const data: Cart = await response.json();
-      console.log(data);
-
       return !!data;
     } catch {
       return false;
@@ -401,7 +382,6 @@ export class Resthandler {
       const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
       if (!cartId) throw new Error('Something goes wrong');
       const currentVersion = await this.getCartVersion(cartId);
-      console.log(currentVersion);
 
       const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
 
@@ -427,7 +407,6 @@ export class Resthandler {
       }
 
       const data: Cart = await response.json();
-      console.log(data);
       showNotification('Товар удален из корзины');
       return !!data;
     } catch {
@@ -438,9 +417,7 @@ export class Resthandler {
   public async removeProductByLineItem(cartId: string, lineItemId: string): Promise<boolean> {
     try {
       const tokenBearer: string = await this.getToken();
-
       const currentVersion = await this.getCartVersion(cartId);
-      console.log(currentVersion);
 
       const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
         method: 'POST',
@@ -464,7 +441,6 @@ export class Resthandler {
       }
 
       const data: Cart = await response.json();
-      console.log(data);
       return !!data;
     } catch {
       return false;
@@ -481,8 +457,6 @@ export class Resthandler {
       const currentVersion: number = await this.getCartVersion(cartId);
 
       const lineItemPropertys = await this.getCurrentLineItem(cartId, productId);
-      console.log(lineItemPropertys);
-      const quantity: number = currentQuantity;
 
       const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
         method: 'POST',
@@ -496,7 +470,7 @@ export class Resthandler {
             {
               action: 'changeLineItemQuantity',
               lineItemId: `${lineItemPropertys[0]}`,
-              quantity: quantity,
+              quantity: currentQuantity,
             },
           ],
         }),
@@ -507,7 +481,6 @@ export class Resthandler {
       }
 
       const data: Cart = await response.json();
-      console.log(data);
       return !!data;
     } catch {
       return false;
@@ -531,15 +504,8 @@ export class Resthandler {
       }
 
       const cartData: Cart = await response.json();
-      const lineItems = cartData.lineItems;
-      for (const item of lineItems) {
-        try {
-          await this.removeProductByLineItem(cartId, item.id);
-          console.log(`Товар ${item.productId} удалён`);
-        } catch (error) {
-          console.error(`Ошибка удаления ${item.id}:`, error);
-        }
-      }
+      const lineItems: LineItem[] = cartData.lineItems;
+      for (const item of lineItems) await this.removeProductByLineItem(cartId, item.id);
       return true;
     } catch {
       return false;
@@ -562,8 +528,7 @@ export class Resthandler {
       }
 
       const cartData: Cart = await response.json();
-      const currentVersion = cartData.version;
-      return currentVersion;
+      return cartData.version;
     } catch {
       return 0;
     }
@@ -587,10 +552,7 @@ export class Resthandler {
       const cartData: Cart = await response.json();
       const selectedItem = cartData.lineItems.find((item) => item.productId === productId);
       const lineItemProperties: (string | number)[] = [];
-      if (selectedItem) {
-        lineItemProperties.push(selectedItem.id, selectedItem.quantity);
-        console.log(lineItemProperties);
-      }
+      if (selectedItem) lineItemProperties.push(selectedItem.id, selectedItem.quantity);
       return lineItemProperties;
     } catch {
       return [];
