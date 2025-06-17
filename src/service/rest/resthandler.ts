@@ -175,36 +175,35 @@ export class Resthandler {
   }
 
   public async addProductToCartButton(productId: string): Promise<boolean> {
-    try {
-      const customerId = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
-      const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
+    let result: boolean;
+    const customerId = localStorage.getItem(LocalStorageKeys.USER_ID_LOGGED_IN);
+    const cartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
 
+    try {
       if (isNotNullable(customerId)) {
-        if (isNotNullable(cartId)) {
-          await this.addProductToCart(cartId, productId);
-        } else {
+        if (isNotNullable(cartId)) result = await this.addProductToCart(cartId, productId);
+        else {
           const cartId = await this.createCart();
           localStorage.setItem(LocalStorageKeys.USER_CART_ID, cartId);
           await this.setCustomerIdForCart(cartId, customerId);
-          await this.addProductToCart(cartId, productId);
+          result = await this.addProductToCart(cartId, productId);
         }
-        showNotification('Товар добавлен в корзину');
-        return true;
       } else {
         const anonymousCartId = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
-        if (isNotNullable(anonymousCartId)) {
-          await this.addProductToCart(anonymousCartId, productId);
-        } else {
+        if (isNotNullable(anonymousCartId)) result = await this.addProductToCart(anonymousCartId, productId);
+        else {
           const anonymousCartId = await this.createCart();
           localStorage.setItem(LocalStorageKeys.USER_CART_ID, anonymousCartId);
-          await this.addProductToCart(anonymousCartId, productId);
+          result = await this.addProductToCart(anonymousCartId, productId);
         }
-        showNotification('Товар добавлен в корзину');
-        return true;
       }
     } catch {
+      showNotification('Товар не добавляется в корзину. Попробуйте позже.', 'error');
       return false;
     }
+    if (result) showNotification('Товар добавлен в корзину');
+    else showNotification('Товар не добавляется в корзину. Попробуйте позже.', 'error');
+    return result;
   }
 
   public async updateCustomer(
