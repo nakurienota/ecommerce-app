@@ -1,4 +1,4 @@
-import type { LineItem } from '@core/model/cart';
+import type { LineItem, TotalPrice } from '@core/model/cart';
 import type { Price } from '@core/model/product';
 import { isNotNullable } from '@utils/not-nullable';
 
@@ -31,4 +31,8 @@ function formatDiscount(price: Price): string {
   return '';
 }
 
-export { formatCentAmount, formatDiscount, formatCentAmountLineItem };
+function formatCartDiscount(price: TotalPrice): string {
+  return `${(price.centAmount / 10 ** price.fractionDigits).toFixed(price.fractionDigits)}`;
+}
+
+export { formatCentAmount, formatDiscount, formatCentAmountLineItem, formatCartDiscount };

@@ -88,6 +88,12 @@ export class Resthandler {
     if (result.customer.version) localStorage.setItem(LocalStorageKeys.USER_VERSION, `${result.customer.version}`);
     if (result.customer.version) this.currentVersion = result.customer.version;
 
+    const cart = await this.getCartByCustomerId(result.customer.id);
+
+    if (cart) {
+      localStorage.setItem(LocalStorageKeys.USER_CART_ID, cart.id);
+    }
+
     return !!result;
   }
 
@@ -591,14 +597,9 @@ export class Resthandler {
     }
   }
 
-  public async addPromoCodeToCart(): Promise<Cart> {
+  public async addPromoCodeToCart(cartId: string): Promise<Cart> {
     const tokenBearer: string = await this.getToken();
 
-    const cartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
-
-    if (!cartId) {
-      throw new Error('Something goes wrong');
-    }
     const currentVersion: number = await this.getCartVersion(cartId);
     const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/carts/${cartId}`, {
       method: 'POST',

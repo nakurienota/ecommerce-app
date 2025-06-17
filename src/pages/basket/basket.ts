@@ -2,7 +2,7 @@ import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart, LineItem } from '@core/model/cart';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
-import { formatCentAmountLineItem } from '@utils/formatters';
+import { formatCentAmountLineItem, formatCartDiscount } from '@utils/formatters';
 import HtmlCreator, { showNotification } from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
@@ -24,19 +24,23 @@ export default class BasketPage {
     basketWrapper.append(basketTitle);
 
     let currentCartId: string | null = localStorage.getItem(LocalStorageKeys.USER_CART_ID);
-    if (!currentCartId) currentCartId = await this.restHandler.createCart();
+
+    if (!currentCartId) {
+      currentCartId = await this.restHandler.createCart();
+      localStorage.setItem(LocalStorageKeys.USER_CART_ID, currentCartId);
+    }
 
     const currentCart: Cart = await this.restHandler.getCartByCartId(currentCartId);
 
     const totalCost: LineItem[] = [];
     for (const item of currentCart.lineItems) {
-      console.log(item);
       const response: Product = await this.restHandler.getProductById(item.productId);
       const currentData: ProductData = response.masterData.current;
       const basketLine: HTMLDivElement = HtmlCreator.create('div', item.productId, 'basket__line');
       const basketImageWrapper: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line-image-wrapper');
       const basketLineImage: HTMLImageElement = HtmlCreator.create('img', undefined, 'basket__line-image');
       basketLineImage.src = currentData.masterVariant.images[0].url;
+      basketLineImage.alt = currentData.name[lang];
       basketImageWrapper.append(basketLineImage);
       const basketLineName: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__line-name');
       basketLineName.textContent = currentData.name[lang];
@@ -113,7 +117,35 @@ export default class BasketPage {
       router.navigate(AppRoutes.CATALOG);
     });
 
-    basketWrapper.append(currentCart.lineItems.length === 0 ? basketContinueShoppingButton : basketClearAllButton);
+    const basketPromoWrap: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo');
+    const basketPromoContent: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo-content');
+    const basketPromoInput: HTMLInputElement = HtmlCreator.create('input', undefined, 'basket__promo-input');
+    basketPromoInput.type = 'text';
+    const basketPromoButton: HTMLButtonElement = HtmlCreator.create('button', undefined, 'basket__promo-button');
+    basketPromoButton.textContent = 'Применить промокод';
+    const basketPromoPrice: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo-price');
+    const basketPromoNewPrice: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo-new-price');
+    const basketPromoDiscount: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo-discount');
+
+    basketPromoButton.addEventListener('click', async (event) => {
+      event.preventDefault();
+      const promoCode = basketPromoInput.value.trim();
+      if (promoCode.toLocaleLowerCase() === 'rsschool') {
+        const discountedCart = await this.restHandler.addPromoCodeToCart(currentCart.id);
+        basketTotalCost.classList.add('discounted');
+        basketPromoNewPrice.textContent = `${formatCartDiscount(discountedCart.totalPrice)} ${discountedCart.totalPrice.currencyCode}`;
+        basketPromoDiscount.textContent = ` Скидка: ${formatCartDiscount(discountedCart.discountOnTotalPrice.discountedAmount)} ${discountedCart.discountOnTotalPrice.discountedAmount.currencyCode}`;
+      }
+    });
+    basketPromoContent.append(basketPromoInput, basketPromoButton);
+    basketPromoPrice.append(basketPromoNewPrice, basketPromoDiscount);
+    basketPromoWrap.append(basketPromoContent, basketPromoPrice);
+
+    if (currentCart.lineItems.length === 0) {
+      basketWrapper.append(basketContinueShoppingButton);
+    } else {
+      basketWrapper.append(basketClearAllButton, basketPromoWrap);
+    }
 
     this.container.append(basketWrapper);
     return this.container;

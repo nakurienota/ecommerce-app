@@ -24,6 +24,9 @@ type Cart = {
   customLineItems: CustomLineItem[];
   discountCodes: DiscountCode[];
   directDiscounts: DirectDiscount[];
+  discountOnTotalPrice: {
+    discountedAmount: TotalPrice;
+  };
   inventoryMode: 'None' | 'TrackOnly' | 'ReserveOnOrder';
   taxMode: 'Platform' | 'External' | 'ExternalAmount';
   taxRoundingMode: 'HalfEven' | 'HalfUp' | 'HalfDown';
@@ -306,4 +309,4 @@ type TaxPortion = {
   name?: string;
 };
 
-export { Cart, LineItem };
+export { Cart, LineItem, TotalPrice };

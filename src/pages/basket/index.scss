@@ -10,7 +10,7 @@
     align-items: center;
     width: 100%;
     max-height: 300px;
-    margin: .5rem;
+    margin: 0.5rem;
     padding: 1rem;
     border: 1px solid $primary-blue;
     border-radius: $border-radius;
@@ -50,6 +50,10 @@
     font-weight: bold;
   }
 
+  &__total-cost.discounted {
+    text-decoration: line-through;
+  }
+
   &__title {
     align-self: start;
     margin: 10px;
@@ -76,5 +80,58 @@
     width: 35px;
     height: 35px;
     margin-left: 20px;
+  }
+
+  &__promo {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    border: 2px solid $primary-blue;
+    border-radius: $border-radius;
+  }
+
+  &__promo-content {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+  }
+
+  &__promo-input {
+    max-width: 300px;
+    padding: 12px;
+    border: 2px solid #303030;
+    border-radius: 6px;
+    font-size: $font-large;
+    color: #e6e7eb;
+    background-color: #8c8f96;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+  }
+
+  &__promo-button {
+    @include button-style($primary-black, $primary-white, $border-radius);
+  }
+
+  &__promo-price {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__promo-new-price {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    min-width: 150px;
+    font-size: $font-large;
+    color: $discount-color;
+  }
+
+  &__promo-discount {
+    font-size: $font-medium;
   }
 }
