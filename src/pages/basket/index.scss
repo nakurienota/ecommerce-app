@@ -89,7 +89,6 @@
     width: 100%;
     margin-top: 20px;
     padding: 10px;
-    border: 2px solid $primary-blue;
     border-radius: $border-radius;
   }
 
@@ -101,24 +100,22 @@
 
   &__promo-input {
     max-width: 250px;
+    height: 46px;
     padding: 12px;
     border: 2px solid #303030;
     border-radius: 6px;
-    font-size: $font-large;
+    font-size: $font-small;
     color: #e6e7eb;
     background-color: #8c8f96;
     outline: none;
     transition: all 0.3s ease-in-out;
   }
 
-  &__promo-button {
-    @include button-style($primary-black, $primary-white, $border-radius);
-  }
-
   &__promo-price {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    justify-content: flex-end;
     width: 30%;
   }
 
@@ -128,13 +125,15 @@
     justify-content: flex-end;
     width: 100%;
     min-width: 150px;
-    font-size: $font-large;
+    font-size: $font-medium;
+    font-weight: $font-weight-bold;
     color: $discount-color;
   }
 
   &__promo-discount {
     width: 100%;
     font-size: $font-medium;
+    text-align: right;
   }
 
   @media (max-width: $tablet) {

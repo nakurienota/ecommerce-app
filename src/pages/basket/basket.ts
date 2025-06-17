@@ -121,7 +121,12 @@ export default class BasketPage {
     const basketPromoContent: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo-content');
     const basketPromoInput: HTMLInputElement = HtmlCreator.create('input', undefined, 'basket__promo-input');
     basketPromoInput.type = 'text';
-    const basketPromoButton: HTMLButtonElement = HtmlCreator.create('button', undefined, 'basket__promo-button');
+    const basketPromoButton: HTMLButtonElement = HtmlCreator.create(
+      'button',
+      undefined,
+      'basket__promo-button',
+      'default-submit-button'
+    );
     basketPromoButton.textContent = 'Применить промокод';
     const basketPromoPrice: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo-price');
     const basketPromoNewPrice: HTMLDivElement = HtmlCreator.create('div', undefined, 'basket__promo-new-price');
