@@ -198,8 +198,7 @@ export class Resthandler {
         }
       }
     } catch {
-      showNotification('Товар не добавляется в корзину. Попробуйте позже.', 'error');
-      return false;
+      result = false;
     }
     if (result) showNotification('Товар добавлен в корзину');
     else showNotification('Товар не добавляется в корзину. Попробуйте позже.', 'error');
