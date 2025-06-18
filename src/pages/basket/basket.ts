@@ -3,7 +3,7 @@ import type { Cart, LineItem } from '@core/model/cart';
 import type { Product, ProductData } from '@core/model/product';
 import { Resthandler } from '@service/rest/resthandler';
 import { formatCentAmountLineItem, formatCartDiscount } from '@utils/formatters';
-import HtmlCreator, { showNotification } from '@utils/html';
+import HtmlCreator, { changeCartBadgeQuantity, showNotification } from '@utils/html';
 import { AppRoutes, router } from '@utils/router';
 
 export default class BasketPage {
@@ -102,6 +102,7 @@ export default class BasketPage {
     basketClearAllButton.addEventListener('click', async () => {
       if (cartId) {
         await this.restHandler.clearCart(cartId);
+        changeCartBadgeQuantity(0);
         await router.navigate(AppRoutes.BASKET);
         showNotification('Корзина очищена');
       }

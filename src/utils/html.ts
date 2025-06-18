@@ -42,4 +42,19 @@ export function showNotification(message: string, type: 'success' | 'error' = 's
   }, 1000);
 }
 
+export function changeCartBadgeQuantity(input: number): void {
+  const badge: HTMLElement | null = document.querySelector('#cart-badge');
+  if (badge) {
+    const current: number = Number(badge.textContent);
+    const newNumber: number = current + input;
+    if (input == 0 || newNumber == 0) {
+      badge.textContent = '0';
+      badge.style.display = 'none';
+    } else {
+      badge.textContent = String(newNumber);
+      badge.style.display = 'flex';
+    }
+  }
+}
+
 export default HtmlCreator;

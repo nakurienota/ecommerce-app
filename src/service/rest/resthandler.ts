@@ -2,7 +2,7 @@ import { LocalStorageKeys } from '@core/enum/local-storage-keys';
 import type { Cart, LineItem } from '@core/model/cart';
 import type { CustomersResponse, ProductResponse, ResponseCustomerById, TokenResponse } from '@core/model/dto';
 import type { Product } from '@core/model/product';
-import { showNotification } from '@utils/html';
+import { changeCartBadgeQuantity, showNotification } from '@utils/html';
 import { isNotNullable } from '@utils/not-nullable';
 import { userLoggedIn } from '@utils/security';
 
@@ -200,8 +200,10 @@ export class Resthandler {
     } catch {
       result = false;
     }
-    if (result) showNotification('Товар добавлен в корзину');
-    else showNotification('Товар не добавляется в корзину. Попробуйте позже.', 'error');
+    if (result) {
+      showNotification('Товар добавлен в корзину');
+      changeCartBadgeQuantity(1);
+    } else showNotification('Товар не добавляется в корзину. Попробуйте позже.', 'error');
     return result;
   }
 
@@ -406,6 +408,7 @@ export class Resthandler {
 
       const data: Cart = await response.json();
       showNotification('Товар удален из корзины');
+      changeCartBadgeQuantity(-1);
       return !!data;
     } catch {
       return false;

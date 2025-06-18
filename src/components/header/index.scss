@@ -77,6 +77,23 @@
     background-size: 0%;
     transition: all 0.3s ease-in-out;
   }
+
+  &__cart-badge {
+    position: absolute;
+    z-index: 1;
+    top: -6px;
+    right: -6px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 5px;
+    border-radius: 50%;
+    font-weight: bold;
+    color: white;
+    background-color: $primary-blue;
+  }
 }
 
 @media (max-width: $desktop) {
@@ -124,6 +141,10 @@
       height: 50px;
       font-size: 0;
       background: no-repeat center / contain;
+    }
+
+    &__cart-badge {
+      font-size: 16px;
     }
   }
 }
