@@ -126,6 +126,14 @@
   }
 }
 
+.button {
+  @include button-style($primary-black, $primary-white, $border-radius);
+}
+
+.button[disabled] {
+  background-color: #8c8f96;
+}
+
 @media (max-width: $desktop) {
   .catalog {
     grid-template-columns: repeat(3, 1fr);
