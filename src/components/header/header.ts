@@ -84,6 +84,10 @@ export default class Header {
       listItem.textContent = textLink;
       listItem.setAttribute('href', href);
       listItem.style.backgroundImage = img;
+      if (textLink == 'Корзина') {
+        const cartBadge: HTMLSpanElement = HtmlCreator.create('span', 'cart-badge', 'header__cart-badge');
+        listItem.append(cartBadge);
+      }
 
       if (href === AppRoutes.LOGIN) listItem.dataset.role = 'auth';
 

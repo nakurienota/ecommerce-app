@@ -18,4 +18,43 @@ const HtmlCreator = {
   },
 };
 
+export function showNotification(message: string, type: 'success' | 'error' = 'success'): void {
+  const notification: HTMLDivElement = HtmlCreator.create('div', undefined, 'notification-modal');
+  notification.textContent = message;
+
+  Object.assign(notification.style, {
+    backgroundColor: type === 'success' ? '$primary-blue' : '#f44336',
+  });
+
+  document.body.append(notification);
+
+  requestAnimationFrame(() => {
+    notification.style.opacity = '1';
+    notification.style.transform = 'translateY(0)';
+  });
+
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    notification.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  }, 1000);
+}
+
+export function changeCartBadgeQuantity(input: number): void {
+  const badge: HTMLElement | null = document.querySelector('#cart-badge');
+  if (badge) {
+    const current: number = Number(badge.textContent);
+    const newNumber: number = current + input;
+    if (input == 0 || newNumber == 0) {
+      badge.textContent = '0';
+      badge.style.display = 'none';
+    } else {
+      badge.textContent = String(newNumber);
+      badge.style.display = 'flex';
+    }
+  }
+}
+
 export default HtmlCreator;

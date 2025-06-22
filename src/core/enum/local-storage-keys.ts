@@ -3,4 +3,5 @@ export enum LocalStorageKeys {
   ACCESS_TOKEN_EXPIRES = 'accessTokenExpires',
   USER_ID_LOGGED_IN = 'userIdLoggedIn',
   USER_VERSION = 'userVersion',
+  USER_CART_ID = 'userCartId',
 }

@@ -1,4 +1,5 @@
 import type { registrationInputsEnum } from '@core/enum/registration-inputs';
+import type { Cart } from '@core/model/cart';
 import type { Product } from '@core/model/product';
 
 export type ProductResponse = {
@@ -94,4 +95,12 @@ export type ResponseCustomerById = {
   key: string;
   stores: [];
   authenticationMode: string;
+};
+
+export type CartResponse = {
+  limit: number;
+  offset: number;
+  count: number;
+  total: number;
+  results: Cart[];
 };
