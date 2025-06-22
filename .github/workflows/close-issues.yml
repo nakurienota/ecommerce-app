@@ -1,0 +1,44 @@
+name: Close issues on develop merge
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  close-issues:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Close related issues and comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const prBody = pr.body || "";
+            const prNumber = pr.number;
+            const repoOwner = context.repo.owner;
+            const repoName = context.repo.repo;
+
+            const issueRegex = /(?:resolves|fixes|closes)\s+#(\d+)/gi;
+            let match;
+            
+            while ((match = issueRegex.exec(prBody)) !== null) {
+              const issueNumber = match[1];
+
+              await github.rest.issues.update({
+                owner: repoOwner,
+                repo: repoName,
+                issue_number: issueNumber,
+                state: "closed"
+              });
+
+              await github.rest.issues.createComment({
+                owner: repoOwner,
+                repo: repoName,
+                issue_number: issueNumber,
+                body: `This issue was automatically closed by PR #${prNumber}. `
+              });
+            }
