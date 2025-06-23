@@ -18,9 +18,9 @@ export default class CatalogPage {
   private readonly catalog: HTMLElement;
   private pagination: PaginationButtons;
   private page: number;
-  private cardsPerPage = 12;
+  private cardsPerPage = 6;
   private totalPages: number;
-  private catalogArray: Product[];
+  private catalogArrayLength: number;
   private currentCartProducts: string[];
   constructor() {
     this.container = HtmlCreator.create('div', undefined, 'container');
@@ -31,9 +31,9 @@ export default class CatalogPage {
     this.pagination = new PaginationButtons();
     this.addPaginationEvents();
     catalogWrapper.append(this.filters, this.catalog, this.pagination.getPagination());
-    this.page = 0;
+    this.page = 1;
     this.totalPages = 0;
-    this.catalogArray = [];
+    this.catalogArrayLength = 0;
     this.currentCartProducts = [];
   }
 
@@ -81,16 +81,47 @@ export default class CatalogPage {
       this.currentCartProducts = cart.lineItems.map((item: LineItem): string => item.productId);
     }
 
-    this.catalogArray = await this.restHandler.getProductsAll();
-    this.page = 1;
-    this.totalPages = Math.ceil(this.catalogArray.length / this.cardsPerPage);
-    const paginatedCatalog = this.getPaginatedCatalog(this.catalogArray);
+    const { total: catalogArrayLength, products: catalogArray } = await this.restHandler.getProductsPerPage(
+      (this.page - 1) * this.cardsPerPage,
+      this.cardsPerPage
+    );
+
+    this.catalogArrayLength = catalogArrayLength;
+    const paginatedCatalog = catalogArray;
+
+    this.totalPages = Math.ceil(this.catalogArrayLength / this.cardsPerPage);
+    this.getPaginatedButtons(this.totalPages);
+
     this.getPaginatedCatalogHTML(paginatedCatalog, this.currentCartProducts);
     this.updatePaginationButtons();
   }
 
-  private getPaginatedCatalog(catalog: Product[]): Product[] {
-    return catalog.slice((this.page - 1) * this.cardsPerPage, this.page * this.cardsPerPage);
+  private getPaginatedButtons(count: number): void {
+    for (let i = 0; i < count; i++) {
+      const numberButton = HtmlCreator.create('button', undefined, 'catalog__pagination-btn');
+      numberButton.textContent = `${i + 1}`;
+
+      if (i === this.page - 1) {
+        numberButton.classList.add('current');
+      }
+
+      this.pagination.getNextButton().insertAdjacentElement('beforebegin', numberButton);
+      numberButton.addEventListener('click', async (event) => {
+        const currentButton = event.target;
+
+        if (currentButton !== null && currentButton instanceof Element) {
+          const previousButton = document.querySelectorAll('.catalog__pagination-btn')[this.page - 1];
+          this.page = Number(currentButton.textContent);
+          removeChildren(this.catalog);
+          const newPageOfCatalog = await this.restHandler.getProductsPerPage(
+            (this.page - 1) * this.cardsPerPage,
+            this.cardsPerPage
+          );
+          this.getPaginatedCatalogHTML(newPageOfCatalog.products, this.currentCartProducts);
+          this.updatePaginationButtons(previousButton);
+        }
+      });
+    }
   }
 
   private getPaginatedCatalogHTML(catalog: Product[], currentCartProducts: string[]): void {
@@ -149,31 +180,47 @@ export default class CatalogPage {
     this.catalog.append(fragment);
   }
 
-  private nextPage(): void {
+  private async nextPage(): Promise<void> {
     if (this.page < this.totalPages) {
+      const previousButton = document.querySelectorAll('.catalog__pagination-btn')[this.page - 1];
       this.page++;
       removeChildren(this.catalog);
-      this.getPaginatedCatalogHTML(this.getPaginatedCatalog(this.catalogArray), this.currentCartProducts);
-      this.updatePaginationButtons();
+      const paginatedCatalog = await this.restHandler.getProductsPerPage(
+        (this.page - 1) * this.cardsPerPage,
+        this.cardsPerPage
+      );
+      this.getPaginatedCatalogHTML(paginatedCatalog.products, this.currentCartProducts);
+      this.updatePaginationButtons(previousButton);
     }
   }
 
-  private prevPage(): void {
+  private async prevPage(): Promise<void> {
     if (this.page > 1) {
+      const previousButton = document.querySelectorAll('.catalog__pagination-btn')[this.page - 1];
       this.page--;
       removeChildren(this.catalog);
-      this.getPaginatedCatalogHTML(this.getPaginatedCatalog(this.catalogArray), this.currentCartProducts);
-      this.updatePaginationButtons();
+      const paginatedCatalog = await this.restHandler.getProductsPerPage(
+        (this.page - 1) * this.cardsPerPage,
+        this.cardsPerPage
+      );
+      this.getPaginatedCatalogHTML(paginatedCatalog.products, this.currentCartProducts);
+      this.updatePaginationButtons(previousButton);
     }
   }
 
-  private updatePaginationButtons(): void {
+  private updatePaginationButtons(previousButton?: Element): void {
     this.pagination.getPrevButton().disabled = this.page === 1;
     this.pagination.getNextButton().disabled = this.page === this.totalPages;
+
+    if (previousButton) {
+      previousButton.classList.remove('current');
+      const currentButton = document.querySelectorAll('.catalog__pagination-btn')[this.page - 1];
+      currentButton.classList.add('current');
+    }
   }
 
   private addPaginationEvents(): void {
-    this.pagination.getPrevButton().addEventListener('click', () => this.prevPage());
-    this.pagination.getNextButton().addEventListener('click', () => this.nextPage());
+    this.pagination.getPrevButton().addEventListener('click', async () => await this.prevPage());
+    this.pagination.getNextButton().addEventListener('click', async () => await this.nextPage());
   }
 }

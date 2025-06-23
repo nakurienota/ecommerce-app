@@ -158,6 +158,30 @@ export class Resthandler {
     return result;
   }
 
+  public async getProductsPerPage(start = 0, limit = 20): Promise<{ total: number; products: Product[] }> {
+    const tokenBearer: string = await this.getToken();
+    const response: Response = await fetch(
+      `${this.apiUrl}/${this.projectKey}/products?offset=${start}&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${tokenBearer}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Something goes wrong: ${response.statusText}`);
+    }
+
+    const data: ProductResponse = await response.json();
+    return {
+      total: data.total,
+      products: data.results,
+    };
+  }
+
   public async getCustomer(id: string): Promise<ResponseCustomerById> {
     const tokenBearer = await this.getToken();
     const response: Response = await fetch(`${this.apiUrl}/${this.projectKey}/customers/${id}`, {
